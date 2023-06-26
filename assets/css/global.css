@@ -1,0 +1,29 @@
+html {
+    font-family: 'Roboto', Helvetica, sans-serif;
+    width: 100vw;
+    height: 100vh;
+}
+body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    width: 100%;
+}
+
+html,
+body {
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+    touch-action: pan-x pan-y;
+    @apply bg-c-light text-neutral-800;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+input[data-autocompleted] {
+    @apply bg-c-light text-neutral-800;
+}
