@@ -16,6 +16,9 @@ module.exports = {
                 'c-dark': '#191919',
                 'alt-dark': '#212121',
                 't-dark': '#585858',
+                't-gray': '#737373',
+                'c-seperator': '#DBDBDB',
+                primary: '#0095F6',
             },
             transitionProperty: {
                 length: 'height, width',
