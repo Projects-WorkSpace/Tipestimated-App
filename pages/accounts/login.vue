@@ -67,7 +67,9 @@ const toggleLoading = () => {
             <div class="w-full border border-c-seperator py-5">
                 <div class="flex justify-center items-center gap-x-1">
                     <p class="text-sm">Don't have an account?</p>
-                    <span class="text-blue-500 font-medium text-sm cursor-pointer">Sign up</span>
+                    <NuxtLink :to="{ name: 'signup' }" class="text-blue-500 font-medium text-sm cursor-pointer"
+                        >Sign up</NuxtLink
+                    >
                 </div>
             </div>
         </div>
