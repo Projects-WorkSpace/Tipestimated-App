@@ -1,7 +1,7 @@
 <template>
     <nuxt-layout name="home">
         <div class="flex flex-col items-center mt-8 w-full">
-            <div class="max-w-[500px] w-full">
+            <div class="max-w-[500px]">
                 <div class="flex space-x-4 relative">
                     <NuxtLink to="/home" class="items-center flex flex-col">
                         <div class="border-pink-500 rounded-full border-2 w-[66px] h-[66px]">

@@ -29,5 +29,10 @@ export default <RouterConfig>{
             path: '/tipster',
             component: () => import('~/pages/tipster/index.vue'),
         },
+        {
+            name: 'tipster details',
+            path: '/tipster/id',
+            component: () => import('~/pages/tipster/[id].vue'),
+        },
     ],
 }
