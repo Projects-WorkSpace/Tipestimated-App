@@ -1,11 +1,11 @@
 import type { RouterConfig } from '@nuxt/schema'
 // https://router.vuejs.org/api/interfaces/routeroptions.html
-export default <RouterConfig> {
+export default <RouterConfig>{
     routes: (_routes) => [
         {
             name: 'home',
             path: '/',
-            component: () => import('~/pages/index.vue').then(r => r.default || r)
+            component: () => import('~/pages/index.vue').then((r) => r.default || r),
         },
         {
             name: 'accounts',
@@ -15,14 +15,24 @@ export default <RouterConfig> {
                 {
                     name: 'login',
                     path: 'login',
-                    component: () => import('~/pages/accounts/login.vue')
+                    component: () => import('~/pages/accounts/login.vue'),
                 },
                 {
                     name: 'signup',
                     path: 'signup',
-                    component: () => import('~/pages/accounts/signup.vue')
+                    component: () => import('~/pages/accounts/signup.vue'),
                 },
-            ]
-        }
-    ]
+            ],
+        },
+        {
+            name: 'tipster',
+            path: '/tipster',
+            component: () => import('~/pages/tipster/index.vue'),
+        },
+        {
+            name: 'tipster details',
+            path: '/tipster/id',
+            component: () => import('~/pages/tipster/[id].vue'),
+        },
+    ],
 }
