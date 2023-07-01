@@ -19,6 +19,7 @@ module.exports = {
                 't-gray': '#737373',
                 'c-seperator': '#DBDBDB',
                 primary: '#0095F6',
+                'base-pink': '#FF66BF',
             },
             transitionProperty: {
                 length: 'height, width',

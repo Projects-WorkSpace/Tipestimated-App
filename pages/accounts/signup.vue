@@ -1,11 +1,5 @@
 <script setup lang="ts">
 const loading = ref(false)
-const toggleLoading = () => {
-    loading.value = true
-    setTimeout(() => {
-        loading.value = false
-    }, 500)
-}
 
 const days = Array.from({ length: 31 }, (_, index) => index + 1)
 const months = [
@@ -26,6 +20,23 @@ const years = Array.from({ length: 100 }, (_, index) => new Date().getFullYear()
 const selectedDay = ref('')
 const selectedMonth = ref('')
 const selectedYear = ref('')
+
+const router = useRouter()
+const onSubmitUser = (): void => {
+    loading.value = true
+    setTimeout(() => {
+        loading.value = false
+        router.push({ name: 'home' })
+    }, 500)
+}
+const loadingTipster = ref(false)
+const onSubmitAsTipster = (): void => {
+    loadingTipster.value = true
+    setTimeout(() => {
+        loadingTipster.value = false
+        router.push({ name: 'signupTipster' })
+    }, 500)
+}
 </script>
 <template>
     <section class="w-full flex flex-col items-center pb-6">
@@ -101,7 +112,7 @@ const selectedYear = ref('')
                     </div>
                     <div class="w-full flex flex-col">
                         <button
-                            @click="() => toggleLoading()"
+                            @click="() => onSubmitUser()"
                             class="w-full py-2 text-sm font-semibold bg-blue-500 text-white tracking-wide rounded hover:bg-blue-600 focus:bg-blue-600 transition flex items-center justify-center"
                         >
                             <div v-if="!loading" class="">
@@ -117,12 +128,15 @@ const selectedYear = ref('')
                     </div>
                     <div class="w-full flex flex-col mt-0.5 mb-1.5">
                         <button
+                            @click="() => onSubmitAsTipster()"
                             class="w-full py-2 text-sm font-semibold bg-blue-500 text-white tracking-wide rounded hover:bg-blue-600 focus:bg-blue-600 transition flex items-center justify-center"
                         >
-                            <div class="">
-                                <span class="leading-none">Sign up as Tipster</span>
-                            </div>
-                            <!-- <UtilsSmallStarLoading v-else /> -->
+                            <Transition mode="out-in">
+                                <div v-if="!loadingTipster" class="">
+                                    <span class="leading-none">Sign up as Tipster</span>
+                                </div>
+                                <UtilsSmallStarLoading v-else />
+                            </Transition>
                         </button>
                     </div>
                 </div>

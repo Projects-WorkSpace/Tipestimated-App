@@ -10,4 +10,7 @@ export default defineNuxtConfig({
         },
     },
     css: ['~/assets/css/tailwind.css', '~/assets/css/global.css'],
+    colorMode: {
+        preference: 'light'
+    }
 })
