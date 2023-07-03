@@ -29,18 +29,30 @@ export default <RouterConfig>{
                 },
                 {
                     name: 'tipster',
-                    path: '',
+                    path: 'tipster',
                     component: () => import('~/pages/accounts/tipster.vue'),
                     children: [
                         {
                             name: 'tipster-home',
-                            path: ':tipsterUsername',
-                            component: () => import('~/pages/accounts/tipster/[tipsterUsername].vue'),
+                            path: '@:tipsterUsername',
+                            component: () => import('~/pages/accounts/tipster/@[tipsterUsername].vue'),
                         },
                         {
                             name: 'waiting-verification',
                             path: 'waiting-verification',
                             component: () => import('~/pages/accounts/tipster/waiting-verification.vue'),
+                        },
+                    ],
+                },
+                {
+                    name: 'users',
+                    path: '',
+                    component: () => import('~/pages/accounts/users.vue'),
+                    children: [
+                        {
+                            name: 'user-home',
+                            path: ':userName',
+                            component: () => import('~/pages/accounts/users/@[userName].vue'),
                         },
                     ],
                 },

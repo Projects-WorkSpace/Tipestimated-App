@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const layout = 'tipster'
+const layout = 'users'
 </script>
 <template>
     <main class="w-full flex flex-col">

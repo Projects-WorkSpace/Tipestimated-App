@@ -21,7 +21,6 @@ const onSubmitTipsterDetails = (): void => {
         <div class="mt-14 w-full max-w-[350px] flex flex-col gap-y-3">
             <div class="w-full border border-c-seperator py-1 relative">
                 <div class="py-4 flex justify-center flex-col items-center px-8 gap-y-4">
-                    <!-- <h2 class="text-3xl font-medium tracking-wide leading-none">Tipstimate</h2> -->
                     <p class="text-t-gray text-base font-normal text-center">
                         To get started as a tipster provide the following details.
                     </p>
