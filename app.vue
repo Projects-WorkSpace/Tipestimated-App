@@ -1,5 +1,6 @@
 <template>
-	<main>
-		<NuxtPage />
-	</main>
+    <main>
+        <NuxtPage />
+        <UNotifications />
+    </main>
 </template>

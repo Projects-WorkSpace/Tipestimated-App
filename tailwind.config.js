@@ -20,6 +20,7 @@ module.exports = {
                 'c-seperator': '#DBDBDB',
                 primary: '#0095F6',
                 'base-pink': '#FF66BF',
+                'base-green': '#68DBA1',
             },
             transitionProperty: {
                 length: 'height, width',

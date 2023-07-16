@@ -5,7 +5,7 @@ const languages = ['English', 'Italian']
 const lang = ref(languages[0])
 </script>
 <template>
-    <footer class="w-full flex flex-col pb-4 mt-6">
+    <footer class="w-full flex flex-col pb-4">
         <div class="w-full flex items-center justify-center gap-x-2">
             <div class="flex items-center mx-2">
                 <span class="text-[13px] hover:underline text-t-gray cursor-pointer">Home</span>

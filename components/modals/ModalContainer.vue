@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed inset-0 flex items-center justify-center">
+    <div class="inset-0 flex items-center justify-center">
         <button
             type="button"
             @click="openModal"
