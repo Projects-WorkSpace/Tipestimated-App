@@ -30,6 +30,12 @@ export default <RouterConfig>{
                         import('~/pages/accounts/auths/signUpTipster.vue'),
                 },
                 {
+                    name: 'waiting-verification',
+                    path: 'waiting-verification',
+                    component: () =>
+                        import('~/pages/accounts/waiting-verification.vue'),
+                },
+                {
                     name: 'tipster',
                     path: 'tipster',
                     component: () => import('~/pages/accounts/tipster.vue'),
@@ -40,14 +46,6 @@ export default <RouterConfig>{
                             component: () =>
                                 import(
                                     '~/pages/accounts/tipster/@[tipsterUsername].vue'
-                                ),
-                        },
-                        {
-                            name: 'waiting-verification',
-                            path: 'waiting-verification',
-                            component: () =>
-                                import(
-                                    '~/pages/accounts/tipster/waiting-verification.vue'
                                 ),
                         },
                     ],

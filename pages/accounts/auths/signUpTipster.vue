@@ -39,7 +39,7 @@ const onSubmitTipsterDetails = (): void => {
                                 <button
                                     v-if="!second_form"
                                     @click="() => onClickContinue()"
-                                    class="w-full py-2.5 text-base font-semibold bg-base-green text-neutral-700 tracking-wide rounded hover:bg-blue-600 focus:bg-blue-600 transition flex items-center justify-center"
+                                    class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-neutral-700 tracking-wide rounded hover:bg-base-green focus:bg-base-green transition flex items-center justify-center"
                                 >
                                     <div class="">
                                         <span class="leading-none"
@@ -50,7 +50,7 @@ const onSubmitTipsterDetails = (): void => {
                                 <button
                                     v-else
                                     @click="() => onSubmitTipsterDetails()"
-                                    class="w-full py-2.5 text-base font-semibold bg-base-green text-neutral-700 tracking-wide rounded hover:bg-blue-600 focus:bg-blue-600 transition flex items-center justify-center"
+                                    class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-neutral-700 tracking-wide rounded hover:bg-base-green focus:bg-base-green transition flex items-center justify-center"
                                 >
                                     <div v-if="!loading" class="">
                                         <span class="leading-none">Submit</span>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const sports = ['Football', 'Basketball', 'Hockey', 'Tennis', 'Cricket'];
+import { IListProps } from '~/types/types';
+
 const countries = [
     'Italy',
     'England',
@@ -8,14 +9,36 @@ const countries = [
     'France',
     'Germany',
 ];
-const selectedSport = ref('');
-const selectedOtherSport = ref('');
+const selectedSport = ref<IListProps>({
+    name: 'Favorite Sport',
+    icon: '',
+    disabled: true,
+});
+const selectedOtherSport = ref<IListProps>({
+    name: 'Other Sport',
+    icon: '',
+    disabled: true,
+});
 const selectedCountry = ref('');
+
+const sports: IListProps[] = [
+    { name: 'Football', icon: '⚽' },
+    { name: 'Basketball', icon: '🏀' },
+    { name: 'Tennis', icon: '🎾' },
+    { name: 'Hockey', icon: '🏑' },
+    { name: 'Cricket', icon: '🏏' },
+];
+const updatedSelected = (data: IListProps) => {
+    selectedSport.value = data;
+};
+const updatedOtherSelected = (data: IListProps) => {
+    selectedOtherSport.value = data;
+};
 </script>
 <template>
     <div class="w-full flex flex-col">
         <div class="w-full flex flex-col pb-6 gap-y-4">
-            <div class="relative bg-inherit w-full">
+            <div class="relative bg-inherit w-full flex items-center">
                 <input
                     type="text"
                     id="penname"
@@ -28,45 +51,55 @@ const selectedCountry = ref('');
                     >Pen name</label
                 >
             </div>
-            <div class="w-full">
-                <select v-model="selectedCountry" class="select-input">
+            <div class="w-full relative flex items-center">
+                <select
+                    v-model="selectedCountry"
+                    class="select-field custom-select"
+                >
                     <option value="" disabled selected>Nationality</option>
                     <option v-for="country in countries" :value="country">
                         {{ country }}
                     </option>
                 </select>
+                <Icon
+                    name="mdi:chevron-down"
+                    class="h-4 w-4 text-gray-400 absolute right-2"
+                />
             </div>
             <div class="w-full">
-                <select v-model="selectedSport" class="select-input">
-                    <option value="" disabled selected>Favorite Sport</option>
-                    <option v-for="sport in sports" :value="sport">
-                        {{ sport }}
-                    </option>
-                </select>
+                <ContainersListboxComponent
+                    :selected="selectedSport"
+                    :list="sports"
+                    @updated-selected="updatedSelected"
+                />
             </div>
             <div class="w-full">
-                <select v-model="selectedOtherSport" class="select-input">
-                    <option value="" disabled selected>Other sports</option>
-                    <option v-for="sport in sports" :value="sport">
-                        {{ sport }}
-                    </option>
-                </select>
+                <ContainersListboxComponent
+                    v-model="selectedOtherSport"
+                    :selected="selectedOtherSport"
+                    :list="sports"
+                    @updated-selected="updatedOtherSelected"
+                />
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-.select-input {
-    @apply w-full text-sm bg-inherit border border-c-seperator rounded-sm text-gray-600 py-2 px-2 focus:ring-neutral-400 focus:border-neutral-400 outline-none transition duration-200;
+.select-field {
+    @apply text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none;
 }
 
-select::-webkit-datetime-edit-fields-wrapper::after {
-    @apply text-c-seperator; /* Set the color of the arrow icon */
-}
-
-/* For Firefox */
-select::-moz-focus-inner {
-    @apply text-c-seperator; /* Set the color of the arrow icon */
+.custom-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none;
+    padding-right: 6px;
+    background-position: right center;
+    background-origin: content-box;
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    filter: grayscale(100%);
 }
 </style>
