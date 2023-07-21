@@ -1,5 +1,18 @@
 <script setup lang="ts">
 import { IListProps } from '~/types/types';
+const emits = defineEmits<{
+    (e: 'submitSportData'): void;
+    (e: 'update:pen_name', payload: string): void;
+    (e: 'update:nationality', payload: string): void;
+    (e: 'updateSelectedSport', payload: IListProps): void;
+    (e: 'updateSelectedOtherSport', payload: IListProps): void;
+}>();
+const props = defineProps<{
+    pen_name: string;
+    nationality: string;
+    favorite_sport: IListProps;
+    other_sport: IListProps;
+}>();
 
 const countries = [
     'Italy',
@@ -9,17 +22,6 @@ const countries = [
     'France',
     'Germany',
 ];
-const selectedSport = ref<IListProps>({
-    name: 'Favorite Sport',
-    icon: '',
-    disabled: true,
-});
-const selectedOtherSport = ref<IListProps>({
-    name: 'Other Sport',
-    icon: '',
-    disabled: true,
-});
-const selectedCountry = ref('');
 
 const sports: IListProps[] = [
     { name: 'Football', icon: '⚽' },
@@ -28,11 +30,14 @@ const sports: IListProps[] = [
     { name: 'Hockey', icon: '🏑' },
     { name: 'Cricket', icon: '🏏' },
 ];
-const updatedSelected = (data: IListProps) => {
-    selectedSport.value = data;
+const updatedSelected = (payload: IListProps) => {
+    emits('updateSelectedSport', payload);
 };
-const updatedOtherSelected = (data: IListProps) => {
-    selectedOtherSport.value = data;
+const updatedOtherSelected = (payload: IListProps) => {
+    emits('updateSelectedOtherSport', payload);
+};
+const onClickSubmit = (): void => {
+    emits('submitSportData');
 };
 </script>
 <template>
@@ -45,6 +50,13 @@ const updatedOtherSelected = (data: IListProps) => {
                     name="penname"
                     class="peer text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 placeholder-transparent ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none"
                     placeholder="Pen name"
+                    :value="pen_name"
+                    @input="
+                        emits(
+                            'update:pen_name',
+                            ($event.target as HTMLInputElement).value
+                        )
+                    "
                 /><label
                     for="penname"
                     class="absolute cursor-text left-1.5 -top-2 text-xs text-gray-500 bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-t-gray peer-focus:text-xs transition-all"
@@ -53,7 +65,13 @@ const updatedOtherSelected = (data: IListProps) => {
             </div>
             <div class="w-full relative flex items-center">
                 <select
-                    v-model="selectedCountry"
+                    :value="nationality"
+                    @input="
+                        emits(
+                            'update:nationality',
+                            ($event.target as HTMLSelectElement).value
+                        )
+                    "
                     class="select-field custom-select"
                 >
                     <option value="" disabled selected>Nationality</option>
@@ -68,18 +86,27 @@ const updatedOtherSelected = (data: IListProps) => {
             </div>
             <div class="w-full">
                 <ContainersListboxComponent
-                    :selected="selectedSport"
+                    :selected="favorite_sport"
                     :list="sports"
                     @updated-selected="updatedSelected"
                 />
             </div>
             <div class="w-full">
                 <ContainersListboxComponent
-                    v-model="selectedOtherSport"
-                    :selected="selectedOtherSport"
+                    :selected="other_sport"
                     :list="sports"
                     @updated-selected="updatedOtherSelected"
                 />
+            </div>
+            <div class="w-full flex flex-col mt-4 gap-y-5 pb-6">
+                <button
+                    @click="() => onClickSubmit()"
+                    class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-neutral-700 tracking-wide rounded hover:bg-base-green focus:bg-base-green transition flex items-center justify-center"
+                >
+                    <div class="">
+                        <span class="leading-none">Continue</span>
+                    </div>
+                </button>
             </div>
         </div>
     </div>

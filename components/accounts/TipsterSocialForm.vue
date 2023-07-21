@@ -1,19 +1,39 @@
 <script setup lang="ts">
 import { IListProps } from '~/types/types';
 
-const selectedExp = ref<IListProps>({
-    name: 'Years of experience',
-    icon: '',
-    disabled: true,
-});
-const experience: IListProps[] = [
+const emits = defineEmits<{
+    (e: 'goBack'): void;
+    (e: 'submitData'): void;
+    (e: 'update:telegram', payload: string): void;
+    (e: 'update:social_link', payload: string): void;
+    (e: 'updateExperience', payload: IListProps): void;
+    (e: 'updateSocialName', payload: IListProps): void;
+}>();
+const props = defineProps<{
+    loading: boolean;
+    telegram: string;
+    experience: IListProps;
+    social_name: IListProps;
+    social_link: string;
+}>();
+
+const socials: IListProps[] = [
+    { icon: 'mdi:twitter', name: 'Twitter' },
+    { icon: 'mdi:instagram', name: 'Instagram' },
+    { icon: 'mdi:facebook-box', name: 'Facebook' },
+];
+
+const experiences: IListProps[] = [
     { name: '3 years' },
     { name: '4 years' },
     { name: 'More than 5 years' },
 ];
 
-const updateExperience = (data: IListProps): void => {
-    selectedExp.value = data;
+const updateExperience = (payload: IListProps): void => {
+    emits('updateExperience', payload);
+};
+const updateSocialName = (payload: IListProps): void => {
+    emits('updateSocialName', payload);
 };
 
 interface FileWithPreview extends File {
@@ -63,12 +83,23 @@ const defaultImage = '/icons/docs.png';
                         name="telegram"
                         class="text-sm bg-c-light h-10 w-full rounded-r-lg text-gray-700 placeholder-t-gray/60 ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none"
                         placeholder="Telegram link"
+                        :value="telegram"
+                        @input="
+                            emits(
+                                'update:telegram',
+                                ($event.target as HTMLInputElement).value
+                            )
+                        "
                     />
                 </div>
             </div>
             <div class="relative bg-inherit w-full flex items-center gap-x-1">
                 <div class="flex-none">
-                    <AccountsSocialMenu />
+                    <AccountsSocialMenu
+                        :social_name="social_name"
+                        :socials="socials"
+                        @update-social-name="updateSocialName"
+                    />
                 </div>
                 <div class="relative w-full grow">
                     <input
@@ -77,13 +108,20 @@ const defaultImage = '/icons/docs.png';
                         name="social"
                         class="text-sm bg-c-light h-10 w-full rounded-r-lg text-gray-700 placeholder-t-gray/60 ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none"
                         placeholder="Preferred social media link"
+                        :value="social_link"
+                        @input="
+                            emits(
+                                'update:social_link',
+                                ($event.target as HTMLInputElement).value
+                            )
+                        "
                     />
                 </div>
             </div>
             <div class="w-full">
                 <ContainersListboxComponent
-                    :selected="selectedExp"
-                    :list="experience"
+                    :selected="experience"
+                    :list="experiences"
                     @updated-selected="updateExperience"
                 />
             </div>
@@ -138,6 +176,25 @@ const defaultImage = '/icons/docs.png';
                         </button>
                     </div>
                 </div>
+            </div>
+            <div class="w-full flex flex-col mt-4 gap-y-5">
+                <button
+                    @click="emits('submitData')"
+                    class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-neutral-700 tracking-wide rounded hover:bg-base-green focus:bg-base-green transition flex items-center justify-center"
+                >
+                    <div v-if="!loading" class="">
+                        <p>Submit</p>
+                    </div>
+                    <div class="flex items-center py-0.5" v-else>
+                        <UtilsSmallStarLoading />
+                    </div>
+                </button>
+                <button
+                    @click="emits('goBack')"
+                    class="text-base-green font-semibold text-base"
+                >
+                    Go back
+                </button>
             </div>
         </div>
     </div>

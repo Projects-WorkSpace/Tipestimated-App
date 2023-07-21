@@ -1,7 +1,44 @@
 <script setup lang="ts">
+import { IListProps } from '~/types/types';
 const loading = ref(false);
 const second_form = ref(false);
 const router = useRouter();
+
+const pen_name = ref<string>('');
+const nationality = ref('');
+const favorite_sport = ref<IListProps>({
+    name: 'Favorite sport',
+    icon: '',
+    disabled: true,
+});
+const other_sport = ref<IListProps>({
+    name: 'Other sport',
+    icon: '',
+    disabled: true,
+});
+const telegram = ref<string>('');
+const social_link = ref<string>('');
+const social_name = ref<IListProps>({
+    icon: 'mdi:facebook-box',
+    name: 'Facebook',
+});
+const experience = ref<IListProps>({
+    name: 'Years of experience',
+    disabled: true,
+});
+
+const updateSelectedSport = (payload: IListProps): void => {
+    favorite_sport.value = payload;
+};
+const updateSelectedOtherSport = (payload: IListProps): void => {
+    other_sport.value = payload;
+};
+const updateExperience = (payload: IListProps): void => {
+    experience.value = payload;
+};
+const updateSocialName = (payload: IListProps) => {
+    social_name.value = payload;
+};
 
 const onClickContinue = (): void => {
     second_form.value = true;
@@ -11,8 +48,7 @@ const onSubmitTipsterDetails = (): void => {
     loading.value = true;
     setTimeout(() => {
         loading.value = false;
-        // second_form.value = false
-        router.push({ name: 'waiting-verification' });
+        // router.push({ name: 'waiting-verification' });
     }, 500);
 };
 </script>
@@ -29,34 +65,33 @@ const onSubmitTipsterDetails = (): void => {
                             details.
                         </p>
                     </div>
-                    <div class="w-full flex flex-col mt-4 px-6 gap-y-5 pb-6">
+                    <div class="w-full flex flex-col mt-4 px-6 gap-y-5 pb-3">
                         <div class="w-full flex flex-col">
                             <Transition mode="out-in">
-                                <AccountsTipsterSportsForm v-if="!second_form" />
-                                <AccountsTipsterSocialForm v-else />
-                            </Transition>
-                            <Transition mode="out-in">
-                                <button
+                                <AccountsTipsterSportsForm
                                     v-if="!second_form"
-                                    @click="() => onClickContinue()"
-                                    class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-neutral-700 tracking-wide rounded hover:bg-base-green focus:bg-base-green transition flex items-center justify-center"
-                                >
-                                    <div class="">
-                                        <span class="leading-none"
-                                            >Continue</span
-                                        >
-                                    </div>
-                                </button>
-                                <button
+                                    @submit-sport-data="onClickContinue"
+                                    v-model:pen_name="pen_name"
+                                    v-model:nationality="nationality"
+                                    :favorite_sport="favorite_sport"
+                                    :other_sport="other_sport"
+                                    @update-selected-other-sport="
+                                        updateSelectedOtherSport
+                                    "
+                                    @update-selected-sport="updateSelectedSport"
+                                />
+                                <AccountsTipsterSocialForm
                                     v-else
-                                    @click="() => onSubmitTipsterDetails()"
-                                    class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-neutral-700 tracking-wide rounded hover:bg-base-green focus:bg-base-green transition flex items-center justify-center"
-                                >
-                                    <div v-if="!loading" class="">
-                                        <span class="leading-none">Submit</span>
-                                    </div>
-                                    <UtilsSmallStarLoading v-else />
-                                </button>
+                                    :loading="loading"
+                                    v-model:telegram="telegram"
+                                    :experience="experience"
+                                    :social_name="social_name"
+                                    v-model:social_link="social_link"
+                                    @update-experience="updateExperience"
+                                    @submit-data="onSubmitTipsterDetails"
+                                    @update-social-name="updateSocialName"
+                                    @go-back="() => (second_form = false)"
+                                />
                             </Transition>
                         </div>
                     </div>

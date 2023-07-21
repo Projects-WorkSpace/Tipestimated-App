@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { IListProps } from '~/types/types';
-
-const socials = [
-    { icon: 'mdi:twitter', name: 'Twitter' },
-    { icon: 'mdi:instagram', name: 'Instagram' },
-    { icon: 'mdi:facebook-box', name: 'Facebook' },
-];
-const social = ref<IListProps>({ icon: 'mdi:facebook-box', name: 'Facebook' });
+defineProps<{
+    social_name: IListProps;
+    socials: IListProps[];
+}>();
+defineEmits<{
+    (e: 'updateSocialName', payload: IListProps): void;
+}>();
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const social = ref<IListProps>({ icon: 'mdi:facebook-box', name: 'Facebook' });
                 <MenuButton
                     class="inline-flex w-full justify-center items-center rounded-l-lg bg-c-light px-3 h-10 text-sm font-medium hover:bg-c-light/90 focus:outline-none ring-1 ring-c-seperator/60 focus-visible:ring-neutral-400/60"
                 >
-                    <Icon :name="social.icon" class="text-xl text-t-gray" />
+                    <Icon :name="social_name.icon" class="text-xl text-t-gray" />
                     <Icon
                         name="mdi:chevron-down"
                         class="ml-2 -mr-1 text-base text-t-gray/80 hover:text-base-green"
@@ -40,6 +40,7 @@ const social = ref<IListProps>({ icon: 'mdi:facebook-box', name: 'Facebook' });
                     <div class="px-1 py-1">
                         <MenuItem v-slot="{ active }" v-for="social in socials">
                             <button
+                                @click="$emit('updateSocialName', social)"
                                 :class="[
                                     active
                                         ? 'bg-amber-100 text-amber-900'
