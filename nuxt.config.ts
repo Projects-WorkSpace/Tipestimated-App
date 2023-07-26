@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-    modules: ['@pinia/nuxt', '@nuxt/image', 'nuxt-icon', '@nuxtjs/google-fonts', '@nuxthq/ui'],
+    modules: ['@pinia/nuxt', '@nuxt/image', 'nuxt-icon', '@nuxtjs/google-fonts', '@nuxthq/ui', '@nuxtjs/apollo'],
     devtools: { enabled: true },
     googleFonts: {
         families: {
@@ -12,5 +12,17 @@ export default defineNuxtConfig({
     css: ['~/assets/css/tailwind.css', '~/assets/css/global.css'],
     colorMode: {
         preference: 'light',
+    },
+    apollo: {
+        autoImports: true,
+        authType: "Bearer",
+        authHeader: "Authorization",
+        tokenStorage: "cookie",
+        proxyCookies: true,
+        clients: {
+            default: {
+                httpEndpoint: process.env.GRAPHQL_ENDPOINT || "http://127.0.0.1:8000/graphql"
+            }
+        },
     },
 })
