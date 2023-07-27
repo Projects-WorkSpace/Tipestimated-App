@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { useUserDetailsStore } from '~/store/userDetails'
 
-const isOpen = ref(false)
-const userDetails = useUserDetailsStore()
-const { user } = storeToRefs(userDetails)
+const isOpen = ref(true)
 
 const closeFollowerModal = (): void => {
     isOpen.value = false
@@ -14,12 +10,6 @@ const openFollowerModal = (): void => {
     isOpen.value = true
     console.log('Clicked Open')
 }
-
-onMounted(() => {
-    if (user.value === null) {
-        isOpen.value = true
-    }
-})
 </script>
 <template>
     <main class="w-full flex flex-row h-screen justify-center">

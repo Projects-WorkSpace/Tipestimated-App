@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const loading = ref(false);
+import { RegisterAppUser } from '~/graphql/schema';
+import { useAuthStore } from '~/store/authStore';
 
 const selectedDay = ref('');
 const selectedMonth = ref('');
@@ -10,30 +11,135 @@ const email = ref('');
 const password = ref('');
 
 const router = useRouter();
-const toast = useToast();
+const authStore = useAuthStore();
+const { onLogin } = useApollo();
 
+const today = new Date();
+const user_payload = useCookie("user_payload", {
+    expires: new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000 - 2 * 60 * 1000),
+    sameSite: true,
+});
+
+const toast = useToast();
+const { mutate: postUserDetails, loading, error: error, onDone, onError } = useMutation(RegisterAppUser);
 const onSubmitUser = (): void => {
-    loading.value = true;
     if (!checkIsFormValid()) {
-        loading.value = false;
         return;
     }
-    setTimeout(() => {
-        loading.value = false;
-        router.push({ name: 'home' });
-    }, 500);
+    const date = selectedYear.value + "-" + selectedMonth.value + "-" + selectedDay.value
+    const formattedDate = formatDateToYYYYMMDD(date);
+    postUserDetails({ email: email.value, userName: userName.value, dob: formattedDate, password1: password.value, password2: password.value });
+
+    onDone((data) => {
+        if (data.data.registerAppUser.errors.length > 0) {
+            console.log("Errors:", data.data.registerAppUser.errors);
+            data.data.registerAppUser.errors.forEach((error: { field: string; messages: string[]; }) => {
+                toast.add({
+                    title: error.field,
+                    description: error.messages[0], // Show the error message as the title
+                    ui: {
+                        title: 'text-t-gray font-medium capitalize',
+                        description: "text-t-gray text-sm",
+                        progress: {
+                            "base": "absolute bottom-0 end-0 start-0 h-0",
+                        },
+                        icon: {
+                            "color": "text-[tomato]"
+                        },
+                        transition: transition,
+                    },
+                    icon: 'i-heroicons-information-circle',
+                    timeout: 2000
+                });
+            });
+            return;
+        } else {
+            authStore.updateUserPayload(JSON.parse(data.data.registerAppUser.payload));
+            user_payload.value = JSON.parse(data.data.registerAppUser.payload);
+            onLogin(data.data.registerAppUser.token);
+            authStore.updateIsLoggedIn()
+            router.push("/")
+        }
+    })
+
+    onError((error) => {
+        toast.add({
+            title: error.message,
+            ui: {
+                title: "text-t-gray text-base",
+                progress: {
+                    "base": "absolute bottom-0 end-0 start-0 h-0",
+                },
+                icon: {
+                    "color": "text-[tomato]"
+                },
+                transition: transition,
+            },
+            icon: 'i-heroicons-information-circle',
+            timeout: 3000
+        });
+        return;
+    })
 };
-const loadingTipster = ref(false);
+const { mutate: postUserTipsterDetails, loading: loadingTipster, error: errorTipster, onDone: onDoneTipster, onError: onErrorTipster } = useMutation(RegisterAppUser);
 const onSubmitAsTipster = (): void => {
-    loadingTipster.value = true;
     if (!checkIsFormValid()) {
-        loadingTipster.value = false;
         return;
     }
-    setTimeout(() => {
-        loadingTipster.value = false;
-        router.push({ name: 'signupTipster' });
-    }, 500);
+    const date = selectedYear.value + "-" + selectedMonth.value + "-" + selectedDay.value
+    const formattedDate = formatDateToYYYYMMDD(date);
+    postUserTipsterDetails({ email: email.value, userName: userName.value, dob: formattedDate, password1: password.value, password2: password.value });
+
+    onDoneTipster((data) => {
+        if (data.data.registerAppUser.errors.length > 0) {
+            console.log("Errors:", data.data.registerAppUser.errors);
+            data.data.registerAppUser.errors.forEach((error: { field: string; messages: string[]; }) => {
+                toast.add({
+                    title: error.field,
+                    description: error.messages[0], // Show the error message as the title
+                    ui: {
+                        title: 'text-t-gray font-medium capitalize',
+                        description: "text-t-gray text-sm",
+                        progress: {
+                            "base": "absolute bottom-0 end-0 start-0 h-0",
+                        },
+                        icon: {
+                            "color": "text-[tomato]"
+                        },
+                        transition: transition,
+                    },
+                    icon: 'i-heroicons-information-circle',
+                    timeout: 2000
+                });
+            });
+            return;
+        } else {
+            authStore.updateUserPayload(JSON.parse(data.data.registerAppUser.payload));
+            user_payload.value = JSON.parse(data.data.registerAppUser.payload);
+            onLogin(data.data.registerAppUser.token);
+            authStore.updateIsLoggedIn()
+            router.push("/accounts/signup-tipster")
+        }
+    })
+
+    onErrorTipster((error) => {
+        toast.add({
+            title: error.message,
+            ui: {
+                title: "text-t-gray text-base",
+                progress: {
+                    "base": "absolute bottom-0 end-0 start-0 h-0",
+                },
+                icon: {
+                    "color": "text-[tomato]"
+                },
+                transition: transition,
+            },
+            icon: 'i-heroicons-information-circle',
+            timeout: 3000
+        });
+        return;
+    })
 };
 
 const checkForAboveAge = () => {
@@ -48,6 +154,15 @@ const checkForAboveAge = () => {
     return selectedDate <= ageThreshold;
 };
 
+const transition = {
+    "enterActiveClass": "transform ease-out duration-300 transition",
+    "enterFromClass": "-translate-y-2 opacity-0",
+    "enterToClass": "translate-y-0 opacity-100",
+    "leaveActiveClass": "transition ease-in duration-100",
+    "leaveFromClass": "opacity-100",
+    "leaveToClass": "opacity-0"
+}
+
 const checkIsFormValid = (): boolean => {
     let isValid = true;
     if (selectedDay.value && selectedMonth.value && selectedYear.value) {
@@ -59,6 +174,7 @@ const checkIsFormValid = (): boolean => {
                     progress: {
                         background: 'bg-[tomato]',
                     },
+                    transition: transition,
                 },
             });
             isValid = false;
@@ -71,15 +187,25 @@ const checkIsFormValid = (): boolean => {
                 progress: {
                     background: 'bg-[tomato]',
                 },
+                transition: transition,
             },
         });
         isValid = false;
     }
     return isValid;
 };
+
 const isFormValid = computed(() => {
     return !userName.value || !email.value || !password.value;
 });
+const formatDateToYYYYMMDD = (dateString: string | number | Date) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 </script>
 <template>
     <section class="w-full flex flex-col items-center pb-8">
@@ -129,10 +255,12 @@ const isFormValid = computed(() => {
                                 : 'hover:bg-base-green focus:base-green'
                                 "
                                 class="w-full py-2 text-base font-semibold bg-base-green/90 text-neutral-700 tracking-wide rounded transition flex items-center justify-center">
-                                <div v-if="!loading" class="">
-                                    <span class="leading-none">Sign up</span>
-                                </div>
-                                <UtilsSmallStarLoading v-else class="my-[3px]" />
+                                <Transition mode="out-in">
+                                    <div v-if="!loading" class="">
+                                        <span class="leading-none">Sign up</span>
+                                    </div>
+                                    <UtilsSmallStarLoading v-else class="my-[3px]" />
+                                </Transition>
                             </button>
                         </div>
                         <div class="w-full flex gap-x-4 mt-0.5">
@@ -169,3 +297,4 @@ const isFormValid = computed(() => {
         </div>
     </section>
 </template>
+    

@@ -9,26 +9,22 @@ export const ObtainToken = gql`
 	}
 `;
 export const RegisterAppUser = gql`
-  mutation RegisterAppUser($email: String!, $userName: String!, $dob: Date!, $password1: String!, $password2: String!) {
-    registerAppUser(input: { email: $email, userName: $userName, dob: $dob, password1: $password1, password2: $password2 }) {
-      token
-      refreshToken
-      refreshExpiresIn
-      clientMutationId
-      errors {
-        field
-        messages
-      }
-      user {
-        id
-        password
-        lastLogin
-        userName
-        email
-        dob
-        isActive
-        isAdmin
-      }
-    }
-  }
+	mutation RegisterAppUser($email: String!, $userName: String!, $dob: Date!, $password1: String!, $password2: String!) {
+		registerAppUser(input: { email: $email, userName: $userName, dob: $dob, password1: $password1, password2: $password2 }) {
+			token
+			payload
+			clientMutationId
+			errors {
+				field
+				messages
+			}
+			user {
+				id
+				userName
+				email
+				dob
+				dateJoined
+			}
+		}
+	}
 `;

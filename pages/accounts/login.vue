@@ -23,6 +23,14 @@ const user_payload = useCookie("user_payload", {
 });
 const { mutate: postAuthDetails, loading, error: submitError, onDone, onError } = useMutation(ObtainToken);
 
+const transition = {
+    "enterActiveClass": "transform ease-out duration-300 transition",
+    "enterFromClass": "-translate-y-2 opacity-0",
+    "enterToClass": "translate-y-0 opacity-100",
+    "leaveActiveClass": "transition ease-in duration-100",
+    "leaveFromClass": "opacity-100",
+    "leaveToClass": "opacity-0"
+}
 const submitDetails = (): void => {
     if (!form_details.value || !form_details.value.email || !form_details.value.password) {
         toast.add({
@@ -32,14 +40,7 @@ const submitDetails = (): void => {
                 progress: {
                     background: 'bg-[tomato]',
                 },
-                transition: {
-                    "enterActiveClass": "transform ease-out duration-300 transition",
-                    "enterFromClass": "-translate-y-2 opacity-0",
-                    "enterToClass": "translate-y-0 opacity-100",
-                    "leaveActiveClass": "transition ease-in duration-100",
-                    "leaveFromClass": "opacity-100",
-                    "leaveToClass": "opacity-0"
-                },
+                transition: transition,
             },
             timeout: 6000
         });
@@ -71,14 +72,7 @@ const submitDetails = (): void => {
                     // Show toasts at the top right of the screen
                     position: 'top-0 left-50 translate-1/2',
                 },
-                transition: {
-                    "enterActiveClass": "transform ease-out duration-300 transition",
-                    "enterFromClass": "-translate-y-2 opacity-0",
-                    "enterToClass": "translate-y-0 opacity-100",
-                    "leaveActiveClass": "transition ease-in duration-100",
-                    "leaveFromClass": "opacity-100",
-                    "leaveToClass": "opacity-0"
-                },
+                transition: transition,
             },
             timeout: 6000
         });
@@ -142,7 +136,6 @@ const submitDetails = (): void => {
                     </div>
                 </div>
             </ContainersDialog>
-            <NuxtLink to="/">home</NuxtLink>
         </div>
     </section>
 </template>
