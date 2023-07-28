@@ -3,6 +3,7 @@ import { IPayload } from "~/types/types";
 
 export default defineNuxtRouteMiddleware((to, from) => {
     const user_payload = useCookie("user_payload");
+    const is_tipster_approved = useCookie('is_tipster_approved')
     const authStore = useAuthStore()
     const { onLogout } = useApollo();
     const today = new Date();
@@ -23,5 +24,12 @@ export default defineNuxtRouteMiddleware((to, from) => {
         authStore.updateIsLoggedIn();
     } else {
         return navigateTo("/accounts/login");
+    }
+    console.log(typeof is_tipster_approved.value)
+    if (typeof is_tipster_approved.value === 'boolean') {
+        console.log("is not undefined")
+        if (!is_tipster_approved.value) {
+            return navigateTo("/accounts/waiting-verification")
+        }
     }
 })

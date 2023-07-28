@@ -196,6 +196,7 @@ onError((error) => {
     }
 })
 
+const is_tipster_approved = useCookie('is_tipster_approved')
 // Post also the Image
 
 const postProfileImage = async (id: string) => {
@@ -210,6 +211,7 @@ const postProfileImage = async (id: string) => {
     });
 
     if (data) {
+        is_tipster_approved.value = 'false';
         router.push("/accounts/waiting-verification")
     } else if (error) {
         console.error('Error fetching data:', error);
