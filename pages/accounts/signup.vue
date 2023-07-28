@@ -30,57 +30,56 @@ const onSubmitUser = (): void => {
     const formattedDate = formatDateToYYYYMMDD(date);
     postUserDetails({ email: email.value, userName: userName.value, dob: formattedDate, password1: password.value, password2: password.value });
 
-    onDone((data) => {
-        if (data.data.registerAppUser.errors.length > 0) {
-            console.log("Errors:", data.data.registerAppUser.errors);
-            data.data.registerAppUser.errors.forEach((error: { field: string; messages: string[]; }) => {
-                toast.add({
-                    title: error.field,
-                    description: error.messages[0], // Show the error message as the title
-                    ui: {
-                        title: 'text-t-gray font-medium capitalize',
-                        description: "text-t-gray text-sm",
-                        progress: {
-                            "base": "absolute bottom-0 end-0 start-0 h-0",
-                        },
-                        icon: {
-                            "color": "text-[tomato]"
-                        },
-                        transition: transition,
+};
+onDone((data) => {
+    if (data.data.registerAppUser.errors.length > 0) {
+        data.data.registerAppUser.errors.forEach((error: { field: string; messages: string[]; }) => {
+            toast.add({
+                title: error.field,
+                description: error.messages[0], // Show the error message as the title
+                ui: {
+                    title: 'text-t-gray font-medium capitalize',
+                    description: "text-t-gray text-sm",
+                    progress: {
+                        "base": "absolute bottom-0 end-0 start-0 h-0",
                     },
-                    icon: 'i-heroicons-information-circle',
-                    timeout: 2000
-                });
+                    icon: {
+                        "color": "text-[tomato]"
+                    },
+                    transition: transition,
+                },
+                icon: 'i-heroicons-information-circle',
+                timeout: 2000
             });
-            return;
-        } else {
-            authStore.updateUserPayload(JSON.parse(data.data.registerAppUser.payload));
-            user_payload.value = JSON.parse(data.data.registerAppUser.payload);
-            onLogin(data.data.registerAppUser.token);
-            authStore.updateIsLoggedIn()
-            router.push("/")
-        }
-    })
-
-    onError((error) => {
-        toast.add({
-            title: error.message,
-            ui: {
-                title: "text-t-gray text-base",
-                progress: {
-                    "base": "absolute bottom-0 end-0 start-0 h-0",
-                },
-                icon: {
-                    "color": "text-[tomato]"
-                },
-                transition: transition,
-            },
-            icon: 'i-heroicons-information-circle',
-            timeout: 3000
         });
         return;
-    })
-};
+    } else {
+        authStore.updateUserPayload(JSON.parse(data.data.registerAppUser.payload));
+        user_payload.value = JSON.parse(data.data.registerAppUser.payload);
+        onLogin(data.data.registerAppUser.token);
+        authStore.updateIsLoggedIn()
+        router.push("/")
+    }
+})
+
+onError((error) => {
+    toast.add({
+        title: error.message,
+        ui: {
+            title: "text-t-gray text-base",
+            progress: {
+                "base": "absolute bottom-0 end-0 start-0 h-0",
+            },
+            icon: {
+                "color": "text-[tomato]"
+            },
+            transition: transition,
+        },
+        icon: 'i-heroicons-information-circle',
+        timeout: 3000
+    });
+    return;
+})
 const { mutate: postUserTipsterDetails, loading: loadingTipster, error: errorTipster, onDone: onDoneTipster, onError: onErrorTipster } = useMutation(RegisterAppUser);
 const onSubmitAsTipster = (): void => {
     if (!checkIsFormValid()) {
@@ -90,57 +89,55 @@ const onSubmitAsTipster = (): void => {
     const formattedDate = formatDateToYYYYMMDD(date);
     postUserTipsterDetails({ email: email.value, userName: userName.value, dob: formattedDate, password1: password.value, password2: password.value });
 
-    onDoneTipster((data) => {
-        if (data.data.registerAppUser.errors.length > 0) {
-            console.log("Errors:", data.data.registerAppUser.errors);
-            data.data.registerAppUser.errors.forEach((error: { field: string; messages: string[]; }) => {
-                toast.add({
-                    title: error.field,
-                    description: error.messages[0], // Show the error message as the title
-                    ui: {
-                        title: 'text-t-gray font-medium capitalize',
-                        description: "text-t-gray text-sm",
-                        progress: {
-                            "base": "absolute bottom-0 end-0 start-0 h-0",
-                        },
-                        icon: {
-                            "color": "text-[tomato]"
-                        },
-                        transition: transition,
+};
+onDoneTipster((data) => {
+    if (data.data.registerAppUser.errors.length > 0) {
+        console.log("Errors:", data.data.registerAppUser.errors);
+        data.data.registerAppUser.errors.forEach((error: { field: string; messages: string[]; }) => {
+            toast.add({
+                title: error.field,
+                description: error.messages[0], // Show the error message as the title
+                ui: {
+                    title: 'text-t-gray font-medium capitalize',
+                    description: "text-t-gray text-sm",
+                    progress: {
+                        "base": "absolute bottom-0 end-0 start-0 h-0",
                     },
-                    icon: 'i-heroicons-information-circle',
-                    timeout: 2000
-                });
+                    icon: {
+                        "color": "text-[tomato]"
+                    },
+                    transition: transition,
+                },
+                icon: 'i-heroicons-information-circle',
             });
-            return;
-        } else {
-            authStore.updateUserPayload(JSON.parse(data.data.registerAppUser.payload));
-            user_payload.value = JSON.parse(data.data.registerAppUser.payload);
-            onLogin(data.data.registerAppUser.token);
-            authStore.updateIsLoggedIn()
-            router.push("/accounts/signup-tipster")
-        }
-    })
-
-    onErrorTipster((error) => {
-        toast.add({
-            title: error.message,
-            ui: {
-                title: "text-t-gray text-base",
-                progress: {
-                    "base": "absolute bottom-0 end-0 start-0 h-0",
-                },
-                icon: {
-                    "color": "text-[tomato]"
-                },
-                transition: transition,
-            },
-            icon: 'i-heroicons-information-circle',
-            timeout: 3000
         });
         return;
-    })
-};
+    } else {
+        authStore.updateUserPayload(JSON.parse(data.data.registerAppUser.payload));
+        user_payload.value = JSON.parse(data.data.registerAppUser.payload);
+        onLogin(data.data.registerAppUser.token);
+        authStore.updateIsLoggedIn()
+        router.push("/accounts/signup-tipster")
+    }
+})
+
+onErrorTipster((error) => {
+    toast.add({
+        title: error.message,
+        ui: {
+            title: "text-t-gray text-base",
+            progress: {
+                "base": "absolute bottom-0 end-0 start-0 h-0",
+            },
+            icon: {
+                "color": "text-[tomato]"
+            },
+            transition: transition,
+        },
+        icon: 'i-heroicons-information-circle',
+    });
+    return;
+})
 
 const checkForAboveAge = () => {
     const selectedDate = new Date(

@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { IListProps } from '~/types/types';
-const loading = ref(false);
+import { IListProps, IErrorTipsterStatus, IProfileImage } from '~/types/types';
+import { SignupTipster } from "~/graphql/schema";
+
+// Protected page
+definePageMeta({
+    middleware: "auth",
+});
+
 const second_form = ref(false);
 const router = useRouter();
 
@@ -28,29 +34,201 @@ const experience = ref<IListProps>({
 });
 
 const updateSelectedSport = (payload: IListProps): void => {
+    error_status.value.favorite_sport = false;
     favorite_sport.value = payload;
 };
 const updateSelectedOtherSport = (payload: IListProps): void => {
     other_sport.value = payload;
 };
 const updateExperience = (payload: IListProps): void => {
+    error_status.value.experience = false;
     experience.value = payload;
 };
 const updateSocialName = (payload: IListProps) => {
+    error_status.value.social_link = false;
     social_name.value = payload;
 };
 
+
+const image_file = ref<IProfileImage>({
+    imageFile: null,
+    imageURL: null,
+    imageName: null,
+})
+
+const hasImage = ref(false);
+const handleFileChange = (event: Event) => {
+    const file = (event.target as HTMLInputElement)?.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+        image_file.value.imageFile = file;
+        image_file.value.imageURL = URL.createObjectURL(file);
+        image_file.value.imageName = file.name;
+        hasImage.value = true
+    } else {
+        image_file.value.imageFile = null;
+        image_file.value.imageURL = null;
+        image_file.value.imageName = null;
+        hasImage.value = false
+    }
+};
+
+const error_status = ref<IErrorTipsterStatus>({
+    pen_name: false,
+    nationality: false,
+    favorite_sport: false,
+    telegram: false,
+    experience: false,
+    profile: false,
+    social_link: false
+})
+
+const resetErrorStatus = (): void => {
+    for (const key in error_status.value) {
+        error_status.value[key as keyof IErrorTipsterStatus] = false;
+    }
+}
+
 const onClickContinue = (): void => {
+    resetErrorStatus()
+    if (pen_name.value.trim().length === 0) {
+        error_status.value.pen_name = true;
+        return
+    }
+    if (nationality.value.length === 0) {
+        error_status.value.nationality = true;
+        return
+    }
+
+    if (favorite_sport.value.name === 'Favorite sport') {
+        error_status.value.favorite_sport = true;
+        return
+    }
     second_form.value = true;
 };
 
+function isValidTelegramLink(link: string) {
+    const telegramLinkRegex = /^https?:\/\/t\.me\/\+\w+$/;
+    return telegramLinkRegex.test(link);
+}
+
+const { mutate: submitTipsterDetails, loading: loadingFetch, error, onDone, onError } = useMutation(SignupTipster)
+
 const onSubmitTipsterDetails = (): void => {
-    loading.value = true;
-    setTimeout(() => {
-        loading.value = false;
-        // router.push({ name: 'waiting-verification' });
-    }, 500);
+    resetErrorStatus()
+    if (telegram.value.trim().length > 0 && isValidTelegramLink(telegram.value)) {
+        error_status.value.telegram = false;
+    } else {
+        error_status.value.telegram = true;
+        return
+    }
+    if (social_link.value.trim().length < 3) {
+        error_status.value.social_link = true;
+        return
+    }
+
+    if (experience.value.name === 'Years of experience') {
+        error_status.value.experience = true;
+        return
+    }
+    if (!image_file.value.imageFile) {
+        error_status.value.profile = true;
+        return
+    }
+
+    submitTipsterDetails({ penName: pen_name.value, country: nationality.value, favoriteSport: favorite_sport.value.name, otherSport: other_sport.value.name, telegramLink: telegram.value, socialLink: social_link.value })
 };
+const toast = useToast();
+const transition = {
+    "enterActiveClass": "transform ease-out duration-300 transition",
+    "enterFromClass": "-translate-y-2 opacity-0",
+    "enterToClass": "translate-y-0 opacity-100",
+    "leaveActiveClass": "transition ease-in duration-100",
+    "leaveFromClass": "opacity-100",
+    "leaveToClass": "opacity-0"
+}
+
+onDone((data) => {
+    console.log("Data: ", data)
+    if (data.data.signupTipster.errors === null) {
+        postProfileImage(data.data.signupTipster.encodedId)
+    } else {
+        data.data.signupTipster.errors.forEach((error: { field: string; messages: string[]; }) => {
+            toast.add({
+                title: error.field,
+                description: error.messages[0],
+                ui: {
+                    title: 'text-t-gray font-medium capitalize',
+                    description: "text-t-gray text-sm",
+                    progress: {
+                        "base": "absolute bottom-0 end-0 start-0 h-0",
+                    },
+                    icon: {
+                        "color": "text-[tomato]"
+                    },
+                    transition: transition,
+                },
+                icon: 'i-heroicons-information-circle',
+            });
+        });
+    }
+})
+onError((error) => {
+    console.log("Error:")
+    if (error.message === "Failed to fetch") {
+        toast.add({
+            title: error.message,
+            ui: {
+                title: "text-t-gray text-base",
+                progress: {
+                    "base": "absolute bottom-0 end-0 start-0 h-0",
+                },
+                icon: {
+                    "color": "text-[tomato]"
+                },
+                transition: transition,
+            },
+            icon: 'i-heroicons-information-circle',
+            timeout: 3000
+        });
+    }
+    if (error.message === "Error decoding signature") {
+        router.push('/accounts/login')
+    }
+})
+
+// Post also the Image
+
+const postProfileImage = async (id: string) => {
+    const formData = new FormData();
+    formData.append('image', image_file.value.imageFile as any);
+    formData.append('tipster_id', id)
+
+    const apiUrl = 'http://127.0.0.1:8000/tipster/upload-tipster-image/';
+    const { data, pending, error, refresh } = await useFetch(apiUrl, {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (data) {
+        router.push("/accounts/waiting-verification")
+    } else if (error) {
+        console.error('Error fetching data:', error);
+        toast.add({
+            title: "Error trying uploading image retry submitting",
+            ui: {
+                title: "text-t-gray text-base",
+                progress: {
+                    "base": "absolute bottom-0 end-0 start-0 h-0",
+                },
+                icon: {
+                    "color": "text-[tomato]"
+                },
+                transition: transition,
+            },
+            icon: 'i-heroicons-information-circle',
+        });
+    }
+}
 </script>
 <template>
     <section class="w-full flex flex-col items-center pb-6">
@@ -70,11 +248,13 @@ const onSubmitTipsterDetails = (): void => {
                                     v-model:pen_name="pen_name" v-model:nationality="nationality"
                                     :favorite_sport="favorite_sport" :other_sport="other_sport"
                                     @update-selected-other-sport="updateSelectedOtherSport
-                                        " @update-selected-sport="updateSelectedSport" />
-                                <AccountsTipsterSocialForm v-else :loading="loading" v-model:telegram="telegram"
+                                        " @update-selected-sport="updateSelectedSport" :error_status="error_status" />
+                                <AccountsTipsterSocialForm v-else :loading="loadingFetch" v-model:telegram="telegram"
                                     :experience="experience" :social_name="social_name" v-model:social_link="social_link"
                                     @update-experience="updateExperience" @submit-data="onSubmitTipsterDetails"
-                                    @update-social-name="updateSocialName" @go-back="() => (second_form = false)" />
+                                    @update-social-name="updateSocialName" @go-back="() => (second_form = false)"
+                                    :error_status="error_status" :image_file="image_file" :has-image="hasImage"
+                                    @handle-file-change="handleFileChange" />
                             </Transition>
                         </div>
                     </div>

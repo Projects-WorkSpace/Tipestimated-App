@@ -20,3 +20,23 @@ export interface IRefreshToken {
     refreshExpiresIn: number;
     refreshToken: string;
 }
+
+export interface IErrorTipsterStatus {
+    pen_name: boolean;
+    nationality: boolean;
+    favorite_sport: boolean;
+    telegram: boolean;
+    experience: boolean;
+    profile: boolean;
+    social_link: boolean
+}
+
+export interface IFileWithPreview extends File {
+    preview?: string;
+}
+
+export interface IProfileImage {
+    imageFile: IFileWithPreview | null
+    imageURL: string | null
+    imageName: string | null
+}

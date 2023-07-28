@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IListProps } from '~/types/types';
+import { IErrorTipsterStatus, IListProps } from '~/types/types';
 const emits = defineEmits<{
     (e: 'submitSportData'): void;
     (e: 'update:pen_name', payload: string): void;
@@ -12,16 +12,8 @@ const props = defineProps<{
     nationality: string;
     favorite_sport: IListProps;
     other_sport: IListProps;
+    error_status: IErrorTipsterStatus
 }>();
-
-const countries = [
-    'Italy',
-    'England',
-    'Spain',
-    'United States',
-    'France',
-    'Germany',
-];
 
 const sports: IListProps[] = [
     { name: 'Football', icon: '⚽' },
@@ -30,52 +22,50 @@ const sports: IListProps[] = [
     { name: 'Hockey', icon: '🏑' },
     { name: 'Cricket', icon: '🏏' },
 ];
-const updatedSelected = (payload: IListProps) => {
+const updatedSelectedSport = (payload: IListProps) => {
     emits('updateSelectedSport', payload);
 };
-const updatedOtherSelected = (payload: IListProps) => {
+const updatedOtherSportSelected = (payload: IListProps) => {
     emits('updateSelectedOtherSport', payload);
 };
 const onClickSubmit = (): void => {
     emits('submitSportData');
 };
+const updateNationality = (payload: string) => {
+    emits('update:nationality', payload)
+}
 </script>
 <template>
     <div class="w-full flex flex-col">
         <div class="w-full flex flex-col pb-6 gap-y-5">
-            <div class="relative bg-inherit w-full flex items-center">
-                <input type="text" id="penname" name="penname"
-                    class="peer text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 placeholder-transparent ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none"
-                    placeholder="Pen name" :value="pen_name" @input="
-                        emits(
-                            'update:pen_name',
-                            ($event.target as HTMLInputElement).value
-                        )
-                        " /><label for="penname"
-                    class="absolute cursor-text left-1.5 -top-2 text-xs text-gray-500 bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-t-gray peer-focus:text-xs transition-all">Pen
-                    name</label>
+            <div class="w-full flex flex-col">
+                <div class="relative bg-inherit w-full flex items-center">
+
+                    <input type="text" id="penname" name="penname"
+                        class="peer text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 placeholder-transparent ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none"
+                        placeholder="Pen name" :value="pen_name" @input="
+                            emits(
+                                'update:pen_name',
+                                ($event.target as HTMLInputElement).value
+                            )
+                            " /><label for="penname"
+                        class="absolute cursor-text left-1.5 -top-2 text-xs text-gray-500 bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-t-gray peer-focus:text-xs transition-all">Pen
+                        name</label>
+                </div>
+                <p v-if="error_status.pen_name" class="w-full text-xs text-red-500 mt-1.5 ml-0.5">Enter valid Pen Name</p>
             </div>
-            <div class="w-full relative flex items-center">
-                <select :value="nationality" @input="
-                    emits(
-                        'update:nationality',
-                        ($event.target as HTMLSelectElement).value
-                    )
-                    "
-                    class="custom-select text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none">
-                    <option value="" disabled selected>Nationality</option>
-                    <option v-for="country in countries" :value="country">
-                        {{ country }}
-                    </option>
-                </select>
-                <Icon name="mdi:chevron-down" class="h-4 w-4 text-gray-400 absolute right-2" />
+            <div class="w-full flex flex-col">
+                <UiSelectCountries :nationality="nationality" @update:nationality="updateNationality"
+                    :error_status="error_status.nationality" />
             </div>
             <div class="w-full">
-                <ContainersListboxComponent :selected="favorite_sport" :list="sports" @updated-selected="updatedSelected" />
+                <ContainersListboxComponent :selected="favorite_sport" :list="sports"
+                    @updated-selected="updatedSelectedSport" :error_status="error_status.favorite_sport"
+                    error_text="Select your favorite sport" />
             </div>
             <div class="w-full">
                 <ContainersListboxComponent :selected="other_sport" :list="sports"
-                    @updated-selected="updatedOtherSelected" />
+                    @updated-selected="updatedOtherSportSelected" />
             </div>
             <div class="w-full flex flex-col mt-4 gap-y-5 pb-6">
                 <button @click="() => onClickSubmit()"

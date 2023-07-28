@@ -28,3 +28,29 @@ export const RegisterAppUser = gql`
 		}
 	}
 `;
+
+export const SignupTipster = gql`
+mutation SignupTipster($penName: String!, $country: String, $favoriteSport: String!, $otherSport: String!, $telegramLink: String!, $socialLink: String!) {
+  signupTipster(
+    inputData: {
+      penName: $penName, country: $country, favoriteSport: $favoriteSport, otherSport: $otherSport, telegramLink: $telegramLink, socialLink: $socialLink
+    }
+  ) {
+    errors
+    success
+    tipster {
+      id
+      penName
+      country
+      favoriteSport
+      otherSport
+      telegramLink
+      socialLink
+      image
+      isApproved
+      createdAt
+    }
+	encodedId
+  }
+}
+`

@@ -47,37 +47,38 @@ const submitDetails = (): void => {
         return;
     }
     postAuthDetails(form_details.value);
-    onDone((data) => {
-        if (!submitError.value) {
-            authStore.updateUserPayload(data.data.tokenAuth.payload);
-            user_payload.value = data.data.tokenAuth.payload;
-            onLogin(data.data.tokenAuth.token);
-            authStore.updateIsLoggedIn()
-            if (window.history.state.back === null) {
-                router.push("/");
-            } else {
-                router.back();
-            }
-        }
-    });
-    onError((error) => {
-        toast.add({
-            title: error.message,
-            ui: {
-                title: 'text-t-gray font-regular',
-                progress: {
-                    background: 'bg-[tomato]',
-                },
-                notifications: {
-                    // Show toasts at the top right of the screen
-                    position: 'top-0 left-50 translate-1/2',
-                },
-                transition: transition,
-            },
-            timeout: 6000
-        });
-    })
 };
+onDone((data) => {
+    if (!submitError.value) {
+        authStore.updateUserPayload(data.data.tokenAuth.payload);
+        user_payload.value = data.data.tokenAuth.payload;
+        onLogin(data.data.tokenAuth.token);
+        authStore.updateIsLoggedIn()
+        if (window.history.state.back === null) {
+            router.push("/");
+        } else {
+            router.back();
+        }
+    }
+});
+
+onError((error) => {
+    toast.add({
+        title: error.message,
+        ui: {
+            title: 'text-t-gray font-regular',
+            progress: {
+                background: 'bg-[tomato]',
+            },
+            notifications: {
+                // Show toasts at the top right of the screen
+                position: 'top-0 left-50 translate-1/2',
+            },
+            transition: transition,
+        },
+        timeout: 6000
+    });
+})
 </script>
 <template>
     <section class="w-full flex flex-col items-center mb-8">
