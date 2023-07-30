@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const isOpen = ref(true)
+const isOpen = ref(false)
 
 const closeFollowerModal = (): void => {
     isOpen.value = false
@@ -25,7 +25,7 @@ const openFollowerModal = (): void => {
         <!-- <UModal v-model="isOpen"> -->
         <ClientOnly>
             <ModalsModalContainer :is-open="isOpen" @open-modal="openFollowerModal" @close-modal="closeFollowerModal">
-                <UiFollowers @close-modal="closeFollowerModal" />
+                <!-- <UiFollowers @close-modal="closeFollowerModal" /> -->
             </ModalsModalContainer>
         </ClientOnly>
         <!-- </UModal> -->

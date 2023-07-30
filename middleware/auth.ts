@@ -25,9 +25,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     } else {
         return navigateTo("/accounts/login");
     }
-    console.log(typeof is_tipster_approved.value)
     if (typeof is_tipster_approved.value === 'boolean') {
-        console.log("is not undefined")
         if (!is_tipster_approved.value) {
             return navigateTo("/accounts/waiting-verification")
         }
