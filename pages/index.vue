@@ -6,7 +6,9 @@ definePageMeta({
 <template>
 	<div class="w-full">
 		<NuxtLayout name="users">
-			<NuxtPage />
+			<div class="w-full flex flex-col gap-y-2 py-4">
+				<SectionsPostCard />
+			</div>
 		</NuxtLayout>
 	</div>
 </template>
