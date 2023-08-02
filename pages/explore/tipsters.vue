@@ -22,24 +22,25 @@ const redirectBtn = (): void => {
                     <Icon name="mdi:chevron-left" class="text-3xl" />
                 </button>
             </div>
-            <div class="grow flex items-center">
-                <input type="text"
-                    class="w-full py-3 px-4 rounded-xl text-base tracking-wide placeholder:text-neutral-500/60 bg-gray-200/70 focus:outline-none ring-1 ring-transparent focus:ring-c-seperator hover:ring-c-seperator/80"
+            <div class="grow flex items-center relative">
+                <input type="search"
+                    class="w-full py-2.5 pr-4 pl-8 rounded-xl text-base tracking-wide placeholder:text-neutral-500/60 bg-gray-200/70 focus:outline-none ring-1 ring-transparent focus:ring-c-seperator hover:ring-c-seperator/80"
                     placeholder="Type to search">
+                <Icon name="ph:magnifying-glass" class="text-lg absolute left-2 text-neutral-500" />
             </div>
         </header>
         <div class="w-full flex flex-col gap-y-6 mt-4">
             <h4 class="font-medium text-xl text-neutral-600">Suggested</h4>
             <ul class="w-full flex flex-col gap-y-4">
-                <li class="w-full flex items-center justify-between px-3.5 py-4 rounded-xl bg-gray-200/70">
+                <li class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-c-seperator/40">
                     <div class="flex items-center gap-x-3">
                         <div class="flex items-center justify-center">
                             <NuxtImg src="/images/profile-picture-5.jpg"
                                 class="w-14 h-14 p-0.5 rounded-full ring-2 ring-fuchsia-400" />
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xl text-neutral-800 font-semibold">User 1</span>
-                            <small class="text-base text-neutral-600/70">8 followers</small>
+                            <span class="text-lg text-neutral-800 font-medium">User 1</span>
+                            <small class="text-sm text-neutral-600/70">8 followers</small>
                         </div>
                     </div>
                     <div class="flex justify-end items-center">
@@ -47,15 +48,15 @@ const redirectBtn = (): void => {
                             class="bg-neutral-600 text-white rounded-xl px-8 py-1.5 text-base hover:bg-neutral-700 focus:bg-neutral-700">Follow</button>
                     </div>
                 </li>
-                <li class="w-full flex items-center justify-between px-3.5 py-4 rounded-xl bg-gray-200/70">
+                <li class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-c-seperator/40">
                     <div class="flex items-center gap-x-3">
                         <div class="flex items-center justify-center">
                             <NuxtImg src="/images/profile-picture-5.jpg"
                                 class="w-14 h-14 p-0.5 rounded-full ring-2 ring-fuchsia-400" />
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xl text-neutral-800 font-semibold">User 1</span>
-                            <small class="text-base text-neutral-600/70">8 followers</small>
+                            <span class="text-lg text-neutral-800 font-medium">User 1</span>
+                            <small class="text-sm text-neutral-600/70">8 followers</small>
                         </div>
                     </div>
                     <div class="flex justify-end items-center">
@@ -63,15 +64,15 @@ const redirectBtn = (): void => {
                             class="bg-neutral-600 text-white rounded-xl px-8 py-1.5 text-base hover:bg-neutral-700 focus:bg-neutral-700">Follow</button>
                     </div>
                 </li>
-                <li class="w-full flex items-center justify-between px-3.5 py-4 rounded-xl bg-gray-200/70">
+                <li class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-c-seperator/40">
                     <div class="flex items-center gap-x-3">
                         <div class="flex items-center justify-center">
                             <NuxtImg src="/images/profile-picture-5.jpg"
                                 class="w-14 h-14 p-0.5 rounded-full ring-2 ring-fuchsia-400" />
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xl text-neutral-800 font-semibold">User 1</span>
-                            <small class="text-base text-neutral-600/70">8 followers</small>
+                            <span class="text-lg text-neutral-800 font-medium">User 1</span>
+                            <small class="text-sm text-neutral-600/70">8 followers</small>
                         </div>
                     </div>
                     <div class="flex justify-end items-center">

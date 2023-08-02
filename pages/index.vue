@@ -6,11 +6,13 @@
 <template>
 	<div class="w-full">
 		<NuxtLayout name="users">
-			<div class="w-full flex flex-col gap-y-4 py-4">
+			<div class="w-full flex flex-col gap-y-4 py-4 mt-2">
 				<UiSliderHorizontal />
-				<SectionsPostCard />
-				<!-- <SectionsPostCard />
-				<SectionsPostCard /> -->
+				<div class="w-full flex flex-col gap-y-4 mt-2">
+					<SectionsPostCard />
+					<SectionsPostCard />
+					<SectionsPostCard />
+				</div>
 			</div>
 		</NuxtLayout>
 	</div>
