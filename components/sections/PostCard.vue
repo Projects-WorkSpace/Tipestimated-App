@@ -9,18 +9,18 @@
                     <SectionsSportPredDetails />
                 </div>
             </UiCardDetails>
-            <div class="w-full flex items-center justify-between px-4 pt-1">
+            <div class="w-full flex items-center justify-between sm:px-4 pt-1">
                 <div class="flex items-center gap-x-4">
                     <button class="flex flex-col gap-y-1 justify-center items-center">
-                        <Icon name="mdi:cards-heart-outline" class="text-2xl text-neutral-700" />
+                        <Icon name="mdi:cards-heart-outline" class="text-xl sm:text-2xl text-neutral-700" />
                         <span class="text-sm">10.5k</span>
                     </button>
                     <button class="flex flex-col gap-y-1 justify-cente items-center">
-                        <Icon name="mdi:share-variant-outline" class="text-2xl text-neutral-700" />
+                        <Icon name="mdi:share-variant-outline" class="text-xl sm:text-2xl text-neutral-700" />
                         <span class="text-sm">Share</span>
                     </button>
                     <button class="flex flex-col gap-y-1 justify-center items-center">
-                        <Icon name="mdi:plus-circle-outline" class="text-2xl text-neutral-700" />
+                        <Icon name="mdi:plus-circle-outline" class="text-xl sm:text-2xl text-neutral-700" />
                         <span class="text-sm">Add story</span>
                     </button>
                 </div>

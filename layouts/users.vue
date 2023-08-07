@@ -16,7 +16,8 @@ const openFollowerModal = (): void => {
         <nav class="fixed left-0 top-0 bottom-0 hidden md:block">
             <NavsSideNavTipster />
         </nav>
-        <div class="w-full max-w-[570px] md:max-w-[680px] px-2 md:px-0">
+        <div
+            class="w-full max-w-[570px] md:max-w-[780px] lg:max-w-[680px] md:pl-[6rem] pl-4 sm:pl-0 lg:pl-4 pr-4 md:px-3 grow">
             <slot />
         </div>
         <nav class="fixed right-0 flex-col hidden xl:flex">

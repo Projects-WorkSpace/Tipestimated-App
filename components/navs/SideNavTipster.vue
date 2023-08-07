@@ -20,8 +20,8 @@ const logoutUser = (): void => {
 
                     <NuxtLink href="/"
                         class="w-full px-2 py-2 xl:py-1 flex flex-row gap-x-2 items-center hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-3.5 bg-white rounded-xl">
-                            <Icon name="mdi:home-variant" class="text-neutral-700 text-2xl" />
+                        <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
+                            <Icon name="mdi:home-variant" class="text-neutral-700 text-xl lg:text-2xl" />
                         </div>
                         <span class="text-base hidden xl:block">Home</span>
                     </NuxtLink>
@@ -29,8 +29,8 @@ const logoutUser = (): void => {
                 <div class="w-full">
                     <div
                         class="w-full px-2 py-2 xl:py-1 flex flex-row gap-x-2 items-center hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-3.5 bg-white rounded-xl">
-                            <Icon name="mdi:plus" class="text-neutral-700 text-2xl" />
+                        <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
+                            <Icon name="mdi:plus" class="text-neutral-700 text-xl lg:text-2xl" />
                         </div>
                         <span class="text-base hidden xl:block">Create</span>
                     </div>
@@ -39,8 +39,8 @@ const logoutUser = (): void => {
 
                     <NuxtLink href="#"
                         class="w-full px-2 py-2 xl:py-1 flex flex-row gap-x-2 items-center hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-3.5 bg-white rounded-xl">
-                            <Icon name="mdi:medal-outline" class="text-neutral-700 text-2xl" />
+                        <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
+                            <Icon name="mdi:medal-outline" class="text-neutral-700 text-xl lg:text-2xl" />
                         </div>
                         <span class="text-base hidden xl:block">Tipster Rank</span>
                     </NuxtLink>
@@ -49,8 +49,8 @@ const logoutUser = (): void => {
 
                     <NuxtLink href="#"
                         class="w-full px-2 py-2 xl:py-1 flex flex-row gap-x-2 items-center hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-3.5 bg-white rounded-xl">
-                            <Icon name="mdi:trophy" class="text-neutral-700 text-2xl" />
+                        <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
+                            <Icon name="mdi:trophy" class="text-neutral-700 text-xl lg:text-2xl" />
                         </div>
                         <span class="text-base hidden xl:block">Contest</span>
                     </NuxtLink>
@@ -61,7 +61,7 @@ const logoutUser = (): void => {
                         class="w-full flex flex-row items-center gap-x-2 px-2 py-2 xl:py-1 mt-5 hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
                         <div class="p-2 bg-white rounded-xl">
                             <button class="p-1.5 rounded-full bg-slate-200 flex items-center justify-center">
-                                <Icon name="mdi:account" class="text-neutral-700 text-2xl" />
+                                <Icon name="mdi:account" class="text-neutral-700 text-xl lg:text-2xl" />
                             </button>
                         </div>
                         <span class="text-base hidden xl:block">Profile</span>
@@ -73,7 +73,7 @@ const logoutUser = (): void => {
                     <template #button>
                         <div
                             class="flex w-full rounded-lg flex-row items-center justify-start gap-x-2 px-2 py-2 hover:bg-[#e2e2e2]/60">
-                            <div class="p-3.5 bg-white rounded-xl">
+                            <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
                                 <Icon name="mdi:menu" class="text-2xl" />
                             </div>
                             <span class="text-lg hidden xl:block">More</span>

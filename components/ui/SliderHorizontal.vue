@@ -17,30 +17,18 @@
                 <li>
                     <UiStoriesAvatars />
                 </li>
-                <!-- <li>
-                    <UiStoriesAvatars />
-                </li>
-                <li>
-                    <UiStoriesAvatars />
-                </li>
-                <li>
-                    <UiStoriesAvatars />
-                </li>
-                <li>
-                    <UiStoriesAvatars />
-                </li> -->
             </ul>
         </div>
         <!-- Controls -->
-        <div class="absolute w-full left-0 flex items-center justify-between h-0 px-4 top-1/2 translate-y-1/2 "
+        <div class="absolute w-full left-0 flex items-center justify-between h-0 px-2 top-[40%] translate-y-1/2 "
             data-glide-el="controls">
             <button
-                class="inline-flex items-center justify-center w-7 h-7 transition duration-300 border rounded-full lg:w-8 lg:h-8 text-slate-700 border-slate-100 hover:text-slate-900 hover:border-slate-50 focus-visible:outline-none bg-white"
+                class="invisible items-center justify-center w-7 h-7 transition duration-300 border rounded-full lg:w-8 lg:h-8 text-slate-700 border-slate-100 hover:text-slate-900 hover:border-slate-50 focus-visible:outline-none bg-white"
                 data-glide-dir="<" aria-label="prev slide">
                 <Icon name="mdi:chevron-left" class="text-2xl" />
             </button>
             <button
-                class="inline-flex items-center justify-center w-7 h-7 transition duration-300 border rounded-full lg:w-8 lg:h-8 text-slate-700 border-slate-100 hover:text-slate-900 hover:border-slate-100 focus-visible:outline-none bg-white"
+                class="inline-flex items-center justify-center w-5 h-5 md:w-7 md:h-7 transition duration-300 border rounded-full lg:w-8 lg:h-8 text-slate-700 border-slate-100 hover:text-slate-900 hover:border-slate-100 focus-visible:outline-none bg-white"
                 data-glide-dir=">" aria-label="next slide">
                 <Icon name="mdi:chevron-right" class="text-2xl" />
             </button>
@@ -54,8 +42,9 @@ import Glide from '@glidejs/glide'
 onMounted(() => {
     var glide03 = new Glide('.glide-03', {
         type: 'carousel',
+        startAt: 0,
         perView: 7,
-        focusAt: 'center',
+        focusAt: 1,
         breakpoints: {
             800: {
                 perView: 6
