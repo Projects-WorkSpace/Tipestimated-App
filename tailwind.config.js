@@ -21,6 +21,7 @@ module.exports = {
                 primary: '#0095F6',
                 'base-pink': '#FF66BF',
                 'base-green': '#68DBA1',
+                'light-hover': '#e2e2e2',
             },
             transitionProperty: {
                 length: 'height, width',
