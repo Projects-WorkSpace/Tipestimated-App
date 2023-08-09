@@ -6,6 +6,7 @@ module.exports = {
     },
     parserOptions: {
         parser: '@babel/eslint-parser',
+        ecmaVersion: 2020,
         requireConfigFile: false,
     },
     extends: ['@nuxtjs', 'plugin:nuxt/recommended', 'prettier'],
@@ -25,4 +26,4 @@ module.exports = {
     globals: {
         _: true,
     },
-}
+};
