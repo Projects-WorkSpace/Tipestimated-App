@@ -23,96 +23,89 @@ const logoutUser = (): void => {
 }
 </script>
 <template>
-    <div class="w-full xl:min-w-[250px] h-full flex flex-col justify-between pt-8 pb-4 border-r border-c-seperator">
+    <div class="w-full xl:min-w-[250px] h-full flex flex-col justify-between pt-8 pb-4">
         <div class="w-full flex flex-col px-4">
-            <h3 class="text-3xl font-normal tracking-wide hidden xl:block">Tipstimate</h3>
+            <h3 class="text-2xl font-sans font-bold tracking-wide hidden lg:block">tipstimate</h3>
         </div>
-        <div class="w-full flex flex-col px-2 gap-y-2">
-            <div class="w-full flex flex-col gap-y-2 mb-10">
-                <div class="w-full">
-
-                    <NuxtLink href="/"
-                        class="w-full px-2 py-2 xl:py-1 flex flex-row gap-x-2 items-center hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
-                            <Icon name="mdi:home-variant" class="text-neutral-700 text-xl lg:text-2xl" />
-                        </div>
-                        <span class="text-base hidden xl:block">Home</span>
-                    </NuxtLink>
-                </div>
-                <button class="w-full" @click="openCreateModal">
+        <div class="w-full flex flex-col px-4 gap-y-2">
+            <div class="w-full flex flex-col">
+                <button class="w-full flex flex-row gap-x-2 items-center" @click="openCreateModal">
                     <div
-                        class="w-full px-2 py-2 xl:py-1 flex flex-row gap-x-2 items-center hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
-                            <Icon name="mdi:plus" class="text-neutral-700 text-xl lg:text-2xl" />
-                        </div>
-                        <span class="text-base hidden xl:block">Create</span>
+                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
+                        <Icon name="mdi:plus" class="text-neutral-700 text-xl md:text-2xl" />
                     </div>
+                    <span class="text-base font-medium hidden xl:block">Create</span>
                 </button>
-                <div class="w-full">
-
-                    <NuxtLink href="/rankings"
-                        class="w-full px-2 py-2 xl:py-1 flex flex-row gap-x-2 items-center hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
-                            <Icon name="mdi:medal-outline" class="text-neutral-700 text-xl lg:text-2xl" />
-                        </div>
-                        <span class="text-base hidden xl:block">Tipster Rank</span>
-                    </NuxtLink>
-                </div>
-                <div class="w-full">
-
-                    <NuxtLink href="#"
-                        class="w-full px-2 py-2 xl:py-1 flex flex-row gap-x-2 items-center hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
-                            <Icon name="mdi:trophy" class="text-neutral-700 text-xl lg:text-2xl" />
-                        </div>
-                        <span class="text-base hidden xl:block">Contest</span>
-                    </NuxtLink>
-                </div>
-                <div class="w-full">
-
-                    <NuxtLink href="#"
-                        class="w-full flex flex-row items-center gap-x-2 px-2 py-2 xl:py-1 mt-5 hover:bg-[#e2e2e2]/60 rounded-lg transition-colors duration-200 cursor-pointer">
-                        <div class="p-2 bg-white rounded-xl">
-                            <button class="p-1.5 rounded-full bg-slate-200 flex items-center justify-center">
-                                <Icon name="mdi:account" class="text-neutral-700 text-xl lg:text-2xl" />
-                            </button>
-                        </div>
-                        <span class="text-base hidden xl:block">Profile</span>
-                    </NuxtLink>
-                </div>
+            </div>
+            <div class="w-full flex flex-col">
+                <button class="w-full flex flex-row gap-x-2 items-center">
+                    <div
+                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-t-xl transition-colors duration-200 cursor-pointer">
+                        <Icon name="mdi:account" class="text-neutral-700 text-xl md:text-2xl" />
+                    </div>
+                    <span class="text-base font-medium hidden xl:block">Profile</span>
+                </button>
+                <NuxtLink to="/" class="w-full flex flex-row gap-x-2 items-center">
+                    <div
+                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
+                        <Icon name="mdi:home-variant" class="text-neutral-700 text-xl md:text-2xl" />
+                    </div>
+                    <span class="text-base font-medium hidden xl:block">Home</span>
+                </NuxtLink>
+                <NuxtLink href="/rankings" class="w-full flex flex-row gap-x-2 items-center">
+                    <div
+                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
+                        <Icon name="mdi:trophy" class="text-neutral-700 text-xl md:text-2xl" />
+                    </div>
+                    <span class="text-base font-medium hidden xl:block">Tipster Rank</span>
+                </NuxtLink>
+                <button class="w-full flex flex-row gap-x-2 items-center">
+                    <div
+                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
+                        <Icon name="mdi:medal-outline" class="text-neutral-700 text-xl md:text-2xl" />
+                    </div>
+                    <span class="text-base font-medium hidden xl:block">Contest</span>
+                </button>
+                <button class="w-full flex flex-row gap-x-2 items-center">
+                    <div
+                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-b-xl transition-colors duration-200 cursor-pointer">
+                        <Icon name="mdi:chart-bar" class="text-neutral-700 text-xl md:text-2xl" />
+                    </div>
+                    <span class="text-base font-medium hidden xl:block">Tipster Analysis</span>
+                </button>
             </div>
             <div class="w-full flex flex-col">
                 <UiMenuDropDown>
                     <template #button>
-                        <div
-                            class="flex w-full rounded-lg flex-row items-center justify-start gap-x-2 px-2 py-2 hover:bg-[#e2e2e2]/60">
-                            <div class="p-2.5 lg:p-3.5 bg-white rounded-xl">
-                                <Icon name="mdi:menu" class="text-2xl" />
+                        <button class="w-full flex flex-row gap-x-2 items-center">
+                            <div
+                                class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
+                                <Icon name="mdi:menu" class="text-neutral-700 text-xl md:text-2xl" />
                             </div>
-                            <span class="text-lg hidden xl:block">More</span>
-                        </div>
+                            <span class="text-lg font-medium hidden xl:block">More</span>
+                        </button>
                     </template>
                     <template #items>
                         <div class="px-2 py-2">
                             <MenuItem v-slot="{ active }">
-                            <button :class="[
-                                active ? 'bg-[#e2e2e2]/60' : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2.5 py-2.5 text-base hover:bg-[#e2e2e2]/60',
-                            ]">
-                                <Icon name="mdi:cog" :active="active" class="mr-2 h-5 w-5 text-gray-700"
-                                    aria-hidden="true" />
-                                Settings
-                            </button>
+                                <button :class="[
+                                    active ? 'bg-[#e2e2e2]/60' : 'text-gray-900',
+                                    'group flex w-full items-center rounded-md px-2.5 py-2.5 text-base hover:bg-[#e2e2e2]/60',
+                                ]">
+                                    <Icon name="mdi:cog" :active="active" class="mr-2 h-5 w-5 text-gray-700"
+                                        aria-hidden="true" />
+                                    Settings
+                                </button>
                             </MenuItem>
                         </div>
                         <div class="px-2 py-2">
                             <MenuItem v-slot="{ active }">
-                            <button @click="logoutUser" :class="[
-                                active ? 'bg-[#e2e2e2]/60' : 'text-gray-900',
-                                'group flex w-full items-center rounded-lg px-2.5 py-2.5 text-base hover:bg-[#e2e2e2]/60',
-                            ]">
-                                Logout
-                            </button>
+                                <button @click="logoutUser" :class="[
+                                    active ? 'bg-[#e2e2e2]/60' : 'text-gray-900',
+                                    'group flex w-full items-center rounded-lg px-2.5 py-2.5 text-base hover:bg-[#e2e2e2]/60',
+                                ]">
+                                    Logout
+                                </button>
                             </MenuItem>
                         </div>
                     </template>

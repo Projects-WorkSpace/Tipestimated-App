@@ -1,21 +1,93 @@
 <script setup lang="ts">
+import { format, parseISO } from 'date-fns'
+import { GetTipsterByUser } from '~/graphql/schema';
+
 definePageMeta({
     layout: false,
 });
+
+export interface IGetTipsterByUser {
+    getTipsterByUser: GetTipsterByUser;
+}
+export interface GetTipsterByUser {
+    id: string;
+    penName: string;
+    country: string;
+    favoriteSport: string;
+    otherSport: string;
+    telegramLink: string;
+    socialLink: string;
+    image: string;
+    isApproved: boolean;
+    createdAt: string;
+    imageUrl: string;
+}
+
+const toast = useToast();
+const router = useRouter();
+const is_tipster_approved = useCookie('is_tipster_approved')
+const { data, pending, error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
+
+const transition = {
+    "enterActiveClass": "transform ease-out duration-300 transition",
+    "enterFromClass": "-translate-y-2 opacity-0",
+    "enterToClass": "translate-y-0 opacity-100",
+    "leaveActiveClass": "transition ease-in duration-100",
+    "leaveFromClass": "opacity-100",
+    "leaveToClass": "opacity-0"
+}
+
+onBeforeMount(() => {
+    if (!pending.value) {
+        if (data.value?.getTipsterByUser) {
+            const tipster = data.value.getTipsterByUser;
+            if (tipster.isApproved) {
+                is_tipster_approved.value = 'true';
+                router.push('/');
+            } else {
+                console.log("isApproved false");
+            }
+        } else if (error.value) {
+            toast.add({
+                title: error.value.message,
+                ui: {
+                    title: 'text-[tomato] font-regular',
+                    progress: {
+                        background: 'bg-[tomato]',
+                        base: "h-0"
+                    },
+                    transition: transition,
+                    gray: "tomato",
+                    shadow: "shadow-md",
+                    ring: "ring-1 ring-[tomato]",
+                    background: "bg-white"
+                },
+                timeout: 600000
+            });
+        }
+    }
+});
+
+const formatTimestamp = (timestamp: string | null) => {
+    if (timestamp) {
+        const date = parseISO(timestamp)
+        const formattedDate = format(date, 'MMMM d, yyyy \'at\' h:mm a');
+        return formattedDate;
+    } else {
+        return "";
+    }
+}
+
 </script>
 
 <template>
-    <main
-        class="w-full flex flex-col z-50 fixed top-0 bottom-0 left-0 right-0 bg-c-light px-4 md:px-0"
-    >
+    <main class="w-full flex flex-col z-50 fixed top-0 bottom-0 left-0 right-0 bg-c-light px-4 md:px-0">
         <NuxtLayout name="empty-layout">
             <section class="w-full h-full flex items-center justify-center">
                 <div class="max-w-[450px] flex flex-col">
                     <ContainersDialog>
-                        <div class="w-full flex flex-col px-6 md:px-12 py-8">
-                            <div
-                                class="w-full flex flex-col items-center justify-center pb-4 gap-y-6"
-                            >
+                        <div v-if="!pending" class="w-full flex flex-col px-6 md:px-12 py-8">
+                            <div class="w-full flex flex-col items-center justify-center pb-4 gap-y-6">
                                 <div class="flex items-center justify-center">
                                     <Icon name="🥳" class="!text-7xl" />
                                 </div>
@@ -25,16 +97,13 @@ definePageMeta({
                                         your details.
                                     </h3>
                                     <p class="text-xs text-t-gray">
-                                        Waiting since July 2, 2023 at 11:00 AM
+                                        Waiting since {{ formatTimestamp(data?.getTipsterByUser.createdAt) }}
                                     </p>
                                 </div>
                             </div>
                             <div class="w-full flex flex-col pt-1 pb-4 gap-y-2">
                                 <div class="w-full flex gap-x-1 items-center">
-                                    <NuxtImg
-                                        src="/icons/docs.png"
-                                        class="h-5 w-5"
-                                    />
+                                    <NuxtImg src="/icons/docs.png" class="h-5 w-5" />
                                     <p class="text-base font-semibold">
                                         Read more about this.
                                     </p>
@@ -52,12 +121,14 @@ definePageMeta({
                                 </div>
                                 <div class="w-full flex flex-col mt-2.5">
                                     <button
-                                        class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-black tracking-wide rounded-lg hover:bg-base-green focus:bg-base-green transition flex items-center justify-center"
-                                    >
+                                        class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-black tracking-wide rounded-lg hover:bg-base-green focus:bg-base-green transition flex items-center justify-center">
                                         Contact Us
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                        <div v-else class="w-full flex flex-col px-6 md:px-12 py-8">
+                            <UtilsStarLoading />
                         </div>
                     </ContainersDialog>
                 </div>

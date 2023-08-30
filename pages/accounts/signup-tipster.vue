@@ -9,6 +9,8 @@ definePageMeta({
 
 const second_form = ref(false);
 const router = useRouter();
+const is_tipster_approved = useCookie('is_tipster_approved')
+const toast = useToast();
 
 const pen_name = ref<string>('');
 const nationality = ref('');
@@ -137,7 +139,7 @@ const onSubmitTipsterDetails = (): void => {
 
     submitTipsterDetails({ penName: pen_name.value, country: nationality.value, favoriteSport: favorite_sport.value.name, otherSport: other_sport.value.name, telegramLink: telegram.value, socialLink: social_link.value })
 };
-const toast = useToast();
+
 const transition = {
     "enterActiveClass": "transform ease-out duration-300 transition",
     "enterFromClass": "-translate-y-2 opacity-0",
@@ -196,7 +198,6 @@ onError((error) => {
     }
 })
 
-const is_tipster_approved = useCookie('is_tipster_approved')
 // Post also the Image
 
 const postProfileImage = async (id: string) => {

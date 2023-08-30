@@ -24,7 +24,6 @@ function openModal() {
 }
 </script>
 
-
 <template>
     <TransitionRoot appear :show="isOpen" as="template">
         <Dialog as="div" @close="closeModal" class="relative z-0">

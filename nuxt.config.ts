@@ -1,6 +1,11 @@
 export default defineNuxtConfig({
-    modules: ['@pinia/nuxt', '@nuxt/image', 'nuxt-icon', '@nuxtjs/google-fonts', '@nuxthq/ui', '@nuxtjs/apollo'],
-    devtools: { enabled: true },
+    modules: [
+        '@pinia/nuxt', '@nuxt/image', 'nuxt-icon', '@nuxtjs/google-fonts',
+        '@nuxthq/ui', '@nuxtjs/apollo'
+    ],
+    devtools: {
+        enabled: true
+    },
     googleFonts: {
         families: {
             Roboto: {
@@ -9,7 +14,9 @@ export default defineNuxtConfig({
             },
         },
     },
-    css: ['~/assets/css/tailwind.css', '~/assets/css/global.css'],
+    css: [
+        '~/assets/css/tailwind.css', '~/assets/css/global.css'
+    ],
     colorMode: {
         preference: 'light',
     },

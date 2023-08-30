@@ -54,3 +54,20 @@ mutation SignupTipster($penName: String!, $country: String, $favoriteSport: Stri
   }
 }
 `
+export const GetTipsterByUser = gql`
+  query GetTipsterByUser {
+    getTipsterByUser {
+      id
+      penName
+      country
+      favoriteSport
+      otherSport
+      telegramLink
+      socialLink
+      image
+      isApproved
+      createdAt
+      imageUrl
+    }
+  }
+`

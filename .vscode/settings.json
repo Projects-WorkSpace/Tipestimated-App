@@ -1,10 +1,13 @@
 {
-    "css.lint.unknownAtRules": "ignore",
-    "editor.formatOnSave": true,
-    "files.associations": {
-        "*.css": "tailwindcss"
-    },
-    "editor.quickSuggestions": {
-        "strings": true
-    }
+  "css.lint.unknownAtRules": "ignore",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.formatOnPaste": false, // required
+  "editor.formatOnType": false, // required
+  "editor.formatOnSave": true, // optional
+  "editor.formatOnSaveMode": "file", // required to format on save
+  "files.autoSave": "off",
+  "vs-code-prettier-eslint.prettierLast": true // set as "true" to run 'prettier' last not first
 }

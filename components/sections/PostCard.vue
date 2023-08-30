@@ -4,7 +4,7 @@
         <div class="w-full flex flex-col gap-y-3 px-4 py-4">
             <SectionsUserHeaderDetails />
             <UiCardDetails>
-                <div class="flex flex-col gap-y-2 px-4 py-2 divide-y divide-gray-400/50">
+                <div class="flex flex-col gap-y-2 px-4 py-2 divide-y divide-neutral-400/50">
                     <SectionsSportPredDetails />
                     <SectionsSportPredDetails />
                 </div>

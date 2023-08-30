@@ -9,29 +9,24 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.22.5",
     "@nuxt/devtools": "latest",
     "@nuxt/image": "1.0.0-rc.1",
     "@nuxthq/ui": "^2.5.0",
     "@nuxtjs/apollo": "5.0.0-alpha.6",
-    "@nuxtjs/eslint-config": "^12.0.0",
-    "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/google-fonts": "^3.0.1",
     "@types/glidejs__glide": "^3.6.1",
     "@types/node": "^18",
-    "eslint": "^8.43.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-nuxt": "^4.0.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-vue": "^9.15.0",
+    "eslint": "^8.7.0",
     "nuxt": "^3.5.3",
     "nuxt-icon": "^0.4.1",
-    "prettier": "^2.8.8"
+    "prettier": "^2.5.1",
+    "vue-eslint-parser": "^8.0.0"
   },
   "dependencies": {
     "@glidejs/glide": "^3.6.0",
     "@headlessui/vue": "^1.7.14",
     "@pinia/nuxt": "^0.4.11",
+    "date-fns": "^2.30.0",
     "pinia": "^2.1.4"
   }
 }
