@@ -40,3 +40,16 @@ export interface IProfileImage {
     imageURL: string | null
     imageName: string | null
 }
+
+// 
+
+export interface IDropdownItem {
+    exact?: boolean | undefined;
+    label: string;
+    slot?: string | undefined;
+    icon?: string | undefined;
+    iconClass?: string | undefined;
+    shortcuts?: string[] | undefined;
+    disabled?: boolean | undefined;
+    click?: Function | undefined;
+}

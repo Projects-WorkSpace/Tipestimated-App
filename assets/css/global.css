@@ -30,3 +30,12 @@ input:-webkit-autofill:focus {
 input[data-autocompleted] {
     @apply bg-c-light text-neutral-800;
 }
+
+::-webkit-scrollbar {
+    width: 7px!important;
+    height: 7px!important;
+}
+
+::-webkit-scrollbar-thumb, html[dir] .light ::-webkit-scrollbar-thumb {
+    background-color: rgba(206,208,209,255);
+}

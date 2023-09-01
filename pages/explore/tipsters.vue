@@ -26,7 +26,7 @@ const redirectBtn = (): void => {
                 <Icon name="ph:magnifying-glass" class="text-base absolute left-3.5 text-neutral-500" />
             </div>
         </header>
-        <div class="w-full flex flex-col gap-y-6 mt-2">
+        <div class="w-full flex flex-col gap-y-2 mt-2">
             <h4 class="tracking-wide text-lg md:text-xl text-neutral-600">Suggested</h4>
             <ul class="w-full flex flex-col gap-y-2 md:gap-y-3.5">
                 <li class="w-full">
