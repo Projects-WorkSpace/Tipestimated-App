@@ -69,3 +69,14 @@ export interface Node {
     icon: string;
 }
   
+
+// 
+export interface IGetTipsterByUser {
+    getTipsterByUser: GetTipsterByUser;
+}
+export interface GetTipsterByUser {
+    id: string;
+    penName: string;
+    isApproved: boolean;
+    createdAt: string;
+}

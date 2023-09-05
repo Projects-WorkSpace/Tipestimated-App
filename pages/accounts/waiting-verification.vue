@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { format, parseISO } from 'date-fns'
 import { GetTipsterByUser } from '~/graphql/schema';
+import { IGetTipsterByUser } from '~/types/types';
 
 definePageMeta({
     layout: false,
@@ -10,18 +11,7 @@ definePageMeta({
 const toast = useToast();
 const router = useRouter();
 const is_tipster_approved = useCookie('is_tipster_approved')
-const { data: tipster_info, pending: tipster_info_loading, error: tipster_info_error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
-
-
-export interface IGetTipsterByUser {
-    getTipsterByUser: GetTipsterByUser;
-}
-export interface GetTipsterByUser {
-    id: string;
-    penName: string;
-    isApproved: boolean;
-    createdAt: string;
-}
+const { data: tipster_info, error: tipster_info_error, pending: tipster_info_loading } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
 
 const transition = {
     "enterActiveClass": "transform ease-out duration-300 transition",
@@ -53,21 +43,20 @@ const checkAndUpdateTipsterApproval = () => {
   }
 };
 
-const checkAndUpdateTipsterError = () => {
-  if (tipster_info_error.value) {
-    console.log("Check and found error: ", tipster_info_error.value)
-    // is_tipster_approved.value = 'true'; // Assuming you want to set it as a string 'true'
-    // You can also set an expiration date for the cookie if needed:
-    // useCookie('is_tipster_approved', 'true', { expires: 365 });
-  } else {
-    console.log("Check and not found error")
-  }
-};
+// const checkAndUpdateTipsterError = () => {
+//   if (tipster_info_error.value) {
+//     console.log("Check and found error: ", tipster_info_error.value)
+//     // is_tipster_approved.value = 'true'; // Assuming you want to set it as a string 'true'
+//     // You can also set an expiration date for the cookie if needed:
+//     // useCookie('is_tipster_approved', 'true', { expires: 365 });
+//   } else {
+//     console.log("Check and not found error")
+//   }
+// };
 
 // Call the function to check and update approval status
 checkAndUpdateTipsterApproval();
-checkAndUpdateTipsterError()
-
+// checkAndUpdateTipsterError()
 </script>
 
 <template>
@@ -115,7 +104,8 @@ checkAndUpdateTipsterError()
                                         class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-black tracking-wide rounded-lg hover:bg-base-green focus:bg-base-green transition flex items-center justify-center">
                                         Contact Us
                                     </button>
-                                    {{ tipster_info }} {{ tipster_info_error }}
+                                    <!-- {{ tipster_info }} -->
+                                     <!-- {{ tipster_info_error }} -->
                                 </div>
                             </div>
                         </div>
