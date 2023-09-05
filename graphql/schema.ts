@@ -59,15 +59,8 @@ export const GetTipsterByUser = gql`
     getTipsterByUser {
       id
       penName
-      country
-      favoriteSport
-      otherSport
-      telegramLink
-      socialLink
-      image
       isApproved
       createdAt
-      imageUrl
     }
   }
 `

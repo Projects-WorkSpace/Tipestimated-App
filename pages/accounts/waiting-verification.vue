@@ -10,7 +10,6 @@ definePageMeta({
 const toast = useToast();
 const router = useRouter();
 const is_tipster_approved = useCookie('is_tipster_approved')
-// const { data, pending, error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
 const { data: tipster_info, pending: tipster_info_loading, error: tipster_info_error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
 
 
@@ -20,15 +19,8 @@ export interface IGetTipsterByUser {
 export interface GetTipsterByUser {
     id: string;
     penName: string;
-    country: string;
-    favoriteSport: string;
-    otherSport: string;
-    telegramLink: string;
-    socialLink: string;
-    image: string;
     isApproved: boolean;
     createdAt: string;
-    imageUrl: string;
 }
 
 const transition = {
@@ -40,45 +32,6 @@ const transition = {
     "leaveToClass": "opacity-0"
 }
 
-// onBeforeMount(async () => {
-//     const { data, pending, error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
-//     console.log("Data on before: ", error.value)
-//     // checkWaitingProcess();
-// });
-
-const checkWaitingProcess = () => {
-    if (!tipster_info_loading.value) {
-        if (tipster_info.value?.getTipsterByUser) {
-            const tipster = tipster_info.value.getTipsterByUser;
-            console.log("Tipster: ", tipster)
-            if (tipster.isApproved) {
-                is_tipster_approved.value = 'true';
-                router.push('/');
-            } else {
-                console.log("isApproved false");
-            }
-        } else if (tipster_info_error.value) {
-            console.log("Error v: ", tipster_info_error.value)
-            toast.add({
-                title: tipster_info_error.value.message,
-                ui: {
-                    title: 'text-[tomato] font-regular',
-                    progress: {
-                        background: 'bg-[tomato]',
-                        base: "h-0"
-                    },
-                    transition: transition,
-                    gray: "tomato",
-                    shadow: "shadow-md",
-                    ring: "ring-1 ring-[tomato]",
-                    background: "bg-white"
-                },
-                timeout: 600000
-            });
-        }
-    }
-}
-
 const formatTimestamp = (timestamp: string | null) => {
     if (timestamp) {
         const date = parseISO(timestamp)
@@ -88,6 +41,32 @@ const formatTimestamp = (timestamp: string | null) => {
         return "";
     }
 }
+
+const checkAndUpdateTipsterApproval = () => {
+  if (tipster_info.value?.getTipsterByUser?.isApproved) {
+    console.log("Check and found data: ", tipster_info.value)
+    // is_tipster_approved.value = 'true'; // Assuming you want to set it as a string 'true'
+    // You can also set an expiration date for the cookie if needed:
+    // useCookie('is_tipster_approved', 'true', { expires: 365 });
+  } else {
+    console.log("Check and not found data: ", tipster_info.value)
+  }
+};
+
+const checkAndUpdateTipsterError = () => {
+  if (tipster_info_error.value) {
+    console.log("Check and found error: ", tipster_info_error.value)
+    // is_tipster_approved.value = 'true'; // Assuming you want to set it as a string 'true'
+    // You can also set an expiration date for the cookie if needed:
+    // useCookie('is_tipster_approved', 'true', { expires: 365 });
+  } else {
+    console.log("Check and not found error")
+  }
+};
+
+// Call the function to check and update approval status
+checkAndUpdateTipsterApproval();
+checkAndUpdateTipsterError()
 
 </script>
 
