@@ -28,11 +28,16 @@ export default defineNuxtConfig({
         proxyCookies: true,
         clients: {
             default: {
-                httpEndpoint: process.env.GRAPHQL_ENDPOINT || "http://127.0.0.1:8000/graphql"
+                httpEndpoint: "https://tipstimate.com/graphql" // "http://127.0.0.1:8000/graphql"
             }
         },
     },
     build: {
         transpile: ['tslib'],
+    },
+    runtimeConfig: {
+        public: {
+            apiEndpoint: '', // can be overridden by NUXT_PUBLIC_API_BASE environment variable
+        }
     },
 })

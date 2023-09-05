@@ -4,7 +4,15 @@ import { GetTipsterByUser } from '~/graphql/schema';
 
 definePageMeta({
     layout: false,
+    middleware: "other-auth",
 });
+
+const toast = useToast();
+const router = useRouter();
+const is_tipster_approved = useCookie('is_tipster_approved')
+// const { data, pending, error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
+const { data: tipster_info, pending: tipster_info_loading, error: tipster_info_error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
+
 
 export interface IGetTipsterByUser {
     getTipsterByUser: GetTipsterByUser;
@@ -23,11 +31,6 @@ export interface GetTipsterByUser {
     imageUrl: string;
 }
 
-const toast = useToast();
-const router = useRouter();
-const is_tipster_approved = useCookie('is_tipster_approved')
-const { data, pending, error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
-
 const transition = {
     "enterActiveClass": "transform ease-out duration-300 transition",
     "enterFromClass": "-translate-y-2 opacity-0",
@@ -37,19 +40,27 @@ const transition = {
     "leaveToClass": "opacity-0"
 }
 
-onBeforeMount(() => {
-    if (!pending.value) {
-        if (data.value?.getTipsterByUser) {
-            const tipster = data.value.getTipsterByUser;
+// onBeforeMount(async () => {
+//     const { data, pending, error } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
+//     console.log("Data on before: ", error.value)
+//     // checkWaitingProcess();
+// });
+
+const checkWaitingProcess = () => {
+    if (!tipster_info_loading.value) {
+        if (tipster_info.value?.getTipsterByUser) {
+            const tipster = tipster_info.value.getTipsterByUser;
+            console.log("Tipster: ", tipster)
             if (tipster.isApproved) {
                 is_tipster_approved.value = 'true';
                 router.push('/');
             } else {
                 console.log("isApproved false");
             }
-        } else if (error.value) {
+        } else if (tipster_info_error.value) {
+            console.log("Error v: ", tipster_info_error.value)
             toast.add({
-                title: error.value.message,
+                title: tipster_info_error.value.message,
                 ui: {
                     title: 'text-[tomato] font-regular',
                     progress: {
@@ -66,7 +77,7 @@ onBeforeMount(() => {
             });
         }
     }
-});
+}
 
 const formatTimestamp = (timestamp: string | null) => {
     if (timestamp) {
@@ -86,7 +97,7 @@ const formatTimestamp = (timestamp: string | null) => {
             <section class="w-full h-full flex items-center justify-center">
                 <div class="max-w-[450px] flex flex-col">
                     <ContainersDialog>
-                        <div v-if="!pending" class="w-full flex flex-col px-6 md:px-12 py-8">
+                        <div v-if="!tipster_info_loading" class="w-full flex flex-col px-6 md:px-12 py-8">
                             <div class="w-full flex flex-col items-center justify-center pb-4 gap-y-6">
                                 <div class="flex items-center justify-center">
                                     <Icon name="🥳" class="!text-7xl" />
@@ -97,7 +108,8 @@ const formatTimestamp = (timestamp: string | null) => {
                                         your details.
                                     </h3>
                                     <p class="text-xs text-t-gray">
-                                        Waiting since {{ formatTimestamp(data?.getTipsterByUser.createdAt) }}
+                                        Waiting since 
+                                        {{ formatTimestamp(tipster_info?.getTipsterByUser?.createdAt) }}
                                     </p>
                                 </div>
                             </div>
@@ -124,6 +136,7 @@ const formatTimestamp = (timestamp: string | null) => {
                                         class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-black tracking-wide rounded-lg hover:bg-base-green focus:bg-base-green transition flex items-center justify-center">
                                         Contact Us
                                     </button>
+                                    {{ tipster_info }} {{ tipster_info_error }}
                                 </div>
                             </div>
                         </div>

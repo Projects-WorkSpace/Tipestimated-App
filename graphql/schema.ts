@@ -71,3 +71,17 @@ export const GetTipsterByUser = gql`
     }
   }
 `
+
+export const AllSports = gql`
+  query AllSports {
+    allSports {
+      edges {
+        node {
+          name
+          icon
+        }
+      }
+    }
+  }
+`
+

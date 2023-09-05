@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IErrorTipsterStatus, IListProps } from '~/types/types';
+import { IAllSport, IErrorTipsterStatus, IListProps } from '~/types/types';
 const emits = defineEmits<{
     (e: 'submitSportData'): void;
     (e: 'update:pen_name', payload: string): void;
@@ -12,16 +12,11 @@ const props = defineProps<{
     nationality: string;
     favorite_sport: IListProps;
     other_sport: IListProps;
-    error_status: IErrorTipsterStatus
+    error_status: IErrorTipsterStatus,
+    all_sports?: IAllSport,
+    pending_sports: boolean
 }>();
 
-const sports: IListProps[] = [
-    { name: 'Football', icon: '⚽' },
-    { name: 'Basketball', icon: '🏀' },
-    { name: 'Tennis', icon: '🎾' },
-    { name: 'Hockey', icon: '🏑' },
-    { name: 'Cricket', icon: '🏏' },
-];
 const updatedSelectedSport = (payload: IListProps) => {
     emits('updateSelectedSport', payload);
 };
@@ -34,6 +29,14 @@ const onClickSubmit = (): void => {
 const updateNationality = (payload: string) => {
     emits('update:nationality', payload)
 }
+
+const sportsData = computed(() => {
+    const sports: IListProps[] = [];
+    props.all_sports?.allSports.edges?.forEach((data) => {
+        sports.push(data.node)
+    })
+    return sports;
+})
 </script>
 <template>
     <div class="w-full flex flex-col">
@@ -59,13 +62,22 @@ const updateNationality = (payload: string) => {
                     :error_status="error_status.nationality" />
             </div>
             <div class="w-full">
-                <ContainersListboxComponent :selected="favorite_sport" :list="sports"
-                    @updated-selected="updatedSelectedSport" :error_status="error_status.favorite_sport"
-                    error_text="Select your favorite sport" />
+                <ContainersListboxComponent
+                    :selected="favorite_sport"
+                    :list="sportsData"
+                    @updated-selected="updatedSelectedSport"
+                    :error_status="error_status.favorite_sport"
+                    error_text="Select your favorite sport"
+                    :pending="pending_sports"
+                />
             </div>
             <div class="w-full">
-                <ContainersListboxComponent :selected="other_sport" :list="sports"
-                    @updated-selected="updatedOtherSportSelected" />
+                <ContainersListboxComponent
+                    :selected="other_sport"
+                    :list="sportsData"
+                    @updated-selected="updatedOtherSportSelected"
+                    :pending="pending_sports"
+                />
             </div>
             <div class="w-full flex flex-col mt-4 gap-y-5 pb-6">
                 <button @click="() => onClickSubmit()"

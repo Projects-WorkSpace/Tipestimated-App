@@ -30,60 +30,60 @@ const logoutUser = (): void => {
         <div class="w-full flex flex-col px-4 gap-y-2">
             <div class="w-full flex flex-col">
                 <button class="w-full flex flex-row gap-x-2 items-center" @click="openCreateModal">
-                    <div
+                    <span
                         class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:plus" class="text-neutral-700 text-xl md:text-2xl" />
-                    </div>
+                    </span>
                     <span class="text-base font-medium hidden xl:block">Create</span>
                 </button>
             </div>
             <div class="w-full flex flex-col">
                 <button class="w-full flex flex-row gap-x-2 items-center">
-                    <div
+                    <span
                         class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-t-xl transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:account" class="text-neutral-700 text-xl md:text-2xl" />
-                    </div>
+                    </span>
                     <span class="text-base font-medium hidden xl:block">Profile</span>
                 </button>
                 <NuxtLink to="/" class="w-full flex flex-row gap-x-2 items-center">
-                    <div
+                    <span
                         class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:home-variant" class="text-neutral-700 text-xl md:text-2xl" />
-                    </div>
+                    </span>
                     <span class="text-base font-medium hidden xl:block">Home</span>
                 </NuxtLink>
                 <NuxtLink href="/rankings" class="w-full flex flex-row gap-x-2 items-center">
-                    <div
+                    <span
                         class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:trophy" class="text-neutral-700 text-xl md:text-2xl" />
-                    </div>
+                    </span>
                     <span class="text-base font-medium hidden xl:block">Tipster Rank</span>
                 </NuxtLink>
                 <button class="w-full flex flex-row gap-x-2 items-center">
-                    <div
+                    <span
                         class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:medal-outline" class="text-neutral-700 text-xl md:text-2xl" />
-                    </div>
+                    </span>
                     <span class="text-base font-medium hidden xl:block">Contest</span>
                 </button>
                 <button class="w-full flex flex-row gap-x-2 items-center">
-                    <div
+                    <span
                         class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-b-xl transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:chart-bar" class="text-neutral-700 text-xl md:text-2xl" />
-                    </div>
+                    </span>
                     <span class="text-base font-medium hidden xl:block">Tipster Analysis</span>
                 </button>
             </div>
             <div class="w-full flex flex-col">
                 <UiMenuDropDown>
                     <template #button>
-                        <button class="w-full flex flex-row gap-x-2 items-center">
+                        <div class="w-full flex flex-row gap-x-2 items-center">
                             <div
                                 class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
                                 <Icon name="mdi:menu" class="text-neutral-700 text-xl md:text-2xl" />
                             </div>
                             <span class="text-lg font-medium hidden xl:block">More</span>
-                        </button>
+                        </div>
                     </template>
                     <template #items>
                         <div class="px-2 py-2">

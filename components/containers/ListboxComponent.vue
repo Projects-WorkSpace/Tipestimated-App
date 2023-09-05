@@ -12,6 +12,7 @@ defineProps<{
     selected: IListProps;
     error_status?: boolean
     error_text?: string
+    pending?: boolean 
 }>();
 defineEmits<{
     (e: 'updatedSelected', data: IListProps): void;
@@ -37,7 +38,10 @@ defineEmits<{
                     leave-to-class="opacity-0">
                     <ListboxOptions
                         class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        <ListboxOption v-slot="{ active, selected }" v-for="item in list" :key="item.name" :value="item"
+                        <div v-if="pending" class="px-4 py-3">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque, libero! Voluptas temporibus, deleniti porro facere iste repudiandae harum a neque quisquam error, atque possimus quam, dolores assumenda odit quo laudantium!</p>
+                        </div>
+                        <ListboxOption v-else v-slot="{ active, selected }" v-for="item in list" :key="item.name" :value="item"
                             :disabled="item.disabled" as="template">
                             <li :class="[
                                 active

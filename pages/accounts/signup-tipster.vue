@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { IListProps, IErrorTipsterStatus, IProfileImage } from '~/types/types';
-import { SignupTipster } from "~/graphql/schema";
+import { IListProps, IErrorTipsterStatus, IProfileImage, IAllSport } from '~/types/types';
+import { AllSports, SignupTipster } from "~/graphql/schema";
 
 // Protected page
 definePageMeta({
-    middleware: "auth",
+    middleware: "other-auth",
 });
 
 const second_form = ref(false);
 const router = useRouter();
+const config = useRuntimeConfig()
 const is_tipster_approved = useCookie('is_tipster_approved')
 const toast = useToast();
+const { data: all_sports, pending: all_sports_loading, error: all_sports_err } = await useAsyncQuery<IAllSport>(AllSports)
 
 const pen_name = ref<string>('');
 const nationality = ref('');
@@ -109,7 +111,7 @@ const onClickContinue = (): void => {
 };
 
 function isValidTelegramLink(link: string) {
-    const telegramLinkRegex = /^https?:\/\/t\.me\/\+\w+$/;
+    const telegramLinkRegex = /^https?:\/\/t\.me\/\w+$/;
     return telegramLinkRegex.test(link);
 }
 
@@ -150,14 +152,12 @@ const transition = {
 }
 
 onDone((data) => {
-    console.log("Data: ", data)
     if (data.data.signupTipster.errors === null) {
         postProfileImage(data.data.signupTipster.encodedId)
     } else {
-        data.data.signupTipster.errors.forEach((error: { field: string; messages: string[]; }) => {
+        data.data.signupTipster.errors.forEach((error: any) => {
             toast.add({
-                title: error.field,
-                description: error.messages[0],
+                title: error,
                 ui: {
                     title: 'text-t-gray font-medium capitalize',
                     description: "text-t-gray text-sm",
@@ -170,12 +170,17 @@ onDone((data) => {
                     transition: transition,
                 },
                 icon: 'i-heroicons-information-circle',
+                timeout: 0
             });
+            if(error === "pen_name: Tipster with this Pen name already exists.") {
+                second_form.value = false;
+            }
         });
     }
 })
+
 onError((error) => {
-    console.log("Error:")
+    console.log("Error here onError:", error)
     if (error.message === "Failed to fetch") {
         toast.add({
             title: error.message,
@@ -190,7 +195,7 @@ onError((error) => {
                 transition: transition,
             },
             icon: 'i-heroicons-information-circle',
-            timeout: 3000
+            timeout: 0
         });
     }
     if (error.message === "Error decoding signature") {
@@ -199,14 +204,13 @@ onError((error) => {
 })
 
 // Post also the Image
-
 const postProfileImage = async (id: string) => {
     const formData = new FormData();
     formData.append('image', image_file.value.imageFile as any);
     formData.append('tipster_id', id)
 
-    const apiUrl = 'http://127.0.0.1:8000/tipster/upload-tipster-image/';
-    const { data, pending, error, refresh } = await useFetch(apiUrl, {
+    const apiUrl = config.public.apiEndpoint + '/tipster/upload-tipster-image/';
+    const { data, error } = await useFetch(apiUrl, {
         method: 'POST',
         body: formData,
     });
@@ -247,11 +251,18 @@ const postProfileImage = async (id: string) => {
                     <div class="w-full flex flex-col mt-4 px-10 gap-y-6">
                         <div class="w-full flex flex-col">
                             <Transition mode="out-in">
-                                <AccountsTipsterSportsForm v-if="!second_form" @submit-sport-data="onClickContinue"
-                                    v-model:pen_name="pen_name" v-model:nationality="nationality"
-                                    :favorite_sport="favorite_sport" :other_sport="other_sport"
-                                    @update-selected-other-sport="updateSelectedOtherSport
-                                        " @update-selected-sport="updateSelectedSport" :error_status="error_status" />
+                                <AccountsTipsterSportsForm v-if="!second_form"
+                                    @submit-sport-data="onClickContinue"
+                                    v-model:pen_name="pen_name"
+                                    v-model:nationality="nationality"
+                                    :favorite_sport="favorite_sport"
+                                    :other_sport="other_sport"
+                                    @update-selected-other-sport="updateSelectedOtherSport"
+                                    @update-selected-sport="updateSelectedSport"
+                                    :error_status="error_status"
+                                    :all_sports="all_sports"
+                                    :pending_sports="all_sports_loading"
+                                />
                                 <AccountsTipsterSocialForm v-else :loading="loadingFetch" v-model:telegram="telegram"
                                     :experience="experience" :social_name="social_name" v-model:social_link="social_link"
                                     @update-experience="updateExperience" @submit-data="onSubmitTipsterDetails"

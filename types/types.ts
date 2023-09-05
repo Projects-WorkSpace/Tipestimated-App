@@ -53,3 +53,19 @@ export interface IDropdownItem {
     disabled?: boolean | undefined;
     click?: Function | undefined;
 }
+
+// 
+export interface IAllSport {
+    allSports: AllSports;
+}
+export interface AllSports {
+    edges?: (EdgesEntity)[] | null;
+}
+export interface EdgesEntity {
+    node: Node;
+}
+export interface Node {
+    name: string;
+    icon: string;
+}
+  
