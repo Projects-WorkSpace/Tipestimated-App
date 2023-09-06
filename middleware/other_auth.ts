@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     const authStore = useAuthStore()
     const { onLogout } = useApollo();
     const today = new Date();
-    const tokenBearer = useCookie('apollo:default.token')
+    const tokenBearer = useCookie('auth-token')
 
     if (tokenBearer.value === undefined) {
         return navigateTo("/accounts/login");

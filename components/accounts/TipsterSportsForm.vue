@@ -13,7 +13,7 @@ const props = defineProps<{
     favorite_sport: IListProps;
     other_sport: IListProps;
     error_status: IErrorTipsterStatus,
-    all_sports?: IAllSport,
+    all_sports?: IAllSport | null,
     pending_sports: boolean
 }>();
 

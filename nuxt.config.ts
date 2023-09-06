@@ -27,9 +27,7 @@ export default defineNuxtConfig({
         tokenStorage: "cookie",
         proxyCookies: true,
         clients: {
-            default: {
-                httpEndpoint: "https://tipstimate.com/graphql" // "http://127.0.0.1:8000/graphql"
-            }
+            default: './apollo/default.ts',
         },
     },
     build: {

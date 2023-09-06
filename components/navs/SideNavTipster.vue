@@ -126,21 +126,12 @@ const logoutUser = (): void => {
                     </button>
                 </DialogTitle>
                 <div class="w-full mt-3.5 flex flex-col gap-y-2.5">
-                    <div class="w-full">
-                        <ContainersSelectInput />
+                    <div class="w-full flex items-center justify-center py-6">
+                        <Icon name="🚧" size="100" />
                     </div>
-                    <div class="w-full">
+                    <!-- <div class="w-full">
                         <ContainersSelectInput />
-                    </div>
-                    <div class="w-full">
-                        <ContainersSelectInput />
-                    </div>
-                    <div class="w-full">
-                        <ContainersSelectInput />
-                    </div>
-                    <div class="w-full">
-                        <ContainersSelectInput />
-                    </div>
+                    </div> -->
                 </div>
                 </div>
                 <div class="w-full flex justify-end items-center mt-4 gap-x-2">

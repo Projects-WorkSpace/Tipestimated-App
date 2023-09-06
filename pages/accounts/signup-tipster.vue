@@ -10,9 +10,28 @@ definePageMeta({
 const second_form = ref(false);
 const router = useRouter();
 const config = useRuntimeConfig()
-const is_tipster_approved = useCookie('is_tipster_approved')
+const is_tipster_approved = useCookie('is_tipster_approved', {sameSite: true})
 const toast = useToast();
-const { data: all_sports, pending: all_sports_loading, error: all_sports_err } = await useAsyncQuery<IAllSport>(AllSports)
+const sportsData = ref<{
+    data: IAllSport | null;
+    errors: any;
+    pending: boolean
+}>({
+    data: null,
+    errors: null,
+    pending: true
+})
+
+const fetchSportsData = async () => {
+    const { data, error, pending } = await useAsyncQuery<IAllSport>(AllSports)
+    if(data.value?.allSports) {
+        sportsData.value.data = data.value
+    }
+    if(error.value) {
+        sportsData.value.errors = error.value
+    }
+    sportsData.value.pending = pending.value;
+}
 
 const pen_name = ref<string>('');
 const nationality = ref('');
@@ -203,6 +222,12 @@ onError((error) => {
     }
 })
 
+onMounted(() => {
+    setTimeout(() => {
+        fetchSportsData();
+    }, 1000);
+})
+
 // Post also the Image
 const postProfileImage = async (id: string) => {
     const formData = new FormData();
@@ -260,8 +285,8 @@ const postProfileImage = async (id: string) => {
                                     @update-selected-other-sport="updateSelectedOtherSport"
                                     @update-selected-sport="updateSelectedSport"
                                     :error_status="error_status"
-                                    :all_sports="all_sports"
-                                    :pending_sports="all_sports_loading"
+                                    :all_sports="sportsData?.data"
+                                    :pending_sports="sportsData.pending"
                                 />
                                 <AccountsTipsterSocialForm v-else :loading="loadingFetch" v-model:telegram="telegram"
                                     :experience="experience" :social_name="social_name" v-model:social_link="social_link"

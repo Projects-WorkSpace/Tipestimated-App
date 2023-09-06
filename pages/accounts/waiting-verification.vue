@@ -10,8 +10,10 @@ definePageMeta({
 
 const toast = useToast();
 const router = useRouter();
-const is_tipster_approved = useCookie('is_tipster_approved')
-const { data: tipster_info, error: tipster_info_error, pending: tipster_info_loading } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
+const is_tipster_approved = useCookie('is_tipster_approved', {sameSite: true});
+const tipsterData = ref<IGetTipsterByUser | null>(null);
+const tipsterErrors = ref<any>(null);
+const tipsterLoading = ref(true)
 
 const transition = {
     "enterActiveClass": "transform ease-out duration-300 transition",
@@ -28,35 +30,66 @@ const formatTimestamp = (timestamp: string | null) => {
         const formattedDate = format(date, 'MMMM d, yyyy \'at\' h:mm a');
         return formattedDate;
     } else {
-        return "";
+        return "unkown time";
     }
 }
 
-const checkAndUpdateTipsterApproval = () => {
-  if (tipster_info.value?.getTipsterByUser?.isApproved) {
-    console.log("Check and found data: ", tipster_info.value)
-    // is_tipster_approved.value = 'true'; // Assuming you want to set it as a string 'true'
-    // You can also set an expiration date for the cookie if needed:
-    // useCookie('is_tipster_approved', 'true', { expires: 365 });
-  } else {
-    console.log("Check and not found data: ", tipster_info.value)
-  }
-};
+const fetchTipsterData = async () => {
+    const { data, error, pending } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
+    if(data.value?.getTipsterByUser) {
+        tipsterData.value = data.value;
+        const tipster = data.value.getTipsterByUser;
+        if (tipster.isApproved) {
+            is_tipster_approved.value = null;
+            router.push('/');
+        } else {
+            console.log("isApproved false");
+        }
+    } else if(error.value) {
+        tipsterErrors.value = error.value;
+        toast.add({
+            title: error.value.message,
+            ui: {
+                title: 'text-[tomato] font-regular',
+                progress: {
+                    background: 'bg-[tomato]',
+                    base: "h-0"
+                },
+                transition: transition,
+                gray: "tomato",
+                shadow: "shadow-md",
+                ring: "ring-1 ring-[tomato]",
+                background: "bg-white"
+            },
+            timeout: 6000
+        });
+    } else {
+        toast.add({
+            title: "It seems that you don't have Tipster a account.",
+            ui: {
+                title: 'text-[tomato] font-regular',
+                progress: {
+                    background: 'bg-[tomato]',
+                    base: "h-0"
+                },
+                transition: transition,
+                gray: "tomato",
+                shadow: "shadow-md",
+                ring: "ring-1 ring-[tomato]",
+                background: "bg-white"
+            },
+            timeout: 0
+        });
+        router.push("/accounts/signup-tipster");
+    }
+    tipsterLoading.value = pending.value;
+}
 
-// const checkAndUpdateTipsterError = () => {
-//   if (tipster_info_error.value) {
-//     console.log("Check and found error: ", tipster_info_error.value)
-//     // is_tipster_approved.value = 'true'; // Assuming you want to set it as a string 'true'
-//     // You can also set an expiration date for the cookie if needed:
-//     // useCookie('is_tipster_approved', 'true', { expires: 365 });
-//   } else {
-//     console.log("Check and not found error")
-//   }
-// };
-
-// Call the function to check and update approval status
-checkAndUpdateTipsterApproval();
-// checkAndUpdateTipsterError()
+onMounted(() => {
+    setTimeout(() => {
+        fetchTipsterData();
+    }, 1000);
+})
 </script>
 
 <template>
@@ -65,7 +98,7 @@ checkAndUpdateTipsterApproval();
             <section class="w-full h-full flex items-center justify-center">
                 <div class="max-w-[450px] flex flex-col">
                     <ContainersDialog>
-                        <div v-if="!tipster_info_loading" class="w-full flex flex-col px-6 md:px-12 py-8">
+                        <div v-if="!tipsterLoading" class="w-full flex flex-col px-6 md:px-12 py-8">
                             <div class="w-full flex flex-col items-center justify-center pb-4 gap-y-6">
                                 <div class="flex items-center justify-center">
                                     <Icon name="🥳" class="!text-7xl" />
@@ -77,7 +110,7 @@ checkAndUpdateTipsterApproval();
                                     </h3>
                                     <p class="text-xs text-t-gray">
                                         Waiting since 
-                                        {{ formatTimestamp(tipster_info?.getTipsterByUser?.createdAt) }}
+                                        {{ formatTimestamp(tipsterData?.getTipsterByUser.createdAt || null) }}
                                     </p>
                                 </div>
                             </div>
@@ -104,7 +137,7 @@ checkAndUpdateTipsterApproval();
                                         class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-black tracking-wide rounded-lg hover:bg-base-green focus:bg-base-green transition flex items-center justify-center">
                                         Contact Us
                                     </button>
-                                    <!-- {{ tipster_info }} -->
+                                    {{ tipsterData }}
                                      <!-- {{ tipster_info_error }} -->
                                 </div>
                             </div>
