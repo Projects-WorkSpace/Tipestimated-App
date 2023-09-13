@@ -78,3 +78,64 @@ export const AllSports = gql`
   }
 `
 
+export const VerifyToken = gql`
+mutation VerifyToken($token: String!) {
+  verifyToken(token: $token) {
+    payload
+  }
+}
+`
+
+export const Viewer = gql`
+query Viewer($token: String!) {
+  viewer(token: $token) {
+    id
+    email
+    userName
+  }
+}
+`
+
+export const GetMoreUserData = gql`
+query GetMoreUserData($first: Int!, $userId: ID) {
+    tipsterFollowers(first: $first, userId: $userId) {
+        edges {
+            node {
+                tipsterId {
+                    id
+                    penName
+                }
+                id
+            }
+        }
+    }
+    allTipsters(userId: $userId) {
+        edges {
+            node {
+                id
+                penName
+            }
+        }
+    }
+}
+`
+
+export const TipsterFollowers = gql`
+query TipsterFollowers($first: Int) {
+    allTipsters(first: $first) {
+        edges {
+            node {
+                id
+                penName
+                country
+                favoriteSport
+                imageUrl
+                createdAt
+                followerCount
+            }
+        }
+    }
+}
+`
+
+

@@ -24,51 +24,51 @@ const logoutUser = (): void => {
 </script>
 <template>
     <div class="w-full xl:min-w-[250px] h-full flex flex-col justify-between pt-8 pb-4">
-        <div class="w-full flex flex-col px-4">
+        <div class="w-full flex flex-col px-6">
             <h3 class="text-2xl font-sans font-bold tracking-wide hidden lg:block">tipstimate</h3>
         </div>
-        <div class="w-full flex flex-col px-4 gap-y-2">
+        <div class="w-full flex flex-col px-6 gap-y-2">
             <div class="w-full flex flex-col">
-                <button class="w-full flex flex-row gap-x-2 items-center" @click="openCreateModal">
+                <button class="w-full flex flex-row gap-x-2 items-center group" @click="openCreateModal">
                     <span
-                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
+                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:plus" class="text-neutral-700 text-xl md:text-2xl" />
                     </span>
                     <span class="text-base font-medium hidden xl:block">Create</span>
                 </button>
             </div>
             <div class="w-full flex flex-col">
-                <button class="w-full flex flex-row gap-x-2 items-center">
+                <button class="w-full flex flex-row gap-x-2 items-center group">
                     <span
-                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-t-xl transition-colors duration-200 cursor-pointer">
+                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-t-xl transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:account" class="text-neutral-700 text-xl md:text-2xl" />
                     </span>
                     <span class="text-base font-medium hidden xl:block">Profile</span>
                 </button>
-                <NuxtLink to="/" class="w-full flex flex-row gap-x-2 items-center">
+                <NuxtLink to="/" class="w-full flex flex-row gap-x-2 items-center group">
                     <span
-                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
+                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:home-variant" class="text-neutral-700 text-xl md:text-2xl" />
                     </span>
                     <span class="text-base font-medium hidden xl:block">Home</span>
                 </NuxtLink>
-                <NuxtLink href="/rankings" class="w-full flex flex-row gap-x-2 items-center">
+                <NuxtLink href="/rankings" class="w-full flex flex-row gap-x-2 items-center group">
                     <span
-                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
+                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:trophy" class="text-neutral-700 text-xl md:text-2xl" />
                     </span>
                     <span class="text-base font-medium hidden xl:block">Tipster Rank</span>
                 </NuxtLink>
-                <button class="w-full flex flex-row gap-x-2 items-center">
+                <button class="w-full flex flex-row gap-x-2 items-center group">
                     <span
-                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
+                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:medal-outline" class="text-neutral-700 text-xl md:text-2xl" />
                     </span>
                     <span class="text-base font-medium hidden xl:block">Contest</span>
                 </button>
-                <button class="w-full flex flex-row gap-x-2 items-center">
+                <button class="w-full flex flex-row gap-x-2 items-center group">
                     <span
-                        class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-b-xl transition-colors duration-200 cursor-pointer">
+                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-b-xl transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:chart-bar" class="text-neutral-700 text-xl md:text-2xl" />
                     </span>
                     <span class="text-base font-medium hidden xl:block">Tipster Analysis</span>
@@ -77,9 +77,9 @@ const logoutUser = (): void => {
             <div class="w-full flex flex-col">
                 <UiMenuDropDown>
                     <template #button>
-                        <div class="w-full flex flex-row gap-x-2 items-center">
+                        <div class="w-full flex flex-row gap-x-2 items-center group">
                             <div
-                                class="p-4 lg:p-5 hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
+                                class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
                                 <Icon name="mdi:menu" class="text-neutral-700 text-xl md:text-2xl" />
                             </div>
                             <span class="text-lg font-medium hidden xl:block">More</span>

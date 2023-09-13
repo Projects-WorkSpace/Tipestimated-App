@@ -10,6 +10,13 @@ export interface IUserAuth {
     payload: IPayload;
     refreshToken: string;
 }
+
+export interface IUserDetails {
+    id: string;
+    userName: string
+    email: string
+}
+
 export interface IPayload {
     email: string;
     exp: number;
@@ -68,7 +75,7 @@ export interface Node {
     name: string;
     icon: string;
 }
-  
+
 
 // 
 export interface IGetTipsterByUser {
@@ -79,4 +86,56 @@ export interface GetTipsterByUser {
     penName: string;
     isApproved: boolean;
     createdAt: string;
+}
+
+
+export interface IMoreData {
+    tipsterFollowers: TipsterFollowers;
+    allTipsters: AllTipsters;
+}
+export interface TipsterFollowers {
+    edges?: (IMoreDataEdgesEntity)[] | null;
+}
+export interface IMoreDataEdgesEntity {
+    node: IMoreDataNode;
+}
+export interface IMoreDataNode {
+    tipsterId: TipsterId;
+    id: string;
+}
+export interface TipsterId {
+    id: string;
+    penName: string;
+}
+
+export interface AllTipsters {
+    edges?: (AllTipstersEdgesEntity)[] | null;
+}
+export interface AllTipstersEdgesEntity {
+    node: AllTipstersNode;
+}
+export interface AllTipstersNode {
+    id: string;
+    penName: string;
+}
+
+//
+
+export interface ITipsters {
+    allTipsters: ITipstersAllTipsters;
+}
+export interface ITipstersAllTipsters {
+    edges?: (ITipstersEdgesEntity)[] | null;
+}
+export interface ITipstersEdgesEntity {
+    node: ITipstersNode;
+}
+export interface ITipstersNode {
+    id: string;
+    penName: string;
+    country: string;
+    favoriteSport: string;
+    imageUrl: string;
+    createdAt: string;
+    followerCount: number;
 }

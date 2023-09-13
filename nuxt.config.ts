@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
     modules: [
         '@pinia/nuxt', '@nuxt/image', 'nuxt-icon', '@nuxtjs/google-fonts',
-        '@nuxthq/ui', '@nuxtjs/apollo'
+        '@nuxthq/ui', '@nuxtjs/apollo', '@vueuse/nuxt',
     ],
     devtools: {
         enabled: true
@@ -38,4 +38,10 @@ export default defineNuxtConfig({
             apiEndpoint: '', // can be overridden by NUXT_PUBLIC_API_BASE environment variable
         }
     },
+    router: {
+        options: {
+            linkActiveClass: "link-active",
+            linkExactActiveClass: "link-exact-active"
+        }
+    }
 })

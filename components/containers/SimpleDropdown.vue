@@ -13,15 +13,12 @@ const emits = defineEmits<{
 </script>
 
 <template>
-    <UDropdown
-        :items="items"
-        :ui="{
-            item: { disabled: 'cursor-text select-text' },
-            divide: 'divide-y divide-neutral-200',
-            shadow: 'shadow-lg'
-        }"
-        :popper="{ placement: 'bottom-start' }"
-    >
+    <UDropdown :items="items" :ui="{
+        item: { disabled: 'cursor-text select-text' },
+        divide: 'divide-y divide-neutral-100',
+        ring: 'ring-1 ring-neutral-200',
+        shadow: 'shadow-lg'
+    }" :popper="{ placement: 'bottom-start' }">
         <div class="">
             <slot name="btn" />
         </div>
