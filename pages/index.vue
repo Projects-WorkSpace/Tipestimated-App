@@ -13,7 +13,6 @@ const authStore = useAuthStore();
         <NuxtLayout name="users">
             <div class="w-full flex flex-col gap-y-4 py-4 mt-2">
                 <UiSliderHorizontal />
-                {{ authStore.user_details?.id }}
                 <div class="w-full flex flex-col gap-y-4 mt-2">
                     <SectionsPostCard />
                     <SectionsPostCard />

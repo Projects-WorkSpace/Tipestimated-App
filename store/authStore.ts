@@ -6,6 +6,7 @@ export const useAuthStore = defineStore("user", () => {
     const userPayload = ref<IPayload>();
     const is_logged_in = ref<boolean>(false)
     const user_details = ref<IUserDetails>();
+    const if_less_followers = ref(false);
     const updateAppUser = (payload: IUserAuth) => {
         appUser.value = payload;
     };
@@ -18,9 +19,12 @@ export const useAuthStore = defineStore("user", () => {
     const updateUserDetails = (payload: IUserDetails) => {
         user_details.value = payload;
     };
+    const updateIfLessFollowers = () => {
+        if_less_followers.value = !if_less_followers.value;
+    }
 
     return {
-        appUser, userPayload, is_logged_in, user_details,
-        updateAppUser, updateUserPayload, updateIsLoggedIn, updateUserDetails
+        appUser, userPayload, is_logged_in, user_details, if_less_followers,
+        updateAppUser, updateUserPayload, updateIsLoggedIn, updateUserDetails, updateIfLessFollowers
     };
 });

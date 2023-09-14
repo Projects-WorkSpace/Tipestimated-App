@@ -47,6 +47,7 @@ const getMoreUserData = async () => {
                 let following = tipsterFollowing.edges;
                 if (following) {
                     if (following.length <= 3) {
+                        authStore.updateIfLessFollowers();
                         if (!route.name?.toString().includes("accounts")) {
                             router.push("/explore/tipsters");
                         }

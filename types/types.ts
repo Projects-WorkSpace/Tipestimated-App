@@ -138,4 +138,27 @@ export interface ITipstersNode {
     imageUrl: string;
     createdAt: string;
     followerCount: number;
+    isFollowedByUser: boolean;
+}
+
+
+export interface IFollowData {
+    followTipster: FollowTipster;
+}
+export interface FollowTipster {
+    followers: Followers;
+    errors?: (string)[] | null;
+}
+export interface Followers {
+    id: string;
+    createdAt: string;
+}
+
+
+export interface IUnFollowData {
+    unFollowTipster: UnFollowTipster;
+}
+export interface UnFollowTipster {
+    success: boolean;
+    errors?: (string)[] | null;
 }

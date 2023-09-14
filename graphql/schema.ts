@@ -121,8 +121,8 @@ query GetMoreUserData($first: Int!, $userId: ID) {
 `
 
 export const TipsterFollowers = gql`
-query TipsterFollowers($first: Int) {
-    allTipsters(first: $first) {
+query TipsterFollowers($first: Int, $penName: String) {
+    allTipsters(first: $first, penName_Icontains: $penName) {
         edges {
             node {
                 id
@@ -132,10 +132,35 @@ query TipsterFollowers($first: Int) {
                 imageUrl
                 createdAt
                 followerCount
+                isFollowedByUser
             }
         }
     }
 }
 `
 
+export const FollowTipsterMutation = gql`
+mutation FollowTipster($userId: ID!, $tipsterId: ID!) {
+    followTipster(
+        input: {userId: $userId, tipsterId: $tipsterId}
+    ) {
+        errors
+        followers {
+            id
+            createdAt
+        }
+    }
+}
+`
+
+export const UnFollowTipsterMutation = gql`
+mutation UnFollowTipster($userId: ID!, $tipsterId: ID!) {
+    unFollowTipster(
+        input: {userId: $userId, tipsterId: $tipsterId}
+    ) {
+        errors
+        success
+    }
+}
+`
 
