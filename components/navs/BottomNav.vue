@@ -1,5 +1,14 @@
+<script setup lang="ts">
+import { usePageFeatureStore } from '~/store/pageFeatures';
+
+const featureStore = usePageFeatureStore();
+const isTipster = computed(() => {
+    return featureStore.isTipster;
+})
+</script>
 <template>
-    <nav class="fixed bottom-0 w-full flex md:hidden gap-x-2 justify-evenly items-center px-4 border-t border-c-seperator bg-c-light">
+    <nav
+        class="fixed bottom-0 w-full flex md:hidden gap-x-2 justify-evenly items-center px-4 border-t border-c-seperator bg-c-light">
         <div class="flex items-center justify-center">
             <NuxtLink to="/" class="p-2.5">
                 <span class="inactive-icon">
@@ -10,7 +19,7 @@
                 </span>
             </NuxtLink>
         </div>
-        <div class="flex items-center justify-center">
+        <div v-if="isTipster" class="flex items-center justify-center">
             <button class="p-2.5">
                 <Icon name="ph:plus-square" class="text-3xl" />
             </button>
@@ -42,6 +51,7 @@
 .link-active .active-icon {
     @apply block;
 }
+
 .link-active .inactive-icon {
     @apply hidden;
 }

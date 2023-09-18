@@ -4,11 +4,17 @@ export interface IListProps {
     disabled?: boolean;
 }
 
+
+export interface ILoginResponse {
+    tokenAuth: IUserAuth;
+}
+
 export interface IUserAuth {
-    refreshExpiresIn: number;
+    refreshExpiresIn?: number;
     token: string;
     payload: IPayload;
     refreshToken: string;
+    isTipster: boolean;
 }
 
 export interface IUserDetails {
@@ -27,6 +33,29 @@ export interface IRefreshToken {
     refreshExpiresIn: number;
     refreshToken: string;
 }
+
+
+export interface IRegisterUserResponse {
+    registerAppUser: IRegisterAppUser;
+}
+export interface IRegisterAppUser {
+    token: string;
+    payload: string;
+    isTipster: boolean;
+    user: IUser;
+    errors: (RegisterErrorsEntity)[];
+}
+export interface IUser {
+    id: string;
+    userName: string;
+    dob: string;
+    dateJoined: string;
+}
+export interface RegisterErrorsEntity {
+    field: string;
+    messages: (string)[];
+}
+
 
 export interface IErrorTipsterStatus {
     pen_name: boolean;

@@ -3,6 +3,8 @@ import { appName } from './constants';
 import { GetMoreUserData, Viewer } from '~/graphql/schema';
 import { IMoreData, IUserDetails } from './types/types';
 import { useAuthStore } from "~/store/authStore";
+import { usePageFeatureStore } from '~/store/pageFeatures';
+
 useHead({
     title: appName,
 });
@@ -15,6 +17,7 @@ const { getToken } = useApollo();
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
+const featureStore = usePageFeatureStore();
 const { mutate: fetchUser, onDone: onDoneViewUser, onError: onErrorViewUser } = useMutation<IUserData>(Viewer);
 
 onDoneViewUser((data) => {
@@ -54,6 +57,8 @@ const getMoreUserData = async () => {
                     }
                 }
             }
+        } else {
+            featureStore.updateIsTipster(true);
         }
 
     } else if (error.value) {

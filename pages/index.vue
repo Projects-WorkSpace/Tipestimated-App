@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/store/authStore";
 definePageMeta({
     middleware: 'auth',
 });
-const authStore = useAuthStore();
-
-
 
 </script>
 <template>

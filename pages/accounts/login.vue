@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ObtainToken } from "~/graphql/schema";
 import { useAuthStore } from "~/store/authStore";
+import { usePageFeatureStore } from '~/store/pageFeatures';
+import { ILoginResponse } from '~/types/types';
 
 interface ILoginDetail {
     email: string;
@@ -12,6 +14,7 @@ const form_details = ref<ILoginDetail>({
 });
 
 const authStore = useAuthStore();
+const featureStore = usePageFeatureStore();
 const router = useRouter();
 const toast = useToast();
 const { onLogin } = useApollo();
@@ -21,7 +24,7 @@ const user_payload = useCookie("user_payload", {
     expires: new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000 - 2 * 60 * 1000),
     sameSite: true,
 });
-const { mutate: postAuthDetails, loading, error: submitError, onDone, onError } = useMutation(ObtainToken);
+const { mutate: postAuthDetails, loading, error: submitError, onDone, onError } = useMutation<ILoginResponse>(ObtainToken);
 
 const transition = {
     "enterActiveClass": "transform ease-out duration-300 transition",
@@ -49,17 +52,26 @@ const submitDetails = (): void => {
     postAuthDetails(form_details.value);
 };
 onDone((data) => {
-    if (!submitError.value) {
-        authStore.updateUserPayload(data.data.tokenAuth.payload);
-        user_payload.value = data.data.tokenAuth.payload;
-        onLogin(data.data.tokenAuth.token);
+    let response = data.data;
+    if (response?.tokenAuth) {
+        authStore.updateUserPayload(response?.tokenAuth.payload);
+        user_payload.value = response.tokenAuth.payload as unknown as string;
+        onLogin(response?.tokenAuth.token);
         authStore.updateIsLoggedIn()
+        if (response.tokenAuth.isTipster) { // if is tipster
+            featureStore.updateIsTipster(true);
+        } else {
+            featureStore.updateIsTipster(false);
+        }
+
         if (window.history.state.back === null) {
             router.push("/");
         } else {
             router.back();
         }
+
     }
+
 });
 
 onError((error) => {

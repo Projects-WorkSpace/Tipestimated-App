@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { IListProps, IErrorTipsterStatus, IProfileImage, IAllSport } from '~/types/types';
 import { AllSports, SignupTipster } from "~/graphql/schema";
+import { usePageFeatureStore } from '~/store/pageFeatures';
 
 // Protected page
 definePageMeta({
@@ -9,8 +10,9 @@ definePageMeta({
 
 const second_form = ref(false);
 const router = useRouter();
+const featureStore = usePageFeatureStore();
 const config = useRuntimeConfig()
-const is_tipster_approved = useCookie('is_tipster_approved', {sameSite: true})
+const is_tipster_approved = useCookie('is_tipster_approved', { sameSite: true })
 const toast = useToast();
 const sportsData = ref<{
     data: IAllSport | null;
@@ -24,10 +26,10 @@ const sportsData = ref<{
 
 const fetchSportsData = async () => {
     const { data, error, pending } = await useAsyncQuery<IAllSport>(AllSports)
-    if(data.value?.allSports) {
+    if (data.value?.allSports) {
         sportsData.value.data = data.value
     }
-    if(error.value) {
+    if (error.value) {
         sportsData.value.errors = error.value
     }
     sportsData.value.pending = pending.value;
@@ -173,6 +175,7 @@ const transition = {
 onDone((data) => {
     if (data.data.signupTipster.errors === null) {
         postProfileImage(data.data.signupTipster.encodedId)
+        featureStore.updateIsTipster(true);
     } else {
         data.data.signupTipster.errors.forEach((error: any) => {
             toast.add({
@@ -191,7 +194,7 @@ onDone((data) => {
                 icon: 'i-heroicons-information-circle',
                 timeout: 0
             });
-            if(error === "pen_name: Tipster with this Pen name already exists.") {
+            if (error === "pen_name: Tipster with this Pen name already exists.") {
                 second_form.value = false;
             }
         });
@@ -199,7 +202,6 @@ onDone((data) => {
 })
 
 onError((error) => {
-    console.log("Error here onError:", error)
     if (error.message === "Failed to fetch") {
         toast.add({
             title: error.message,
@@ -261,6 +263,7 @@ const postProfileImage = async (id: string) => {
         });
     }
 }
+
 </script>
 <template>
     <section class="w-full flex flex-col items-center pb-6">
@@ -276,18 +279,12 @@ const postProfileImage = async (id: string) => {
                     <div class="w-full flex flex-col mt-4 px-10 gap-y-6">
                         <div class="w-full flex flex-col">
                             <Transition mode="out-in">
-                                <AccountsTipsterSportsForm v-if="!second_form"
-                                    @submit-sport-data="onClickContinue"
-                                    v-model:pen_name="pen_name"
-                                    v-model:nationality="nationality"
-                                    :favorite_sport="favorite_sport"
-                                    :other_sport="other_sport"
+                                <AccountsTipsterSportsForm v-if="!second_form" @submit-sport-data="onClickContinue"
+                                    v-model:pen_name="pen_name" v-model:nationality="nationality"
+                                    :favorite_sport="favorite_sport" :other_sport="other_sport"
                                     @update-selected-other-sport="updateSelectedOtherSport"
-                                    @update-selected-sport="updateSelectedSport"
-                                    :error_status="error_status"
-                                    :all_sports="sportsData?.data"
-                                    :pending_sports="sportsData.pending"
-                                />
+                                    @update-selected-sport="updateSelectedSport" :error_status="error_status"
+                                    :all_sports="sportsData?.data" :pending_sports="sportsData.pending" />
                                 <AccountsTipsterSocialForm v-else :loading="loadingFetch" v-model:telegram="telegram"
                                     :experience="experience" :social_name="social_name" v-model:social_link="social_link"
                                     @update-experience="updateExperience" @submit-data="onSubmitTipsterDetails"
