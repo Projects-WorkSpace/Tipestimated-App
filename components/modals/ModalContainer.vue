@@ -4,7 +4,6 @@ import {
     TransitionChild,
     Dialog,
     DialogPanel,
-    DialogTitle,
 } from '@headlessui/vue'
 
 defineProps<{
@@ -12,16 +11,12 @@ defineProps<{
 }>()
 const emit = defineEmits<{
     (e: 'closeModal'): void
-    (e: 'openModal'): void
 }>()
 
 function closeModal() {
-    console.log("Close modal")
     emit('closeModal')
 }
-function openModal() {
-    emit('openModal')
-}
+
 </script>
 
 <template>

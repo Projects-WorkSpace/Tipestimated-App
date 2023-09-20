@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
     modules: [
         '@pinia/nuxt', '@nuxt/image', 'nuxt-icon', '@nuxtjs/google-fonts',
-        '@nuxthq/ui', '@nuxtjs/apollo', '@vueuse/nuxt',
+        '@nuxt/ui', '@nuxtjs/apollo', '@vueuse/nuxt',
     ],
     devtools: {
         enabled: true
@@ -36,6 +36,8 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             apiEndpoint: '', // can be overridden by NUXT_PUBLIC_API_BASE environment variable
+            rapidApiKey: process.env.NUXT_PUBLIC_RAPIDAPIKEY,
+            rapidApiHost: process.env.NUXT_PUBLIC_RAPIDAPIHOST
         }
     },
     router: {

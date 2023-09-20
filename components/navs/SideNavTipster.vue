@@ -1,18 +1,13 @@
 <script setup lang="ts">
 import { MenuItem } from '@headlessui/vue'
+import { storeToRefs } from 'pinia';
 import { usePageFeatureStore } from '~/store/pageFeatures';
-import { DialogTitle } from '@headlessui/vue'
 
 
 const featureStore = usePageFeatureStore();
+const { isTipster } = storeToRefs(featureStore);
+const { updateOpenCreateModal } = featureStore;
 
-const closeCreateModal = (): void => {
-    featureStore.updateOpenCreateModal();
-};
-
-const openCreateModal = (): void => {
-    featureStore.updateOpenCreateModal();
-}
 const { onLogout } = useApollo()
 const router = useRouter()
 const user_payload = useCookie("user_payload", { sameSite: true })
@@ -22,11 +17,6 @@ const logoutUser = (): void => {
     router.push("/accounts/login")
 }
 
-const isTipster = computed(() => {
-    return featureStore.isTipster;
-})
-
-
 </script>
 <template>
     <div class="w-full xl:min-w-[250px] h-full flex flex-col justify-between pt-8 pb-4">
@@ -35,7 +25,7 @@ const isTipster = computed(() => {
         </div>
         <div class="w-full flex flex-col px-6 gap-y-2">
             <div v-if="isTipster" class="w-full flex flex-col">
-                <button class="w-full flex flex-row gap-x-2 items-center group" @click="openCreateModal">
+                <button class="w-full flex flex-row gap-x-2 items-center group" @click="updateOpenCreateModal">
                     <span
                         class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
                         <Icon name="mdi:plus" class="text-neutral-700 text-xl md:text-2xl" />
@@ -121,57 +111,5 @@ const isTipster = computed(() => {
 
         <!-- Modals -->
 
-        <ModalsModalContainer :is-open="featureStore.openCreate" @open-modal="openCreateModal"
-            @close-modal="closeCreateModal">
-            <div class="w-full flex flex-col justify-between min-h-[30vh]">
-                <div class="w-full flex flex-col">
-                    <DialogTitle as="div" class="flex items-center justify-center relative">
-                        <h3 class="text-lg font-semibold leading-6 text-gray-900">Create Tip</h3>
-                        <button @click="closeCreateModal" class="absolute right-1 text-neutral-600 hover:text-neutral-800 ">
-                            <Icon name="mdi:close" class="text-xl" />
-                        </button>
-                    </DialogTitle>
-                    <div class="w-full mt-3.5 flex flex-col gap-y-2.5">
-                        <div class="w-full flex items-center justify-center py-6">
-                            <Icon name="🚧" size="100" />
-                        </div>
-                        <!-- <div class="w-full">
-                        <ContainersSelectInput />
-                    </div> -->
-                    </div>
-                </div>
-                <div class="w-full flex justify-end items-center mt-4 gap-x-2">
-                    <span class="text-base">Insert another game</span>
-                    <button class="bg-light-hover/80 p-1.5 rounded-lg">
-                        <Icon name="mdi:plus-thick" class="text-xl text-neutral-700" />
-                    </button>
-                </div>
-                <div class="mt-8 flex items-center justify-between">
-                    <div class="flex items-center gap-x-5">
-                        <button type="button"
-                            class="inline-flex justify-center rounded-md border border-transparent bg-light-hover/80 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none"
-                            @click="closeCreateModal">
-                            <Icon name="mdi:account-multiple" class="text-xl mr-1" />
-                            Friends
-                        </button>
-                        <button type="button"
-                            class="inline-flex justify-center rounded-md border border-transparent bg-light-hover/80 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
-                            <Icon name="mdi:bullhorn" class="text-xl mr-1" />
-                            Channel
-                        </button>
-                    </div>
-                    <div class="flex items-center gap-x-5">
-                        <button type="button"
-                            class="inline-flex justify-center rounded-md border border-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white hover:bg-base-green focus:outline-none">
-                            Promote
-                        </button>
-                        <button type="button"
-                            class="inline-flex justify-center rounded-md border border-transparent bg-green-500/80 px-4 py-2 text-sm font-medium text-white hover:bg-base-green focus:outline-none">
-                            Publish
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </ModalsModalContainer>
     </div>
 </template>

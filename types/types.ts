@@ -191,3 +191,23 @@ export interface UnFollowTipster {
     success: boolean;
     errors?: (string)[] | null;
 }
+
+
+//
+export interface ILeagueEntity {
+    LEAGUE_NAME: string;
+    COUNTRY_NAME: string;
+    COUNTRY_ID: number;
+    ACTUAL_TOURNAMENT_SEASON_ID: string;
+    GROUP_ID: string;
+    SEASON_ID: number;
+    TEMPLATE_ID: string;
+    STAGES?: (STAGESEntity)[] | null;
+}
+
+export interface STAGESEntity {
+    STAGE_ID: string;
+    STAGE_NAME: string;
+    OUT: string;
+}
+

@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { usePageFeatureStore } from '~/store/pageFeatures';
 
 const featureStore = usePageFeatureStore();
-const isTipster = computed(() => {
-    return featureStore.isTipster;
-})
+const { isTipster } = storeToRefs(featureStore);
+const { updateOpenCreateModal } = featureStore;
+
+
 </script>
 <template>
     <nav

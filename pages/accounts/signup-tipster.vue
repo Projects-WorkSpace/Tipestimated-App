@@ -136,7 +136,7 @@ function isValidTelegramLink(link: string) {
     return telegramLinkRegex.test(link);
 }
 
-const { mutate: submitTipsterDetails, loading: loadingFetch, error, onDone, onError } = useMutation(SignupTipster)
+const { mutate: submitTipsterDetails, loading: loadingFetch, onDone, onError } = useMutation(SignupTipster)
 
 const onSubmitTipsterDetails = (): void => {
     resetErrorStatus()

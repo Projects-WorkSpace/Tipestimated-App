@@ -17,5 +17,8 @@
             <NavsRightTipsteraNav />
         </nav>
         <NavsBottomNav />
+
+        <!-- Global Modals -->
+        <ContainersCreateTip />
     </main>
 </template>
