@@ -3,6 +3,8 @@ import { storeToRefs } from 'pinia';
 import { usePageFeatureStore } from '~/store/pageFeatures';
 import { DialogTitle } from '@headlessui/vue'
 import { ILeagueEntity } from '~/types/types';
+import { IFixturesEventsEntity, IFixtureData } from '~/types/plays';
+
 
 const featureStore = usePageFeatureStore();
 const { openCreate } = storeToRefs(featureStore);
@@ -10,17 +12,30 @@ const { updateOpenCreateModal } = featureStore;
 
 interface ITipData {
   leagueData: ILeagueEntity | null,
-  matchData: string
+  matchData: IFixturesEventsEntity | null
 
 }
 
 const newTipData = ref<ITipData>({
   leagueData: null,
-  matchData: ''
+  matchData: null
 })
+const currentTournamentData = ref<IFixtureData | null>(null)
 
 const updateLeagueData = (payload: ILeagueEntity) => {
   newTipData.value.leagueData = payload;
+  currentTournamentData.value = null;
+
+  // empty the rest of the inputs
+  newTipData.value.matchData = null;
+}
+const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[] | undefined): void => {
+  newTipData.value.matchData = payload;
+  if (fixtureData) {
+    if (fixtureData.length >= 1) {
+      currentTournamentData.value = fixtureData[0];
+    }
+  }
 }
 </script>
 <template>
@@ -35,15 +50,15 @@ const updateLeagueData = (payload: ILeagueEntity) => {
         </DialogTitle>
         <div class="w-full mt-3.5 flex flex-col gap-y-2.5">
 
-          <!-- <div class="w-full"> -->
           <ContainersSelectLeagueInput :label="newTipData.leagueData?.LEAGUE_NAME || 'Select Championship'"
             @select-league="updateLeagueData" />
-          <!-- <ContainersSelectInput :label="'Select Match'" /> -->
+          <ContainersSelectMatch :matchData="newTipData.matchData" :leagueData="newTipData?.leagueData"
+            @select-event="selectEvent" />
+
           <!-- <ContainersSelectInput :label="'Outcome'" /> -->
           <!-- <ContainersSelectInput :label="'Select Bookmaker'" /> -->
           <!-- <ContainersSelectInput :label="'Total odds'" /> -->
 
-          <!-- </div> -->
         </div>
       </div>
       <div class="w-full flex justify-end items-center mt-2 gap-x-2">

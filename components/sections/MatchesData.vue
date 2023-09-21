@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { sportEmojis } from "~/constants/sportsEmojis";
+import { ILeagueEntity } from "~/types/types";
 
 const emits = defineEmits<{
-  (e: 'selectLeague', payload: DATAEntity): void
+  (e: 'selectLeague', payload: ILeagueEntity): void
 }>()
 const config = useRuntimeConfig();
 const selectedSportId = ref<number | null>(null);
-const selectedCountries = ref<DATAEntity[]>([]);
+const selectedCountries = ref<ILeagueEntity[]>([]);
 const currentCountryData = ref({
   COUNTRY_NAME: '', COUNTRY_ID: 0
 })
@@ -24,23 +25,8 @@ interface ISports {
   icon?: string;
 }
 
-export interface ITournamentList {
-  DATA?: (DATAEntity)[] | null;
-}
-interface DATAEntity {
-  LEAGUE_NAME: string;
-  COUNTRY_NAME: string;
-  COUNTRY_ID: number;
-  ACTUAL_TOURNAMENT_SEASON_ID: string;
-  GROUP_ID: string;
-  SEASON_ID: number;
-  TEMPLATE_ID: string;
-  STAGES?: (STAGESEntity)[] | null;
-}
-interface STAGESEntity {
-  STAGE_ID: string;
-  STAGE_NAME: string;
-  OUT: string;
+interface ITournamentList {
+  DATA?: (ILeagueEntity)[] | null;
 }
 
 const { data: sportsData, pending, error, refresh } = await useLazyFetch<IResponseData>(
@@ -60,8 +46,7 @@ const { data: tournamentsData, pending: tournamentsPending, execute: fetchTourna
     }
   }), {
   immediate: false
-}
-)
+})
 const addIcon = (payload: string): string => {
   return (sportEmojis as Record<string, string>)[payload] || ""
 }
@@ -116,7 +101,7 @@ const selectCountry = (payload: ICountry) => {
   nextTab();
 }
 
-const selectedLeague = (payload: DATAEntity) => {
+const selectedLeague = (payload: ILeagueEntity) => {
   //  console.log("From Input Selected league 1: ", payload);
   emits("selectLeague", payload);
 }

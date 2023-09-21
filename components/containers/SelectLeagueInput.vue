@@ -6,7 +6,7 @@ defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (e: 'selectLeague', payload: DATAEntity): void
+  (e: 'selectLeague', payload: ILeagueEntity): void
 }>()
 
 const isOpen = ref(false)
@@ -19,13 +19,13 @@ const selectLeague = (payload: ILeagueEntity) => {
 
 <template>
   <div class="w-full">
-    <button @click="isOpen = true"
-      class="w-full py-2.5 rounded-md bg-c-seperator/60 hover:bg-c-seperator/75 relative flex items-center justify-center text-neutral-600 transition-colors duration-200">
+    <div role="button" @click="isOpen = true"
+      class="w-full py-2.5 rounded-md bg-c-seperator/60 hover:bg-c-seperator/75 relative flex items-center justify-center text-neutral-700 transition-colors duration-200">
       <span class="text-sm font-normal tracking-wide">{{ label }}</span>
       <div class="absolute right-4">
         <Icon name="mdi:chevron-down" class="text-xl" />
       </div>
-    </button>
+    </div>
     <UModal v-model="isOpen" :overlay="false" :ui="{ width: 'w-[110%]', height: 'min-h-[60vh]', background: 'bg-white' }">
       <SectionsMatchesData @select-league="selectLeague" />
     </UModal>
