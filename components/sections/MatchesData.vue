@@ -29,14 +29,14 @@ interface ITournamentList {
   DATA?: (ILeagueEntity)[] | null;
 }
 
-const { data: sportsData, pending, error, refresh } = await useLazyFetch<IResponseData>(
+const { data: sportsData, pending } = await useLazyFetch<IResponseData>(
   'https://flashlive-sports.p.rapidapi.com/v1/sports/list',
   {
     headers: headerData
   }
 )
 
-const { data: tournamentsData, pending: tournamentsPending, execute: fetchTournament, error: tournamentsError } = await useAsyncData<ITournamentList>(
+const { data: tournamentsData, pending: tournamentsPending, execute: fetchTournament } = await useAsyncData<ITournamentList>(
   'tournaments',
   () => $fetch('https://flashlive-sports.p.rapidapi.com/v1/tournaments/list', {
     headers: headerData,
@@ -52,13 +52,14 @@ const addIcon = (payload: string): string => {
 }
 // Separate "Main" and "Other" sports
 const mainSports = computed(() => {
-  return sportsData.value?.DATA.filter((sport) => sport.ID < 9);
+  return sportsData.value?.DATA.filter((sport) => sport.ID < 5);
 })
 
 
 const otherSports = computed(() => {
-  return sportsData.value?.DATA.filter((sport) => sport.ID >= 9);
-})
+  return sportsData.value?.DATA.filter((sport) => [5, 6, 8, 13, 31].includes(sport.ID));
+});
+
 const selectSport = (sportId: number) => {
   selectedSportId.value = sportId;
   nextTab();
@@ -120,7 +121,7 @@ const selectedLeague = (payload: ILeagueEntity) => {
           <div v-else class="w-full flex flex-col gap-y-3">
 
             <div class="w-full">
-              <ul class="w-full flex flex-wrap gap-x-2 gap-y-2">
+              <ul class="w-full flex flex-wrap gap-3">
                 <li v-for="sport in mainSports" :key="sport.ID">
                   <button @click="selectSport(sport.ID)"
                     :class="sport.ID === selectedSportId ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-c-seperator/60 hover:bg-c-seperator/75'"
@@ -132,7 +133,7 @@ const selectedLeague = (payload: ILeagueEntity) => {
             </div>
             <div class="w-full flex flex-col gap-y-2 mt-1.5">
               <p class="text-sm text-neutral-600">Other sports</p>
-              <ul class="w-full flex flex-wrap gap-x-2 gap-y-2">
+              <ul class="w-full flex flex-wrap gap-3">
                 <li v-for="sport in otherSports" :key="sport.ID">
                   <button @click="selectSport(sport.ID)"
                     :class="sport.ID === selectedSportId ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-c-seperator/60 hover:bg-c-seperator/75'"

@@ -40,7 +40,6 @@ const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[]
             <NuxtImg :src="matchData?.AWAY_IMAGES[0] || ''" class="w-4 h-4" />
             <span class="text-sm font-normal tracking-wide">{{ matchData?.AWAY_NAME }}</span>
           </div>
-
         </div>
         <span v-else class="text-sm font-normal tracking-wide">Select Match</span>
       </Transition>

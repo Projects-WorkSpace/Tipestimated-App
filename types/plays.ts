@@ -113,3 +113,41 @@ export interface IFixtureData {
   TOURNAMENT_SEASON_ID: string;
   CATEGORY_NAME: string;
 }
+
+// 
+export interface IScoreValue {
+  id: number;
+  name: string;
+  value: string;
+}
+export interface IPredictionScore {
+  score: string | null;
+  scoreName: string | null;
+}
+
+export interface IExactScore {
+  home: number | null;
+  away: number | null;
+}
+
+export interface IAsianHandicap {
+  home: number | null;
+  away: number | null;
+
+}
+export interface IOverUnder {
+  under: number | null;
+  over: number | null;
+}
+export interface IMatchWinner {
+  value: string | null;
+}
+export interface IHomeAway {
+  value: string | null;
+}
+export interface IBothToScore {
+  value: string | null;
+}
+export interface IScoringQuarter {
+  value: string | null;
+}

@@ -15,13 +15,17 @@ interface ITipData {
   matchData: IFixturesEventsEntity | null
 
 }
+interface IPredictionScore {
+  name: string;
+  value: string;
+}
 
 const newTipData = ref<ITipData>({
   leagueData: null,
   matchData: null
 })
 const currentTournamentData = ref<IFixtureData | null>(null)
-
+const predictionScore = ref<IPredictionScore | null>(null)
 const updateLeagueData = (payload: ILeagueEntity) => {
   newTipData.value.leagueData = payload;
   currentTournamentData.value = null;
@@ -37,6 +41,10 @@ const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[]
     }
   }
 }
+
+const updatePredictionScore = (payload: IPredictionScore) => {
+  predictionScore.value = payload;
+}
 </script>
 <template>
   <ModalsModalContainer :is-open="openCreate" @close-modal="updateOpenCreateModal">
@@ -48,14 +56,15 @@ const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[]
             <Icon name="mdi:close" class="text-xl" />
           </button>
         </DialogTitle>
-        <div class="w-full mt-3.5 flex flex-col gap-y-2.5">
+        <div class="w-full mt-5 flex flex-col gap-y-2.5">
 
           <ContainersSelectLeagueInput :label="newTipData.leagueData?.LEAGUE_NAME || 'Select Championship'"
             @select-league="updateLeagueData" />
           <ContainersSelectMatch :matchData="newTipData.matchData" :leagueData="newTipData?.leagueData"
             @select-event="selectEvent" />
+          <ContainersSelectGameScore :matchData="newTipData.matchData" :prediction-score="predictionScore"
+            @update-prediction-score="updatePredictionScore" />
 
-          <!-- <ContainersSelectInput :label="'Outcome'" /> -->
           <!-- <ContainersSelectInput :label="'Select Bookmaker'" /> -->
           <!-- <ContainersSelectInput :label="'Total odds'" /> -->
 
