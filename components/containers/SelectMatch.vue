@@ -27,7 +27,7 @@ const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[]
 <template>
   <div class="w-full">
     <button @click="openModal"
-      :class="leagueData === null ? 'bg-c-seperator/40 text-neutral-500' : 'bg-c-seperator/60 hover:bg-c-seperator/75 text-neutral-600'"
+      :class="leagueData === null ? 'bg-c-seperator/40 text-neutral-500' : 'bg-c-seperator/60 hover:bg-c-seperator/75 text-neutral-700'"
       class="w-full py-2.5 rounded-md  relative flex items-center justify-center  transition-colors duration-200">
       <Transition mode="out-in">
         <div v-if="matchData" class="flex items-center gap-x-3">

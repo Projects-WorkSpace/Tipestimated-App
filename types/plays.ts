@@ -1,3 +1,8 @@
+export interface ISports {
+  ID: number;
+  NAME: string;
+  icon?: string;
+}
 export interface IFixturesData {
   DATA: (IFixturesDataEntity)[];
 }
@@ -120,10 +125,6 @@ export interface IScoreValue {
   name: string;
   value: string;
 }
-export interface IPredictionScore {
-  score: string | null;
-  scoreName: string | null;
-}
 
 export interface IExactScore {
   home: number | null;
@@ -150,4 +151,17 @@ export interface IBothToScore {
 }
 export interface IScoringQuarter {
   value: string | null;
+}
+
+export interface IPredictionScore {
+  name: string;
+  value: string;
+}
+
+//
+
+export interface IBookmaker {
+  id: string;
+  name: string;
+  img: string;
 }

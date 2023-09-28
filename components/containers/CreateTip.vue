@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia';
 import { usePageFeatureStore } from '~/store/pageFeatures';
 import { DialogTitle } from '@headlessui/vue'
 import { ILeagueEntity } from '~/types/types';
-import { IFixturesEventsEntity, IFixtureData } from '~/types/plays';
+import { IFixturesEventsEntity, IFixtureData, IPredictionScore, ISports, IBookmaker } from '~/types/plays';
 
 
 const featureStore = usePageFeatureStore();
@@ -11,27 +11,34 @@ const { openCreate } = storeToRefs(featureStore);
 const { updateOpenCreateModal } = featureStore;
 
 interface ITipData {
-  leagueData: ILeagueEntity | null,
-  matchData: IFixturesEventsEntity | null
+  leagueData: ILeagueEntity | null;
+  matchData: IFixturesEventsEntity | null;
+  predictionScore: IPredictionScore | null;
+  selectedSport: ISports | null;
+  selectedBookmaker: IBookmaker | null;
+}
 
-}
-interface IPredictionScore {
-  name: string;
-  value: string;
-}
 
 const newTipData = ref<ITipData>({
   leagueData: null,
-  matchData: null
+  matchData: null,
+  selectedSport: null,
+  predictionScore: null,
+  selectedBookmaker: null,
 })
 const currentTournamentData = ref<IFixtureData | null>(null)
-const predictionScore = ref<IPredictionScore | null>(null)
+const predictionScore = ref<IPredictionScore | null>(null);
+const selectedSport = ref<ISports | null>(null);
+const selectedBookMaker = ref<IBookmaker | null>(null);
+
 const updateLeagueData = (payload: ILeagueEntity) => {
   newTipData.value.leagueData = payload;
   currentTournamentData.value = null;
 
   // empty the rest of the inputs
   newTipData.value.matchData = null;
+  predictionScore.value = null;
+  selectedBookMaker.value = null;
 }
 const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[] | undefined): void => {
   newTipData.value.matchData = payload;
@@ -44,6 +51,12 @@ const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[]
 
 const updatePredictionScore = (payload: IPredictionScore) => {
   predictionScore.value = payload;
+}
+const updateSelectedSport = (sport: ISports) => {
+  selectedSport.value = sport;
+}
+const updateSelectedBookmaker = (bookmaker: IBookmaker) => {
+  selectedBookMaker.value = bookmaker;
 }
 </script>
 <template>
@@ -59,15 +72,14 @@ const updatePredictionScore = (payload: IPredictionScore) => {
         <div class="w-full mt-5 flex flex-col gap-y-2.5">
 
           <ContainersSelectLeagueInput :label="newTipData.leagueData?.LEAGUE_NAME || 'Select Championship'"
-            @select-league="updateLeagueData" />
+            @select-league="updateLeagueData" @update-selected-sport="updateSelectedSport" />
           <ContainersSelectMatch :matchData="newTipData.matchData" :leagueData="newTipData?.leagueData"
             @select-event="selectEvent" />
           <ContainersSelectGameScore :matchData="newTipData.matchData" :prediction-score="predictionScore"
-            @update-prediction-score="updatePredictionScore" />
-
-          <!-- <ContainersSelectInput :label="'Select Bookmaker'" /> -->
-          <!-- <ContainersSelectInput :label="'Total odds'" /> -->
-
+            @update-prediction-score="updatePredictionScore" :selected-sport="selectedSport" />
+          <ContainersSelectBookmaker :prediction-score="predictionScore" :selected-book-maker="selectedBookMaker"
+            @select-bookmaker="updateSelectedBookmaker" />
+          <ContainersEnterGameOdds :selected-book-maker="selectedBookMaker" />
         </div>
       </div>
       <div class="w-full flex justify-end items-center mt-2 gap-x-2">

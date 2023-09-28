@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ISports } from '~/types/plays';
 import { ILeagueEntity } from '~/types/types';
 
 defineProps<{
@@ -6,13 +7,17 @@ defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (e: 'selectLeague', payload: ILeagueEntity): void
+  (e: 'selectLeague', payload: ILeagueEntity): void;
+  (e: 'updateSelectedSport', payload: ISports): void;
 }>()
 
 const isOpen = ref(false)
 const selectLeague = (payload: ILeagueEntity) => {
   emits('selectLeague', payload);
   isOpen.value = false;
+}
+const updateSelectedSport = (sport: ISports) => {
+  emits('updateSelectedSport', sport);
 }
 
 </script>
@@ -27,7 +32,7 @@ const selectLeague = (payload: ILeagueEntity) => {
       </div>
     </div>
     <UModal v-model="isOpen" :overlay="false" :ui="{ width: 'w-[110%]', height: 'min-h-[60vh]', background: 'bg-white' }">
-      <SectionsMatchesData @select-league="selectLeague" />
+      <SectionsMatchesData @select-league="selectLeague" @update-selected-sport="updateSelectedSport" />
     </UModal>
   </div>
 </template>

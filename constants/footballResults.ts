@@ -14,13 +14,13 @@ const footballResults = [
         "name": "Match Winner",
         "values": [
             {
-                "value": "Away",
+                "value": "Home",
             },
             {
                 "value": "Draw",
             },
             {
-                "value": "Home",
+                "value": "Away",
             }
         ]
     },
@@ -29,10 +29,10 @@ const footballResults = [
         "name": "Both Teams Score",
         "values": [
             {
-                "value": "No",
+                "value": "Yes",
             },
             {
-                "value": "Yes",
+                "value": "No",
             }
         ]
     }

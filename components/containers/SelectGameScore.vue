@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { IFixturesEventsEntity, IExactScore, IOverUnder, IAsianHandicap } from '~/types/plays';
-
-interface IPredictionScore {
-  name: string;
-  value: string;
-}
+import { IFixturesEventsEntity, IExactScore, IOverUnder, IAsianHandicap, IPredictionScore, ISports } from '~/types/plays';
 
 const props = defineProps<{
   matchData: IFixturesEventsEntity | null;
-  predictionScore: IPredictionScore | null
+  predictionScore: IPredictionScore | null;
+  selectedSport: ISports | null;
 }>()
 const emits = defineEmits<{
   (e: 'updatePredictionScore', payload: IPredictionScore): void;
@@ -24,7 +20,7 @@ const scoringQuarter = ref('');
 
 const isOpen = ref(false)
 const openModal = () => {
-  if (!props.matchData) {
+  if (props.matchData) {
     isOpen.value = true;
   }
 }
@@ -40,7 +36,7 @@ onMounted(() => {
     } else if (score.name === 'bothTeamToScore') {
       bothToScoreValue.value = score.value;
     } else if (score.name === 'exactScore') {
-      let splitArr = score.value.split('/').map(Number);
+      let splitArr = score.value.split('-').map(Number);
       exactScoreValue.value = { home: splitArr[0], away: splitArr[1] };
     } else if (score.name === 'overUnder') {
       let splitArr = score.value.split('/').map(Number);
@@ -80,7 +76,7 @@ const updatePredictionScore = (key: string, value: any) => {
 
   } else if (key === 'exactScore') {
     exactScoreValue.value = value;
-    emits('updatePredictionScore', { name: 'exactScore', value: value })
+    emits('updatePredictionScore', { name: 'exactScore', value: value.home + ' - ' + value.away })
 
     bothToScoreValue.value = '';
     matchWinnerScoreValue.value = '';
@@ -124,8 +120,9 @@ const updatePredictionScore = (key: string, value: any) => {
     asianHandicapScoreValue.value = null;
 
   } else if (key === 'asianH') {
-    asianHandicapScoreValue.value = value
-    let scoreHere = value.under + '/' + value.over;
+    asianHandicapScoreValue.value = value;
+
+    let scoreHere = value.home + '/' + value.away;
     emits('updatePredictionScore', { name: 'asianHandicap', value: scoreHere })
 
     matchWinnerScoreValue.value = '';
@@ -147,7 +144,7 @@ const updatePredictionScore = (key: string, value: any) => {
         :both-to-score-value="bothToScoreValue" :exact-score-value="exactScoreValue"
         :asian-handicap-score-value="asianHandicapScoreValue" :scoring-quarter="scoringQuarter"
         :home-away-score-value="homeAwayScoreValue" :over-under-score-value="overUnderScoreValue"
-        @update-prediction-score="updatePredictionScore" @close-modal="closeModal" />
+        @update-prediction-score="updatePredictionScore" @close-modal="closeModal" :selected-sport="selectedSport" />
     </UModal>
   </div>
 </template>

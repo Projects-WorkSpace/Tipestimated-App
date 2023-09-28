@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { sportEmojis } from "~/constants/sportsEmojis";
 import { ILeagueEntity } from "~/types/types";
+import { ISports } from "~/types/plays";
 
 const emits = defineEmits<{
   (e: 'selectLeague', payload: ILeagueEntity): void
+  (e: 'updateSelectedSport', payload: ISports): void;
+
 }>()
 const config = useRuntimeConfig();
 const selectedSportId = ref<number | null>(null);
@@ -18,11 +21,6 @@ const headerData = {
 }
 interface IResponseData {
   DATA: ISports[];
-}
-interface ISports {
-  ID: number;
-  NAME: string;
-  icon?: string;
 }
 
 interface ITournamentList {
@@ -52,7 +50,7 @@ const addIcon = (payload: string): string => {
 }
 // Separate "Main" and "Other" sports
 const mainSports = computed(() => {
-  return sportsData.value?.DATA.filter((sport) => sport.ID < 5);
+  return sportsData.value?.DATA.filter((sport) => [1, 3, 5, 6, 8].includes(sport.ID));
 })
 
 
@@ -60,8 +58,9 @@ const otherSports = computed(() => {
   return sportsData.value?.DATA.filter((sport) => [5, 6, 8, 13, 31].includes(sport.ID));
 });
 
-const selectSport = (sportId: number) => {
-  selectedSportId.value = sportId;
+const selectSport = (sport: ISports) => {
+  selectedSportId.value = sport.ID;
+  emits('updateSelectedSport', sport);
   nextTab();
   fetchTournament();
 }
@@ -121,28 +120,28 @@ const selectedLeague = (payload: ILeagueEntity) => {
           <div v-else class="w-full flex flex-col gap-y-3">
 
             <div class="w-full">
-              <ul class="w-full flex flex-wrap gap-3">
-                <li v-for="sport in mainSports" :key="sport.ID">
-                  <button @click="selectSport(sport.ID)"
+              <ul class="w-full grid grid-cols-2 gap-x-3 gap-y-4">
+                <li v-for="sport in mainSports" :key="sport.ID" class="w-full flex flex-col">
+                  <button @click="selectSport(sport)"
                     :class="sport.ID === selectedSportId ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-c-seperator/60 hover:bg-c-seperator/75'"
-                    class="text-sm py-1 px-2 rounded-md  transition-colors">
-                    {{ addIcon(sport.NAME) }} {{ sport.NAME }}
+                    class="flex items-center justify-center gap-x-2 flex-nowrap text-sm py-2 px-2 rounded-md  transition-colors">
+                    <span class="text-base">{{ addIcon(sport.NAME) }}</span> <span>{{ sport.NAME }}</span>
                   </button>
                 </li>
               </ul>
             </div>
-            <div class="w-full flex flex-col gap-y-2 mt-1.5">
-              <p class="text-sm text-neutral-600">Other sports</p>
-              <ul class="w-full flex flex-wrap gap-3">
-                <li v-for="sport in otherSports" :key="sport.ID">
-                  <button @click="selectSport(sport.ID)"
-                    :class="sport.ID === selectedSportId ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-c-seperator/60 hover:bg-c-seperator/75'"
-                    class="text-sm py-1 px-2 rounded-md  transition-colors">
-                    {{ addIcon(sport.NAME) }} {{ sport.NAME }}
-                  </button>
-                </li>
-              </ul>
-            </div>
+            <!-- <div class="w-full flex flex-col gap-y-2 mt-1.5"> -->
+            <!--   <p class="text-sm text-neutral-600">Other sports</p> -->
+            <!--   <ul class="w-full flex flex-wrap gap-3"> -->
+            <!--     <li v-for="sport in otherSports" :key="sport.ID"> -->
+            <!--       <button @click="selectSport(sport)" -->
+            <!--         :class="sport.ID === selectedSportId ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-c-seperator/60 hover:bg-c-seperator/75'" -->
+            <!--         class="text-sm py-1 px-2 rounded-md  transition-colors"> -->
+            <!--         {{ addIcon(sport.NAME) }} {{ sport.NAME }} -->
+            <!--       </button> -->
+            <!--     </li> -->
+            <!--   </ul> -->
+            <!-- </div> -->
           </div>
         </Transition>
       </div>
