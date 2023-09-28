@@ -6,7 +6,7 @@ const props = defineProps<{
 
 const isOpen = ref(false)
 const openModal = () => {
-  if (!props.selectedBookMaker) {
+  if (props.selectedBookMaker) {
     isOpen.value = true;
   }
 }
@@ -18,7 +18,7 @@ const closeModal = () => {
 <template>
   <div class="w-full">
     <button @click="openModal"
-      :class="!selectedBookMaker ? 'bg-c-seperator/60 hover:bg-c-seperator/75 text-neutral-700' : 'bg-c-seperator/40 text-neutral-500'"
+      :class="selectedBookMaker ? 'bg-c-seperator/60 hover:bg-c-seperator/75 text-neutral-700' : 'bg-c-seperator/40 text-neutral-500'"
       class="w-full py-2.5 rounded-md  relative flex items-center justify-center  transition-colors duration-200">
       <span class="text-sm font-normal tracking-wide">Total odds</span>
       <div class="absolute right-4">
