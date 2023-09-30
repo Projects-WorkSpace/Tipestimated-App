@@ -3,21 +3,11 @@ import { storeToRefs } from 'pinia';
 import { usePageFeatureStore } from '~/store/pageFeatures';
 import { DialogTitle } from '@headlessui/vue'
 import { ILeagueEntity } from '~/types/types';
-import { IFixturesEventsEntity, IFixtureData, IPredictionScore, ISports, IBookmaker } from '~/types/plays';
-
+import { IFixturesEventsEntity, IPredictionScore, ISports, IBookmaker, ICountry, ITipData } from '~/types/plays';
 
 const featureStore = usePageFeatureStore();
 const { openCreate } = storeToRefs(featureStore);
 const { updateOpenCreateModal } = featureStore;
-
-interface ITipData {
-  leagueData: ILeagueEntity | null;
-  matchData: IFixturesEventsEntity | null;
-  predictionScore: IPredictionScore | null;
-  selectedSport: ISports | null;
-  selectedBookmaker: IBookmaker | null;
-}
-
 
 const newTipData = ref<ITipData>({
   leagueData: null,
@@ -25,38 +15,48 @@ const newTipData = ref<ITipData>({
   selectedSport: null,
   predictionScore: null,
   selectedBookmaker: null,
+  selectedCountry: null,
+  predictionOdds: null,
 })
-const currentTournamentData = ref<IFixtureData | null>(null)
-const predictionScore = ref<IPredictionScore | null>(null);
-const selectedSport = ref<ISports | null>(null);
-const selectedBookMaker = ref<IBookmaker | null>(null);
 
-const updateLeagueData = (payload: ILeagueEntity) => {
-  newTipData.value.leagueData = payload;
-  currentTournamentData.value = null;
-
-  // empty the rest of the inputs
-  newTipData.value.matchData = null;
-  predictionScore.value = null;
-  selectedBookMaker.value = null;
+const updateSelectedSport = (sport: ISports) => {
+  newTipData.value.selectedSport = sport;
 }
-const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[] | undefined): void => {
+
+const updateLeagueData = (payload: ILeagueEntity, country: ICountry) => {
+  newTipData.value.leagueData = payload;
+  newTipData.value.selectedCountry = country;
+
+  newTipData.value.selectedBookmaker = null;
+  newTipData.value.matchData = null;
+  newTipData.value.predictionScore = null;
+  newTipData.value.predictionOdds = null;
+}
+const selectEvent = (payload: IFixturesEventsEntity): void => {
   newTipData.value.matchData = payload;
-  if (fixtureData) {
-    if (fixtureData.length >= 1) {
-      currentTournamentData.value = fixtureData[0];
-    }
-  }
+
+  newTipData.value.selectedBookmaker = null;
+  newTipData.value.predictionScore = null;
+  newTipData.value.predictionOdds = null;
+
 }
 
 const updatePredictionScore = (payload: IPredictionScore) => {
-  predictionScore.value = payload;
+  newTipData.value.predictionScore = payload;
+
+  newTipData.value.selectedBookmaker = null;
+  newTipData.value.predictionOdds = null;
+
 }
-const updateSelectedSport = (sport: ISports) => {
-  selectedSport.value = sport;
-}
+
 const updateSelectedBookmaker = (bookmaker: IBookmaker) => {
-  selectedBookMaker.value = bookmaker;
+  newTipData.value.selectedBookmaker = bookmaker;
+  newTipData.value.predictionOdds = null;
+
+}
+
+const updatePredictionOdds = (value: number) => {
+  newTipData.value.predictionOdds = value;
 }
 </script>
 <template>
@@ -75,11 +75,12 @@ const updateSelectedBookmaker = (bookmaker: IBookmaker) => {
             @select-league="updateLeagueData" @update-selected-sport="updateSelectedSport" />
           <ContainersSelectMatch :matchData="newTipData.matchData" :leagueData="newTipData?.leagueData"
             @select-event="selectEvent" />
-          <ContainersSelectGameScore :matchData="newTipData.matchData" :prediction-score="predictionScore"
-            @update-prediction-score="updatePredictionScore" :selected-sport="selectedSport" />
-          <ContainersSelectBookmaker :prediction-score="predictionScore" :selected-book-maker="selectedBookMaker"
-            @select-bookmaker="updateSelectedBookmaker" />
-          <ContainersEnterGameOdds :selected-book-maker="selectedBookMaker" />
+          <ContainersSelectGameScore :matchData="newTipData.matchData" :prediction-score="newTipData.predictionScore"
+            @update-prediction-score="updatePredictionScore" :selected-sport="newTipData.selectedSport" />
+          <ContainersSelectBookmaker :prediction-score="newTipData.predictionScore"
+            :selected-book-maker="newTipData.selectedBookmaker" @select-bookmaker="updateSelectedBookmaker" />
+          <ContainersEnterGameOdds :selected-book-maker="newTipData.selectedBookmaker"
+            :prediction-odds="newTipData.predictionOdds" @update-prediction-odds="updatePredictionOdds" />
         </div>
       </div>
       <div class="w-full flex justify-end items-center mt-2 gap-x-2">
@@ -91,21 +92,21 @@ const updateSelectedBookmaker = (bookmaker: IBookmaker) => {
           </span>
         </button>
       </div>
-      <div class="flex items-center justify-between mt-1">
-        <div class="flex items-center gap-x-5">
+      <div class="grid grid-cols-2 items-center mt-1 gap-x-6">
+        <div class="grid grid-cols-2 items-center gap-x-3">
           <button type="button"
-            class="inline-flex justify-center rounded-md border border-transparent bg-light-hover/80 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none"
+            class="w-full flex items-center justify-center rounded-md border border-transparent bg-light-hover/80 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none"
             @click="updateOpenCreateModal">
-            <Icon name="mdi:account-multiple" class="text-xl mr-1" />
-            Friends
+            <Icon name="mdi:account-multiple" size="20px" class="mr-1" />
+            <span>Friends</span>
           </button>
           <button type="button"
-            class="inline-flex justify-center rounded-md border border-transparent bg-light-hover/80 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
-            <Icon name="mdi:bullhorn" class="text-xl mr-1" />
-            Channel
+            class="w-full flex items-center justify-center rounded-md border border-transparent bg-light-hover/80 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
+            <Icon name="mdi:bullhorn" size="20px" class="mr-1" />
+            <span>Channel</span>
           </button>
         </div>
-        <div class="flex items-center gap-x-5">
+        <div class="grid grid-cols-2  items-center gap-x-3">
           <button type="button"
             class="inline-flex justify-center rounded-md border border-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white hover:bg-base-green focus:outline-none">
             Promote

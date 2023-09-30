@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ILeagueEntity } from '~/types/types';
-import { IFixturesEventsEntity, IFixtureData } from '~/types/plays';
+import { IFixturesEventsEntity } from '~/types/plays';
 
 
 const props = defineProps<{
@@ -9,7 +9,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (e: 'selectEvent', payload: IFixturesEventsEntity, fixtureData: IFixtureData[] | undefined): void
+  (e: 'selectEvent', payload: IFixturesEventsEntity): void
 }>()
 
 const isOpen = ref(false)
@@ -18,8 +18,8 @@ const openModal = () => {
     isOpen.value = true;
   }
 }
-const selectEvent = (payload: IFixturesEventsEntity, fixtureData: IFixtureData[] | undefined) => {
-  emits("selectEvent", payload, fixtureData);
+const selectEvent = (payload: IFixturesEventsEntity) => {
+  emits("selectEvent", payload);
   isOpen.value = false;
 }
 

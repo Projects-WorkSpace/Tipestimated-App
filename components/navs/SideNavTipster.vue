@@ -21,7 +21,7 @@ const logoutUser = (): void => {
 <template>
     <div class="w-full xl:min-w-[250px] h-full flex flex-col justify-between pt-8 pb-4">
         <div class="w-full flex flex-col px-6">
-            <h3 class="text-2xl font-sans font-bold tracking-wide hidden lg:block">tipstimate</h3>
+            <h3 class="text-2xl font-sans font-medium italic hidden lg:block">Tipstimate</h3>
         </div>
         <div class="w-full flex flex-col px-6 gap-y-2">
             <div v-if="isTipster" class="w-full flex flex-col">

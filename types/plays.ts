@@ -1,3 +1,7 @@
+export interface ICountry {
+  COUNTRY_NAME: string;
+  COUNTRY_ID: number;
+}
 export interface ISports {
   ID: number;
   NAME: string;
@@ -164,4 +168,14 @@ export interface IBookmaker {
   id: string;
   name: string;
   img: string;
+}
+
+export interface ITipData {
+  leagueData: ILeagueEntity | null;
+  matchData: IFixturesEventsEntity | null;
+  predictionScore: IPredictionScore | null;
+  selectedSport: ISports | null;
+  selectedBookmaker: IBookmaker | null;
+  selectedCountry: ICountry | null;
+  predictionOdds: number | null;
 }

@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { sportEmojis } from "~/constants/sportsEmojis";
 import { ILeagueEntity } from "~/types/types";
-import { ISports } from "~/types/plays";
+import { ISports, ICountry } from "~/types/plays";
 
 const emits = defineEmits<{
-  (e: 'selectLeague', payload: ILeagueEntity): void
+  (e: 'selectLeague', payload: ILeagueEntity, country: ICountry): void
   (e: 'updateSelectedSport', payload: ISports): void;
+  (e: 'closeModal'): void;
 
 }>()
 const config = useRuntimeConfig();
 const selectedSportId = ref<number | null>(null);
 const selectedCountries = ref<ILeagueEntity[]>([]);
-const currentCountryData = ref({
+const currentCountryData = ref<ICountry>({
   COUNTRY_NAME: '', COUNTRY_ID: 0
 })
 const currentTab = ref(1)
@@ -27,11 +28,13 @@ interface ITournamentList {
   DATA?: (ILeagueEntity)[] | null;
 }
 
-const { data: sportsData, pending } = await useLazyFetch<IResponseData>(
-  'https://flashlive-sports.p.rapidapi.com/v1/sports/list',
-  {
-    headers: headerData
-  }
+const { data: sportsData, pending, execute: fetchSports } = await useAsyncData<IResponseData>(
+  'sport',
+  () => $fetch('https://flashlive-sports.p.rapidapi.com/v1/sports/list',
+    {
+      headers: headerData
+    }
+  ), { immediate: false }
 )
 
 const { data: tournamentsData, pending: tournamentsPending, execute: fetchTournament } = await useAsyncData<ITournamentList>(
@@ -52,11 +55,6 @@ const addIcon = (payload: string): string => {
 const mainSports = computed(() => {
   return sportsData.value?.DATA.filter((sport) => [1, 3, 5, 6, 8].includes(sport.ID));
 })
-
-
-const otherSports = computed(() => {
-  return sportsData.value?.DATA.filter((sport) => [5, 6, 8, 13, 31].includes(sport.ID));
-});
 
 const selectSport = (sport: ISports) => {
   selectedSportId.value = sport.ID;
@@ -102,24 +100,33 @@ const selectCountry = (payload: ICountry) => {
 }
 
 const selectedLeague = (payload: ILeagueEntity) => {
-  //  console.log("From Input Selected league 1: ", payload);
-  emits("selectLeague", payload);
+  emits("selectLeague", payload, currentCountryData.value);
 }
+
+//
+onMounted(() => {
+  fetchSports();
+})
+
 </script>
 <template>
   <div class="w-full py-4 flex flex-col gap-y-2 bg-white h-[74vh] overflow-y-auto">
     <!-- <h3>Matches Data</h3> -->
     <Transition mode="out-in">
-      <div v-if="currentTab === 1" class="w-full flex flex-col gap-y-3 bg-white px-4">
-        <h4 class="text-base text-neutral-700 font-normal z-10">Select Sport</h4>
+      <div v-if="currentTab === 1" class="w-full flex flex-col gap-y-3 bg-white divide-y divide-c-seperator">
+        <h4 class="text-lg text-neutral-700 font-normal z-10 px-4">Select Sport</h4>
+        <button @click="emits('closeModal')" class="absolute right-6 text-neutral-600 hover:text-neutral-800 z-[99]">
+          <Icon name="mdi:close" class="text-xl" />
+        </button>
+
         <Transition mode="out-in">
           <div v-if="pending"
             class="w-full flex flex-col items-center justify-center absolute bg-white top-0 bottom-0 left-0 right-0 z-0">
             <UtilsStarLoading />
           </div>
-          <div v-else class="w-full flex flex-col gap-y-3">
+          <div v-else class="w-full flex flex-col gap-y-3 px-4">
 
-            <div class="w-full">
+            <div class="w-full mt-4">
               <ul class="w-full grid grid-cols-2 gap-x-3 gap-y-4">
                 <li v-for="sport in mainSports" :key="sport.ID" class="w-full flex flex-col">
                   <button @click="selectSport(sport)"
@@ -130,18 +137,6 @@ const selectedLeague = (payload: ILeagueEntity) => {
                 </li>
               </ul>
             </div>
-            <!-- <div class="w-full flex flex-col gap-y-2 mt-1.5"> -->
-            <!--   <p class="text-sm text-neutral-600">Other sports</p> -->
-            <!--   <ul class="w-full flex flex-wrap gap-3"> -->
-            <!--     <li v-for="sport in otherSports" :key="sport.ID"> -->
-            <!--       <button @click="selectSport(sport)" -->
-            <!--         :class="sport.ID === selectedSportId ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-c-seperator/60 hover:bg-c-seperator/75'" -->
-            <!--         class="text-sm py-1 px-2 rounded-md  transition-colors"> -->
-            <!--         {{ addIcon(sport.NAME) }} {{ sport.NAME }} -->
-            <!--       </button> -->
-            <!--     </li> -->
-            <!--   </ul> -->
-            <!-- </div> -->
           </div>
         </Transition>
       </div>
@@ -151,7 +146,7 @@ const selectedLeague = (payload: ILeagueEntity) => {
             <UIcon name="i-heroicons-arrow-left-20-solid"
               class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700 transition-colors" />
           </button>
-          <h4 class="text-base text-neutral-700 font-normal leading-none">Countries</h4>
+          <h4 class="text-lg text-neutral-700 font-normal leading-none">Countries</h4>
         </div>
         <Transition>
           <div v-if="tournamentsPending"

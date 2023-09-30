@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IFixturesData, IFixturesEventsEntity, IFixtureData } from '~/types/plays';
+import { IFixturesData, IFixturesEventsEntity } from '~/types/plays';
 import { ILeagueEntity, STAGESEntity } from '~/types/types';
 
 const props = defineProps<{
@@ -7,7 +7,7 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  (e: 'selectEvent', payload: IFixturesEventsEntity, fixtureData: IFixtureData[] | undefined): void
+  (e: 'selectEvent', payload: IFixturesEventsEntity): void
 }>()
 
 const config = useRuntimeConfig();
@@ -51,11 +51,7 @@ const chooseStage = (stage: STAGESEntity) => {
   refetchFIxtures();
 }
 const selectEvent = (payload: IFixturesEventsEntity) => {
-  let dataWithoutEvents: IFixtureData[] | undefined = data.value?.DATA.map((item) => {
-    const { EVENTS, ...rest } = item;
-    return rest;
-  })
-  emits("selectEvent", payload, dataWithoutEvents);
+  emits("selectEvent", payload);
 }
 </script>
 <template>
