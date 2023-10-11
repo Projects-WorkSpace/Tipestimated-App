@@ -18,13 +18,15 @@ const featureStore = usePageFeatureStore();
 const router = useRouter();
 const toast = useToast();
 const { onLogin } = useApollo();
+const tipster_payload = useCookie("tipster_payload", { sameSite: true });
+
 
 const today = new Date();
 const user_payload = useCookie("user_payload", {
     expires: new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000 - 2 * 60 * 1000),
     sameSite: true,
 });
-const { mutate: postAuthDetails, loading, error: submitError, onDone, onError } = useMutation<ILoginResponse>(ObtainToken);
+const { mutate: postAuthDetails, loading, onDone, onError } = useMutation<ILoginResponse>(ObtainToken);
 
 const transition = {
     "enterActiveClass": "transform ease-out duration-300 transition",
@@ -58,7 +60,9 @@ onDone((data) => {
         user_payload.value = response.tokenAuth.payload as unknown as string;
         onLogin(response?.tokenAuth.token);
         authStore.updateIsLoggedIn()
-        if (response.tokenAuth.isTipster) { // if is tipster
+        if (response.tokenAuth.tipster !== null) { // if is tipster
+            tipster_payload.value = response.tokenAuth.tipster as unknown as string;
+            authStore.updateTipsterPayload(JSON.parse(response.tokenAuth.tipster as unknown as string))
             featureStore.updateIsTipster(true);
         } else {
             featureStore.updateIsTipster(false);

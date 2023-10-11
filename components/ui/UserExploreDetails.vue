@@ -1,52 +1,12 @@
 <script setup lang="ts">
-import { ITipstersNode, IFollowData, IUnFollowData } from '~/types/types';
-import { FollowTipsterMutation, UnFollowTipsterMutation } from '~/graphql/schema';
-import { useAuthStore } from "~/store/authStore";
+import { ITipstersNode } from '~/types/types';
 
 const props = defineProps<{
     data: ITipstersNode;
 }>()
 
-const { mutate: followTipster, onDone: followTipsterDone, onError: followTipsterErr } = useMutation<IFollowData>(FollowTipsterMutation);
-const { mutate: unFollowTipster, onDone: unFollowTipsterDone, onError: unFollowTipsterErr } = useMutation<IUnFollowData>(UnFollowTipsterMutation);
 const initialData = ref(props.data);
-const authStore = useAuthStore();
 
-const followFunc = async (payload: boolean) => {
-    let user_id = authStore.user_details?.id;
-    let tipster_id = initialData.value.id;
-    if (payload) {
-        followTipster({ userId: user_id, tipsterId: tipster_id })
-    } else {
-        unFollowTipster({ userId: user_id, tipsterId: tipster_id })
-    }
-}
-
-followTipsterDone((data) => {
-    let fetchedData = data.data?.followTipster;
-    if (fetchedData?.errors?.length === 0) {
-        initialData.value.isFollowedByUser = true;
-    } else {
-        console.log("Follow not successful: ", fetchedData?.errors)
-    }
-})
-
-followTipsterErr((error) => {
-    console.log("Follow Error: ", error.message)
-})
-
-unFollowTipsterDone((data) => {
-    let fetchedData = data.data?.unFollowTipster;
-    if (fetchedData?.success) {
-        initialData.value.isFollowedByUser = false;
-    } else {
-        console.log("unFollow not successful: ", fetchedData?.errors);
-    }
-})
-
-unFollowTipsterErr((error) => {
-    console.log("Follow Error: ", error.message)
-})
 </script>
 
 <template>
@@ -64,9 +24,9 @@ unFollowTipsterErr((error) => {
             </div>
         </div>
         <div class="flex justify-end items-center">
-            <button v-if="!initialData.isFollowedByUser" @click="followFunc(true)"
+            <button v-if="!initialData.isFollowedByUser"
                 class="px-5 md:px-7 py-1.5 rounded-lg border border-c-seperator text-sm md:text-base tracking-wide font-medium">Follow</button>
-            <button v-else @click="followFunc(false)"
+            <button v-else
                 class="px-5 md:px-7 py-1.5 rounded-lg border border-c-seperator text-sm md:text-base tracking-wide font-medium">Following</button>
 
         </div>

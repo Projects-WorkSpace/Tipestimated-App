@@ -4,7 +4,7 @@ export const ObtainToken = gql`
 			refreshExpiresIn
 			token
 			payload
-			isTipster
+			tipster
 		}
 	}
 `;
@@ -19,13 +19,12 @@ export const RegisterAppUser = gql`
 				messages
 			}
 			user {
-				id
+id
 				userName
 				email
 				dob
 				dateJoined
 			}
-			isTipster
 		}
 	}
 `;

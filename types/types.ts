@@ -14,7 +14,7 @@ export interface IUserAuth {
     token: string;
     payload: IPayload;
     refreshToken: string;
-    isTipster: boolean;
+    tipster?: ITipsterPayload | null;
 }
 
 export interface IUserDetails {
@@ -25,10 +25,13 @@ export interface IUserDetails {
 
 export interface IPayload {
     email: string;
+    userID: string;
     exp: number;
     origIat: number;
 }
-
+export interface ITipsterPayload {
+    tipsterID: string;
+}
 export interface IRefreshToken {
     refreshExpiresIn: number;
     refreshToken: string;
