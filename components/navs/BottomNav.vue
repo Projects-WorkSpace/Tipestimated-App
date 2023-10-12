@@ -42,7 +42,7 @@ const { updateOpenCreateModal } = featureStore;
             </button>
         </div>
         <div class="flex items-center justify-center">
-            <NuxtLink to="/me" class="p-2.5">
+            <NuxtLink to="/" class="p-2.5">
                 <Icon name="ph:user-circle" class="text-3xl" />
             </NuxtLink>
         </div>

@@ -3,12 +3,14 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.quickSuggestions": {
+    "strings": true
+  },
   "editor.formatOnPaste": false, // required
   "editor.formatOnType": false, // required
   "editor.formatOnSave": true, // optional
   "editor.formatOnSaveMode": "file", // required to format on save
   "files.autoSave": "off",
-  "vs-code-prettier-eslint.prettierLast": true,
-  "typescript.tsdk": "node_modules/typescript/lib" // set as "true" to run 'prettier' last not first
+  "typescript.tsdk": "node_modules/typescript/lib", // set as "true" to run 'prettier' last not first
+  "tailwindCSS.experimental.configFile": "tailwind.config.ts"
 }

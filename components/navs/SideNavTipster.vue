@@ -11,8 +11,10 @@ const { updateOpenCreateModal } = featureStore;
 const { onLogout } = useApollo()
 const router = useRouter()
 const user_payload = useCookie("user_payload", { sameSite: true })
+const tipster_payload = useCookie("tipster_payload", { sameSite: true });
 const logoutUser = (): void => {
     user_payload.value = null;
+    tipster_payload.value = null;
     onLogout()
     router.push("/accounts/login")
 }

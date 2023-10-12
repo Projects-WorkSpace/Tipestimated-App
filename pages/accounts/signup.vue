@@ -3,13 +3,8 @@ import { RegisterAppUser } from '~/graphql/schema';
 import { useAuthStore } from '~/store/authStore';
 import { IRegisterUserResponse } from '~/types/types';
 
-const selectedDay = ref('');
-const selectedMonth = ref('');
-const selectedYear = ref('');
-
-const userName = ref('');
-const email = ref('');
-const password = ref('');
+const dob = ref({ selectedDay: '', selectedMonth: '', selectedYear: '' })
+const user = ref({ userName: '', email: '', password: '' })
 const asTipster = ref(false);
 const loadingStatus = ref({
     user: false,
@@ -32,7 +27,7 @@ const onSubmitUser = (payload: boolean): void => {
     if (!checkIsFormValid()) {
         return;
     }
-    const date = selectedYear.value + "-" + selectedMonth.value + "-" + selectedDay.value
+    const date = dob.value.selectedYear + "-" + dob.value.selectedMonth + "-" + dob.value.selectedDay
     const formattedDate = formatDateToYYYYMMDD(date);
     asTipster.value = payload;
     if (payload) {
@@ -40,7 +35,13 @@ const onSubmitUser = (payload: boolean): void => {
     } else {
         loadingStatus.value.user = true;
     }
-    postUserDetails({ email: email.value, userName: userName.value, dob: formattedDate, password1: password.value, password2: password.value });
+    postUserDetails({
+        email: user.value.email,
+        userName: user.value.userName,
+        dob: formattedDate,
+        password1: user.value.password,
+        password2: user.value.password
+    });
 
 };
 onDone((data) => {
@@ -113,9 +114,9 @@ onError((error) => {
 
 const checkForAboveAge = () => {
     const selectedDate = new Date(
-        Number(selectedYear.value),
-        Number(selectedMonth.value) - 1,
-        Number(selectedDay.value)
+        Number(dob.value.selectedYear),
+        Number(dob.value.selectedMonth) - 1,
+        Number(dob.value.selectedDay)
     );
     const currentDate = new Date();
     const ageThreshold = new Date();
@@ -134,7 +135,7 @@ const transition = {
 
 const checkIsFormValid = (): boolean => {
     let isValid = true;
-    if (selectedDay.value && selectedMonth.value && selectedYear.value) {
+    if (dob.value.selectedDay && dob.value.selectedMonth && dob.value.selectedYear) {
         if (!checkForAboveAge()) {
             toast.add({
                 title: 'You must be 18 years old or older.',
@@ -165,7 +166,7 @@ const checkIsFormValid = (): boolean => {
 };
 
 const isFormValid = computed(() => {
-    return !userName.value || !email.value || !password.value;
+    return !user.value.userName || !user.value.email || !user.value.password;
 });
 const formatDateToYYYYMMDD = (dateString: string | number | Date) => {
     const date = new Date(dateString);
@@ -188,26 +189,26 @@ const formatDateToYYYYMMDD = (dateString: string | number | Date) => {
                         <div class="relative bg-inherit w-full">
                             <input type="text" id="username" name="username"
                                 class="peer text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 placeholder-transparent ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none"
-                                placeholder="Username" v-model="userName" /><label for="username"
+                                placeholder="Username" v-model="user.userName" /><label for="username"
                                 class="absolute cursor-text left-1.5 -top-2 text-xs text-gray-500 bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-t-gray peer-focus:text-xs transition-all">Username</label>
                         </div>
                         <div class="relative bg-inherit w-full">
                             <input type="email" id="email" name="email"
                                 class="peer text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 placeholder-transparent ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none"
-                                placeholder="Email" v-model="email" /><label for="email"
+                                placeholder="Email" v-model="user.email" /><label for="email"
                                 class="absolute cursor-text left-1.5 -top-2 text-xs text-gray-500 bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-t-gray peer-focus:text-xs transition-all">Email</label>
                         </div>
                         <div class="w-full flex flex-col gap-y-1">
                             <p class="text-sm text-t-gray">
                                 Date of birth +18 only
                             </p>
-                            <UiSelectDateForm v-model:selectedDay="selectedDay" v-model:selectedMonth="selectedMonth"
-                                v-model:selectedYear="selectedYear" />
+                            <UiSelectDateForm v-model:selectedDay="dob.selectedDay"
+                                v-model:selectedMonth="dob.selectedMonth" v-model:selectedYear="dob.selectedYear" />
                         </div>
                         <div class="relative bg-inherit w-full">
                             <input type="password" id="password" name="password"
                                 class="peer text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 placeholder-transparent ring-1 px-2 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none"
-                                placeholder="Password" v-model="password" /><label for="password"
+                                placeholder="Password" v-model="user.password" /><label for="password"
                                 class="absolute cursor-text left-1.5 -top-2 text-xs text-gray-500 bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-t-gray peer-focus:text-xs transition-all">Password</label>
                         </div>
                         <div class="w-full flex items-center justify-center">

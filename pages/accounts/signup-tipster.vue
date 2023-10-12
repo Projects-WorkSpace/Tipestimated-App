@@ -12,6 +12,7 @@ const second_form = ref(false);
 const router = useRouter();
 const featureStore = usePageFeatureStore();
 const config = useRuntimeConfig()
+const tipster_payload = useCookie("tipster_payload", { sameSite: true });
 const is_tipster_approved = useCookie('is_tipster_approved', { sameSite: true })
 const toast = useToast();
 const sportsData = ref<{
@@ -174,6 +175,7 @@ const transition = {
 
 onDone((data) => {
     if (data.data.signupTipster.errors === null) {
+        tipster_payload.value = JSON.stringify({ tipsterID: data.data.signupTipster.tipster.id })
         postProfileImage(data.data.signupTipster.encodedId)
         featureStore.updateIsTipster(true);
     } else {
