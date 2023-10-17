@@ -10,6 +10,9 @@ const loadingStatus = ref({
     user: false,
     tipster: false
 })
+const form_errors = ref({
+    error: false, messages: [''],
+})
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -21,9 +24,10 @@ const user_payload = useCookie("user_payload", {
     sameSite: true,
 });
 
-const toast = useToast();
+
 const { mutate: postUserDetails, onDone, onError } = useMutation<IRegisterUserResponse>(RegisterAppUser);
 const onSubmitUser = (payload: boolean): void => {
+    form_errors.value = { error: false, messages: [] };
     if (!checkIsFormValid()) {
         return;
     }
@@ -52,27 +56,13 @@ onDone((data) => {
     let response = data.data?.registerAppUser;
     if (response) {
         if (response.errors.length >= 1) {
+            form_errors.value.error = true;
             response.errors.forEach((error) => {
-                toast.add({
-                    title: error.field,
-                    description: error.messages[0], // Show the error message as the title
-                    ui: {
-                        title: 'text-t-gray font-medium capitalize',
-                        description: "text-t-gray text-sm",
-                        progress: {
-                            "base": "absolute bottom-0 end-0 start-0 h-0",
-                        },
-                        icon: {
-                            "color": "text-[tomato]"
-                        },
-                        transition: transition,
-                    },
-                    icon: 'i-heroicons-information-circle',
-                    timeout: 2000
-                });
+                error.messages.forEach((message) => {
+                    form_errors.value.messages.push(message);
+                })
             });
             return;
-
         } else {
             authStore.updateUserPayload(JSON.parse(response.payload));
             user_payload.value = JSON.parse(response.payload);
@@ -94,21 +84,9 @@ onError((error) => {
         user: false,
         tipster: false
     }
-    toast.add({
-        title: error.message,
-        ui: {
-            title: "text-t-gray text-base",
-            progress: {
-                "base": "absolute bottom-0 end-0 start-0 h-0",
-            },
-            icon: {
-                "color": "text-[tomato]"
-            },
-            transition: transition,
-        },
-        icon: 'i-heroicons-information-circle',
-        timeout: 3000
-    });
+    form_errors.value.error = true;
+    form_errors.value.messages = [error.message]
+
     return;
 })
 
@@ -124,42 +102,20 @@ const checkForAboveAge = () => {
     return selectedDate <= ageThreshold;
 };
 
-const transition = {
-    "enterActiveClass": "transform ease-out duration-300 transition",
-    "enterFromClass": "-translate-y-2 opacity-0",
-    "enterToClass": "translate-y-0 opacity-100",
-    "leaveActiveClass": "transition ease-in duration-100",
-    "leaveFromClass": "opacity-100",
-    "leaveToClass": "opacity-0"
-}
+
 
 const checkIsFormValid = (): boolean => {
     let isValid = true;
     if (dob.value.selectedDay && dob.value.selectedMonth && dob.value.selectedYear) {
         if (!checkForAboveAge()) {
-            toast.add({
-                title: 'You must be 18 years old or older.',
-                ui: {
-                    title: 'text-t-gray font-regular',
-                    progress: {
-                        background: 'bg-[tomato]',
-                    },
-                    transition: transition,
-                },
-            });
+            form_errors.value.error = true;
+            form_errors.value.messages = ['You must be 18 years old or older.']
             isValid = false;
         }
     } else {
-        toast.add({
-            title: 'You must provide your date of birth before proceeding.',
-            ui: {
-                title: 'text-t-gray font-regular',
-                progress: {
-                    background: 'bg-[tomato]',
-                },
-                transition: transition,
-            },
-        });
+        form_errors.value.error = true;
+        form_errors.value.messages = ['You must provide your date of birth before proceeding.']
+
         isValid = false;
     }
     return isValid;
@@ -182,9 +138,16 @@ const formatDateToYYYYMMDD = (dateString: string | number | Date) => {
         <div class="w-full px-6 md:px-0 md:max-w-[400px] flex flex-col gap-y-4 mt-12">
             <ContainersDialog>
                 <div class="w-full py-2.5">
-                    <div class="flex items-center justify-center py-6">
+                    <div class="flex items-center justify-center py-5">
                         <h1 class="text-3xl md:text-4xl">Tipstimate</h1>
                     </div>
+                    <div v-if="form_errors.error" class="w-full flex flex-col px-14 pb-2">
+                        <ul class="w-full flex flex-col gap-y-2 list-disc">
+                            <li v-for="error, index in form_errors.messages" :key="index" class="text-sm text-red-500">
+                                {{ error }}</li>
+                        </ul>
+                    </div>
+
                     <div class="w-full flex flex-col mt-4 px-10 gap-y-6">
                         <div class="relative bg-inherit w-full">
                             <input type="text" id="username" name="username"

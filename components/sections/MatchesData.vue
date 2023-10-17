@@ -7,7 +7,6 @@ const emits = defineEmits<{
   (e: 'selectLeague', payload: ILeagueEntity, country: ICountry): void
   (e: 'updateSelectedSport', payload: ISports): void;
   (e: 'closeModal'): void;
-
 }>()
 const config = useRuntimeConfig();
 const selectedSportId = ref<number | null>(null);
@@ -84,11 +83,6 @@ const uniqueCountries = computed(() => {
 
   return Array.from(uniqueCountryInfoSet).map((str) => JSON.parse(str) as { COUNTRY_ID: number, COUNTRY_NAME: string });
 });
-
-interface ICountry {
-  COUNTRY_ID: number;
-  COUNTRY_NAME: string
-}
 
 const selectCountry = (payload: ICountry) => {
   currentCountryData.value = payload;

@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  modules: ['@nuxt/ui', '@pinia/nuxt', 'nuxt-icon', '@nuxtjs/apollo', '@nuxt/image', '@nuxtjs/google-fonts'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', 'nuxt-icon', '@nuxtjs/apollo', '@nuxt/image', '@nuxtjs/google-fonts', 'radix-vue/nuxt', '@vueuse/nuxt'],
   css: [
     '~/assets/css/tailwind.css', '~/assets/css/global.css'
   ],

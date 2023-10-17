@@ -62,6 +62,8 @@ onDone((data) => {
 
         if (window.history.state.back === null) {
             router.push("/");
+        } else if (window.history.state.back === "/accounts/signup") {
+            router.push("/");
         } else {
             router.back();
         }

@@ -36,6 +36,6 @@ onMounted(async () => {
   <main ref="el">
     <NuxtLoadingIndicator />
     <NuxtPage />
-    <UNotifications />
+    <!-- <UNotifications /> -->
   </main>
 </template>

@@ -1,61 +1,134 @@
 <script setup lang="ts">
+import { ActivePredictedPosts, ExpiredPredictedPosts } from "~/graphql/accounts"
+import { IActivePostData, IExpiredPostData, IPostNode } from "~/types/accounts"
+import { uiTabStyles } from "~/helpers"
+const route = useRoute();
 const items = [{
-  key: 'active',
-  label: 'Active',
-  description: 'Make changes to your account here. Click save when you\'re done.'
+    key: 'active',
+    label: 'Active',
 }, {
-  key: 'expired',
-  label: 'Expired',
-  description: 'Change your password here. After saving, you\'ll be logged out.'
+    key: 'expired',
+    label: 'Expired',
 }]
+const activePostData = ref<IPostNode[]>([])
+const expiredPostData = ref<IPostNode[]>([])
+const loadingStatus = ref({
+    active: false, expired: false
+});
 
-const accountForm = reactive({ name: 'Benjamin', username: 'benjamincanac'  })
-const passwordForm = reactive({ currentPassword: '', newPassword: '' })
+const fetchActivePostData = async (tipsterId: string) => {
+    loadingStatus.value.active = true;
+    const { onResult, onError } = useQuery<IActivePostData>(ActivePredictedPosts, { tipsterId: tipsterId });
 
-function onSubmit (form: any) {
-  console.log('Submitted form:', form)
+    onError((error) => {
+        loadingStatus.value.active = false;
+        console.log("Error value: ", error);
+    })
+
+    onResult((result) => {
+        loadingStatus.value.active = false;
+        activePostData.value = result.data.activePredictedPosts.edges?.map((post) => post.node) ?? [];
+    })
 }
 
-const uiStyles = {
-    "list": {
-        base: "relative",
-        background: "bg-white",
-        rounded: "rounded-lg",
-        shadow: "",
-        padding: "p-1",
-        height: "h-12",
-        width: "w-full",
-        marker: {
-            wrapper: "absolute top-[4px] left-[4px] duration-200 ease-out focus:outline-none",
-            base: "w-full h-full",
-            background: "bg-green-500",
-            rounded: "rounded-md",
-            shadow: "shadow-sm"
-        },
-        tab: {
-            active: "text-white",
-            inactive: "text-neutral-800",
-            height: "h-full",
-            padding: "px-3",
-            size: "text-base",
-            font: "font-medium",
-            rounded: "rounded-md",
-            shadow: ""
+const fetchExpiredPostData = async (tipsterId: string) => {
+    loadingStatus.value.expired = true;
+    const { onResult, onError } = useQuery<IExpiredPostData>(ExpiredPredictedPosts, { tipsterId: tipsterId });
+
+    onError((error) => {
+        loadingStatus.value.expired = false;
+        console.log("Error value: ", error);
+    })
+
+    onResult((result) => {
+        loadingStatus.value.expired = false;
+        expiredPostData.value = result.data.expiredPredictedPosts.edges?.map((post) => post.node) ?? [];
+    })
+}
+
+onMounted(() => {
+    fetchActivePostData(route.params.tipsterID as string);
+})
+
+
+function onChange(index: any) {
+    const item = items[index]
+    if (item.key === "active") {
+        fetchActivePostData(route.params.tipsterID as string)
+    } else if (item.key === "expired") {
+        fetchExpiredPostData(route.params.tipsterID as string)
+    }
+}
+
+const updateLike = (payload: boolean, statusType: string, postId: string) => {
+    if (statusType === "active") {
+        let postIndex = activePostData.value.findIndex((post) => post.id === postId)
+        if (postIndex !== -1) {
+            let newNode = { ...activePostData.value[postIndex] };
+            newNode.isLikedByMe = payload;
+            if (payload) {
+                newNode.likes += 1;
+            } else {
+                newNode.likes -= 1;
+            }
+            activePostData.value[postIndex] = { ...newNode };
         }
     }
 }
+
 </script>
 
 <template>
-  <UTabs :items="items" class="w-full" :ui="uiStyles">
-    <template #item="{ item }">
-        <div v-if="item.key === 'active'" class="space-y-3 mt-4">
-            <SectionsPostCard />
-            <SectionsPostCard />
-        </div>
-        <div v-else-if="item.key === 'expired'" class="space-y-3 mt-4">
-            <SectionsPostCard />
-        </div>
-    </template>
-  </UTabs>
+    <UTabs :items="items" class="w-full" :ui="uiTabStyles" @change="onChange">
+        <template #item="{ item }">
+            <div v-if="item.key === 'active'" class="space-y-3 mt-4">
+                <div class="w-full">
+                    <Transition mode="out-in">
+                        <div v-if="!loadingStatus.active" class="w-full">
+                            <Transition mode="out-in">
+                                <div v-if="activePostData.length !== 0" class="w-full">
+                                    <div v-for="node in activePostData" class="w-full">
+                                        <SectionsAccountPostCard :node="node" @update-like="updateLike"
+                                            status-type="active" />
+                                    </div>
+                                </div>
+                                <div v-else class="w-full pt-16 flex flex-col items-center">
+                                    <!-- add note for me here to show there are no expired posts -->
+                                    <h3 class="text-xl font-semibold text-neutral-600 tracking-wide">Empty here!</h3>
+                                    <p class="text-base">Currently there are no active post to check here.</p>
+                                </div>
+                            </Transition>
+                        </div>
+                        <div v-else class="w-full flex flex-col items-center pt-16">
+                            <UtilsStarLoading />
+                        </div>
+                    </Transition>
+                </div>
+            </div>
+            <div v-else-if="item.key === 'expired'" class="space-y-3 mt-4">
+                <div class="w-full">
+                    <Transition mode="out-in">
+                        <div v-if="!loadingStatus.expired" class="w-full">
+                            <Transition mode="out-in">
+                                <div v-if="expiredPostData.length !== 0" class="w-full">
+                                    <div v-for="node in expiredPostData" class="w-full">
+                                        <SectionsAccountPostCard :node="node" @update-like="updateLike"
+                                            status-type="expired" />
+                                    </div>
+                                </div>
+                                <div v-else class="w-full pt-16 flex flex-col items-center">
+                                    <!-- add note for me here to show there are no expired posts -->
+                                    <h3 class="text-xl font-semibold text-neutral-600 tracking-wide">Empty here!</h3>
+                                    <p class="text-base">Currently there are no expired post to check here.</p>
+                                </div>
+                            </Transition>
+                        </div>
+                        <div v-else class="w-full flex flex-col items-center pt-16">
+                            <UtilsStarLoading />
+                        </div>
+                    </Transition>
+                </div>
+            </div>
+        </template>
+    </UTabs>
 </template>
