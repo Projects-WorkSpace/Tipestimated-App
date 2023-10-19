@@ -10,7 +10,7 @@ definePageMeta({
 
 const toast = useToast();
 const router = useRouter();
-const is_tipster_approved = useCookie('is_tipster_approved', {sameSite: true});
+const is_tipster_approved = useCookie('is_tipster_approved', { sameSite: true });
 const tipsterData = ref<IGetTipsterByUser | null>(null);
 const tipsterErrors = ref<any>(null);
 const tipsterLoading = ref(true)
@@ -36,7 +36,7 @@ const formatTimestamp = (timestamp: string | null) => {
 
 const fetchTipsterData = async () => {
     const { data, error, pending } = await useAsyncQuery<IGetTipsterByUser>(GetTipsterByUser)
-    if(data.value?.getTipsterByUser) {
+    if (data.value?.getTipsterByUser) {
         tipsterData.value = data.value;
         const tipster = data.value.getTipsterByUser;
         if (tipster.isApproved) {
@@ -45,7 +45,7 @@ const fetchTipsterData = async () => {
         } else {
             console.log("isApproved false");
         }
-    } else if(error.value) {
+    } else if (error.value) {
         tipsterErrors.value = error.value;
         toast.add({
             title: error.value.message,
@@ -109,8 +109,8 @@ onMounted(() => {
                                         your details.
                                     </h3>
                                     <p class="text-xs text-t-gray">
-                                        Waiting since 
-                                        {{ formatTimestamp(tipsterData?.getTipsterByUser.createdAt || null) }}
+                                        Waiting since
+                                        {{ formatTimestamp(tipsterData?.getTipsterByUser.createdAt ?? '') }}
                                     </p>
                                 </div>
                             </div>
@@ -137,8 +137,6 @@ onMounted(() => {
                                         class="w-full py-2.5 text-base font-semibold bg-base-green/90 text-black tracking-wide rounded-lg hover:bg-base-green focus:bg-base-green transition flex items-center justify-center">
                                         Contact Us
                                     </button>
-                                    {{ tipsterData }}
-                                     <!-- {{ tipster_info_error }} -->
                                 </div>
                             </div>
                         </div>
