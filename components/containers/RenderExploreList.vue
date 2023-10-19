@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import { ITipstersEdgesEntity } from '~/types/types';
-defineProps<{
+import { ITipstersNode } from '~/types/types';
+
+const props = defineProps<{
   pending: boolean;
-  data: ITipstersEdgesEntity[]
+  data: ITipstersNode[]
 }>()
+
+const emits = defineEmits<{
+  (e: "updateFollowStatus", payload: boolean, postId: string): void
+}>()
+
+const updateFollowStatus = (payload: boolean, tipsterId: string) => {
+  emits("updateFollowStatus", payload, tipsterId)
+}
+
 </script>
 <template>
   <div class="w-full flex flex-col">
     <ul v-if="!pending" class="w-full flex flex-col gap-y-2 md:gap-y-3.5">
       <li v-for="item in data" class="w-full">
-        <UiUserExploreDetails :data="item.node" />
+        <UiUserExploreDetails :data="item" @update-follow-status="updateFollowStatus" />
       </li>
     </ul>
     <ul v-else class="w-full flex flex-col gap-y-2 md:gap-y-3.5">
@@ -23,6 +33,5 @@ defineProps<{
         <UtilsSkeletonLoader />
       </li>
     </ul>
-
   </div>
 </template>

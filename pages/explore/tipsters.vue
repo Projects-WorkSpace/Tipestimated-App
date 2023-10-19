@@ -19,7 +19,7 @@ const redirectBtn = (): void => {
     }
 }
 
-const { data: fetchSuggestions, error: errorSuggestion, pending, refresh: refreshSuggestion } = await useAsyncQuery<ITipsters>(TipsterFollowers, { first: 10 });
+const { data: fetchSuggestions, pending, refresh: refreshSuggestion } = await useAsyncQuery<ITipsters>(TipsterFollowers, { first: 10 });
 
 const searchTipsters = async () => {
     loading_search.value = true;

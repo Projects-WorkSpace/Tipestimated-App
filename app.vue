@@ -33,9 +33,9 @@ onMounted(async () => {
 
 </script>
 <template>
-  <main ref="el">
+  <main class="w-full flex flex-col relative">
     <NuxtLoadingIndicator />
     <NuxtPage />
-    <!-- <UNotifications /> -->
+    <UNotifications />
   </main>
 </template>

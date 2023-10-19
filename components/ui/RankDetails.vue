@@ -11,7 +11,7 @@ defineProps<{
 <template>
     <div class="w-full flex justify-between items-center px-3 py-2 bg-white rounded-xl">
         <div class="flex items-center gap-x-6">
-            <UiAvatar :img-url="imgUrl" w-and-h="w-12 h-12" />
+            <UiOtherAvatar :img-url="imgUrl" w-and-h="w-12 h-12" />
             <div class="">
                 <p class="text-base">{{ userName }}</p>
             </div>

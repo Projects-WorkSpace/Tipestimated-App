@@ -61,7 +61,7 @@ onUnFollowError((error) => {
 <template>
   <div class="w-full flex flex-col items-center gap-y-2 md:gap-y-4">
     <header class="w-full md:w-[86%] flex items-center gap-x-5 md:gap-x-10">
-      <UiOtherAvatar w-and-h="w-24 md:w-28 lg:w-32 h-24 md:h-28 lg:h-32" />
+      <UiOtherAvatar :img-url="tipster.imageUrl" w-and-h="w-24 md:w-28 lg:w-32 h-24 md:h-28 lg:h-32" />
       <div class="flex flex-col items-center gap-y-4 grow">
         <div class="w-full flex flex-col md:flex-row md:items-center justify-between gap-y-4 md:gap-y-2.5">
           <div class="flex md:flex-col items-baseline md:items-start gap-x-2">
@@ -93,7 +93,7 @@ onUnFollowError((error) => {
           </div>
         </div>
         <div class="w-full hidden md:flex">
-          <h4 class="text-xl font-medium">Amos K</h4>
+          <h4 class="text-xl font-medium">{{ tipster.user.userName }}</h4>
         </div>
         <div class="w-full hidden md:flex flex-col space-y-2">
           <div class="w-full flex items-center justify-between">

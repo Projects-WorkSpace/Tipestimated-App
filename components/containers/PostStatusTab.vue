@@ -2,24 +2,31 @@
 import { ActivePredictedPosts, ExpiredPredictedPosts } from "~/graphql/accounts"
 import { IActivePostData, IExpiredPostData, IPostNode } from "~/types/accounts"
 import { uiTabStyles } from "~/helpers"
+
 const route = useRoute();
-const items = [{
-    key: 'active',
-    label: 'Active',
-}, {
-    key: 'expired',
-    label: 'Expired',
-}]
 const activePostData = ref<IPostNode[]>([])
 const expiredPostData = ref<IPostNode[]>([])
 const loadingStatus = ref({
     active: false, expired: false
 });
 
+const items = [
+    {
+        key: 'active',
+        label: 'Active',
+    },
+    {
+        key: 'expired',
+        label: 'Expired',
+    }
+]
+
 const fetchActivePostData = async (tipsterId: string) => {
     loadingStatus.value.active = true;
-    const { onResult, onError } = useQuery<IActivePostData>(ActivePredictedPosts, { tipsterId: tipsterId });
-
+    const { result, onResult, onError } = useQuery<IActivePostData>(ActivePredictedPosts, { tipsterId: tipsterId });
+    if (result.value) {
+        console.log("Got results here")
+    }
     onError((error) => {
         loadingStatus.value.active = false;
         console.log("Error value: ", error);
@@ -46,11 +53,6 @@ const fetchExpiredPostData = async (tipsterId: string) => {
     })
 }
 
-onMounted(() => {
-    fetchActivePostData(route.params.tipsterID as string);
-})
-
-
 function onChange(index: any) {
     const item = items[index]
     if (item.key === "active") {
@@ -76,59 +78,68 @@ const updateLike = (payload: boolean, statusType: string, postId: string) => {
     }
 }
 
+onMounted(() => {
+    fetchActivePostData(route.params.tipsterID as string);
+})
+
 </script>
 
 <template>
-    <UTabs :items="items" class="w-full" :ui="uiTabStyles" @change="onChange">
-        <template #item="{ item }">
-            <div v-if="item.key === 'active'" class="space-y-3 mt-4">
-                <div class="w-full">
-                    <Transition mode="out-in">
-                        <div v-if="!loadingStatus.active" class="w-full">
-                            <Transition mode="out-in">
-                                <div v-if="activePostData.length !== 0" class="w-full">
-                                    <div v-for="node in activePostData" class="w-full">
-                                        <SectionsAccountPostCard :node="node" @update-like="updateLike"
-                                            status-type="active" />
+    <div class="w-full flex flex-col">
+
+        <UTabs :items="items" class="w-full" :ui="uiTabStyles" @change="onChange">
+            <template #item="{ item }">
+                <div v-if="item.key === 'active'" class="space-y-3 mt-4">
+                    <div class="w-full">
+                        <Transition mode="out-in">
+                            <div v-if="!loadingStatus.active" class="w-full">
+                                <Transition mode="out-in">
+                                    <div v-if="activePostData" class="w-full">
+                                        <div v-for="node in activePostData" class="w-full">
+                                            <SectionsAccountPostCard :node="node" @update-like="updateLike"
+                                                status-type="active" :pen-name="node.tipsterId.penName"
+                                                :img-url="node.tipsterId.imageUrl" />
+                                        </div>
                                     </div>
-                                </div>
-                                <div v-else class="w-full pt-16 flex flex-col items-center">
-                                    <!-- add note for me here to show there are no expired posts -->
-                                    <h3 class="text-xl font-semibold text-neutral-600 tracking-wide">Empty here!</h3>
-                                    <p class="text-base">Currently there are no active post to check here.</p>
-                                </div>
-                            </Transition>
-                        </div>
-                        <div v-else class="w-full flex flex-col items-center pt-16">
-                            <UtilsStarLoading />
-                        </div>
-                    </Transition>
-                </div>
-            </div>
-            <div v-else-if="item.key === 'expired'" class="space-y-3 mt-4">
-                <div class="w-full">
-                    <Transition mode="out-in">
-                        <div v-if="!loadingStatus.expired" class="w-full">
-                            <Transition mode="out-in">
-                                <div v-if="expiredPostData.length !== 0" class="w-full">
-                                    <div v-for="node in expiredPostData" class="w-full">
-                                        <SectionsAccountPostCard :node="node" @update-like="updateLike"
-                                            status-type="expired" />
+                                    <div v-else class="w-full pt-16 flex flex-col items-center">
+                                        <h3 class="text-xl font-semibold text-neutral-600 tracking-wide">Empty here!
+                                        </h3>
+                                        <p class="text-base">Currently there are no active post to check here.</p>
                                     </div>
-                                </div>
-                                <div v-else class="w-full pt-16 flex flex-col items-center">
-                                    <!-- add note for me here to show there are no expired posts -->
-                                    <h3 class="text-xl font-semibold text-neutral-600 tracking-wide">Empty here!</h3>
-                                    <p class="text-base">Currently there are no expired post to check here.</p>
-                                </div>
-                            </Transition>
-                        </div>
-                        <div v-else class="w-full flex flex-col items-center pt-16">
-                            <UtilsStarLoading />
-                        </div>
-                    </Transition>
+                                </Transition>
+                            </div>
+                            <div v-else class="w-full flex flex-col items-center pt-16">
+                                <UtilsStarLoading />
+                            </div>
+                        </Transition>
+                    </div>
                 </div>
-            </div>
-        </template>
-    </UTabs>
+                <div v-else-if="item.key === 'expired'" class="space-y-3 mt-4">
+                    <div class="w-full">
+                        <Transition mode="out-in">
+                            <div v-if="!loadingStatus.expired" class="w-full">
+                                <Transition mode="out-in">
+                                    <div v-if="expiredPostData.length !== 0" class="w-full">
+                                        <div v-for="node in expiredPostData" class="w-full">
+                                            <SectionsAccountPostCard :node="node" @update-like="updateLike"
+                                                status-type="expired" :pen-name="node.tipsterId.penName"
+                                                :img-url="node.tipsterId.imageUrl" />
+                                        </div>
+                                    </div>
+                                    <div v-else class="w-full pt-16 flex flex-col items-center">
+                                        <h3 class="text-xl font-semibold text-neutral-600 tracking-wide">Empty here!
+                                        </h3>
+                                        <p class="text-base">Currently there are no expired post to check here.</p>
+                                    </div>
+                                </Transition>
+                            </div>
+                            <div v-else class="w-full flex flex-col items-center pt-16">
+                                <UtilsStarLoading />
+                            </div>
+                        </Transition>
+                    </div>
+                </div>
+            </template>
+        </UTabs>
+    </div>
 </template>

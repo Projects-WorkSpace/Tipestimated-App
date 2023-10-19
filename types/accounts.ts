@@ -15,7 +15,12 @@ export interface IPostNode {
   createdAt: string;
   likes: number;
   isLikedByMe: boolean;
+  tipsterId: ITipsterIdData;
   predictionpostitemSet: IPredictionpostitemSet;
+}
+export interface ITipsterIdData {
+  penName: string;
+  imageUrl: string;
 }
 export interface IPredictionpostitemSet {
   edges?: (IPostItemEntity)[] | null;

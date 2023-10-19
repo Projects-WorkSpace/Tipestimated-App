@@ -3,12 +3,9 @@ export interface IListProps {
     icon?: string;
     disabled?: boolean;
 }
-
-
 export interface ILoginResponse {
     tokenAuth: IUserAuth;
 }
-
 export interface IUserAuth {
     refreshExpiresIn?: number;
     token: string;
@@ -16,13 +13,11 @@ export interface IUserAuth {
     refreshToken: string;
     tipster?: ITipsterPayload | null;
 }
-
 export interface IUserDetails {
     id: string;
     userName: string
     email: string
 }
-
 export interface IPayload {
     email: string;
     userID: string;
@@ -36,8 +31,6 @@ export interface IRefreshToken {
     refreshExpiresIn: number;
     refreshToken: string;
 }
-
-
 export interface IRegisterUserResponse {
     registerAppUser: IRegisterAppUser;
 }
@@ -58,8 +51,6 @@ export interface RegisterErrorsEntity {
     field: string;
     messages: (string)[];
 }
-
-
 export interface IErrorTipsterStatus {
     pen_name: boolean;
     nationality: boolean;
@@ -81,7 +72,6 @@ export interface IProfileImage {
 }
 
 // 
-
 export interface IDropdownItem {
     exact?: boolean | undefined;
     label: string;
@@ -108,7 +98,6 @@ export interface Node {
     icon: string;
 }
 
-
 // 
 export interface IGetTipsterByUser {
     getTipsterByUser: GetTipsterByUser;
@@ -119,8 +108,6 @@ export interface GetTipsterByUser {
     isApproved: boolean;
     createdAt: string;
 }
-
-
 export interface IMoreData {
     tipsterFollowers: TipsterFollowers;
     allTipsters: AllTipsters;
@@ -139,7 +126,6 @@ export interface TipsterId {
     id: string;
     penName: string;
 }
-
 export interface AllTipsters {
     edges?: (AllTipstersEdgesEntity)[] | null;
 }
@@ -152,7 +138,6 @@ export interface AllTipstersNode {
 }
 
 //
-
 export interface ITipsters {
     allTipsters: ITipstersAllTipsters;
 }
@@ -172,8 +157,6 @@ export interface ITipstersNode {
     followerCount: number;
     isFollowedByUser: boolean;
 }
-
-
 export interface IFollowData {
     followTipster: FollowTipster;
 }
@@ -185,8 +168,6 @@ export interface Followers {
     id: string;
     createdAt: string;
 }
-
-
 export interface IUnFollowData {
     unFollowTipster: UnFollowTipster;
 }
@@ -194,7 +175,6 @@ export interface UnFollowTipster {
     success: boolean;
     errors?: (string)[] | null;
 }
-
 
 //
 export interface ILeagueEntity {
@@ -207,7 +187,6 @@ export interface ILeagueEntity {
     TEMPLATE_ID: string;
     STAGES?: (STAGESEntity)[] | null;
 }
-
 export interface STAGESEntity {
     STAGE_ID: string;
     STAGE_NAME: string;

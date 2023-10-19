@@ -1,6 +1,17 @@
-export const ExpiredPredictedPosts = gql`
-query ExpiredPredictedPosts($tipsterId: ID) {
-    expiredPredictedPosts(tipsterId: $tipsterId) {
+export const HomePageDataForUser = gql`
+query PredictionPosts($userId: ID) {
+    tipsterFollowers(userId: $userId, first: 2) {
+        edges {
+            node {
+                id
+                tipsterId {
+                    id
+                    penName
+                }
+            }
+        }
+    }
+    predictionPosts {
         edges {
             node {
                 id
@@ -9,7 +20,15 @@ query ExpiredPredictedPosts($tipsterId: ID) {
                 isLikedByMe
                 tipsterId {
                     penName
+                    id
+                    telegramLink
+                    socialLink
                     imageUrl
+                    isFollowedByUser
+                    followerCount
+                    user {
+                        userName
+                    }
                 }
                 predictionpostitemSet {
                     edges {
@@ -26,9 +45,9 @@ query ExpiredPredictedPosts($tipsterId: ID) {
                             awayImage
                             predictionName
                             predictionValue
-                            odds
                             bookmaker
                             bookmakerImg
+                            odds
                             win
                             resultValue
                         }
@@ -39,9 +58,10 @@ query ExpiredPredictedPosts($tipsterId: ID) {
     }
 }
 `
-export const ActivePredictedPosts = gql`
-query ActivePredictedPosts($tipsterId: ID) {
-    activePredictedPosts(tipsterId: $tipsterId) {
+
+export const HomePageDataForAnonymousUser = gql`
+query PredictionPosts {
+    predictionPosts {
         edges {
             node {
                 id
@@ -50,7 +70,16 @@ query ActivePredictedPosts($tipsterId: ID) {
                 isLikedByMe
                 tipsterId {
                     penName
+                    id
+                    telegramLink
+                    socialLink
                     imageUrl
+                    isFollowedByUser
+                    followerCount
+                    user {
+                        userName
+                    }
+
                 }
                 predictionpostitemSet {
                     edges {
@@ -67,9 +96,9 @@ query ActivePredictedPosts($tipsterId: ID) {
                             awayImage
                             predictionName
                             predictionValue
-                            odds
                             bookmaker
                             bookmakerImg
+                            odds
                             win
                             resultValue
                         }
@@ -81,60 +110,3 @@ query ActivePredictedPosts($tipsterId: ID) {
 }
 `
 
-export const GetTipster = gql`
-query GetTipster($tipsterId: ID!){
-    getTipster(id: $tipsterId) {
-        id
-        penName
-        country
-        favoriteSport
-        otherSport
-        telegramLink
-        socialLink
-        isApproved
-        imageUrl
-        followerCount
-        isFollowedByUser
-        user {
-            id
-            userName
-        }
-    }
-}
-`
-
-export const FollowTipster = gql`
-mutation FollowTipster($tipsterId: ID!, $userId: ID!) {
-    followTipster(
-        data: { tipsterId: $tipsterId, userId: $userId }
-    ) {
-        errors
-        follower {
-            id
-        }
-    }
-}
-`
-
-export const UnFollowTipster = gql`
-mutation UnFollowTipster($tipsterId: ID!, $userId: ID!)  {
-    unFollowTipster(
-        data: { tipsterId: $tipsterId, userId: $userId }
-    ) {
-        success
-        errors
-    }
-}
-`
-
-export const LikePost = gql`
-mutation LikePost($postId: ID!, $userId: ID!) {
-    likePost(postId: $postId, userId: $userId) {
-        success
-        predictionPostLike {
-            id
-        }
-        liked
-    }
-}
-`
