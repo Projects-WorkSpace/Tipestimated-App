@@ -1,7 +1,7 @@
 import { defineApolloClient } from '@nuxtjs/apollo'
 
 export default defineApolloClient({
-  httpEndpoint: process.env.NUXT_GRAPHQL_ENDPOINT as string,
+  httpEndpoint: process.env.NUXT_GRAPHQL_ENDPOINT ?? '',
   httpLinkOptions: {
     credentials: 'same-origin'
   },

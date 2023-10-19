@@ -35,9 +35,10 @@ const fetchPostsForSignInUser = async () => {
 
 const fetchPostsForAnonymousUser = async () => {
     loading.value = true;
-
+    console.log("Getting for anonymous user")
     const { onResult, onError } = useQuery<IHomePageAnonymousDetails>(HomePageDataForAnonymousUser);
     onResult((result) => {
+        console.log('Possible errors for anonymous: ', result.errors, result.error)
         loading.value = false;
         postData.value = result.data.predictionPosts.edges?.map((edge) => edge.node) ?? []
     })
