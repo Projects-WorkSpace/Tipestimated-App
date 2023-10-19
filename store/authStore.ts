@@ -16,8 +16,8 @@ export const useAuthStore = defineStore("user", () => {
         userPayload.value = payload;
     };
 
-    const updateIsLoggedIn = () => {
-        is_logged_in.value = !is_logged_in.value;
+    const updateIsLoggedIn = (payload: boolean) => {
+        is_logged_in.value = payload;
     }
 
     const updateIfLessFollowers = () => {

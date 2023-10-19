@@ -20,7 +20,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
             user_payload.value = null;
             return navigateTo("/accounts/login");
         }
-        authStore.updateIsLoggedIn();
+        authStore.updateIsLoggedIn(true);
     } else {
         return navigateTo("/accounts/login");
     }

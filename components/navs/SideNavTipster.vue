@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { MenuItem } from '@headlessui/vue'
 import { storeToRefs } from 'pinia';
+import { MenuItem } from '@headlessui/vue'
+import { useAuthStore } from "~/store/authStore";
 import { usePageFeatureStore } from '~/store/pageFeatures';
 
-
+const authStore = useAuthStore();
 const featureStore = usePageFeatureStore();
+const { is_logged_in } = storeToRefs(authStore);
 const { isTipster } = storeToRefs(featureStore);
 const { updateOpenCreateModal } = featureStore;
 
@@ -13,6 +15,7 @@ const router = useRouter()
 const user_payload = useCookie("user_payload", { sameSite: true })
 const tipster_payload = useCookie("tipster_payload", { sameSite: true });
 const logoutUser = (): void => {
+    authStore.updateIsLoggedIn(false);
     user_payload.value = null;
     tipster_payload.value = null;
     onLogout()
@@ -72,43 +75,52 @@ const logoutUser = (): void => {
                     <span class="text-base font-medium hidden xl:block">Tipster Analysis</span>
                 </button>
             </div>
-            <div class="w-full flex flex-col">
-                <UiMenuDropDown>
-                    <template #button>
-                        <div class="w-full flex flex-row gap-x-2 items-center group">
-                            <div
-                                class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
-                                <Icon name="mdi:menu" class="text-neutral-700 text-xl md:text-2xl" />
+            <!-- {{ is_logged_in }} -->
+            <transition mode="out-in">
+                <div v-if="is_logged_in" class="w-full flex flex-col">
+                    <UiMenuDropDown>
+                        <template #button>
+                            <div class="w-full flex flex-row gap-x-2 items-center group">
+                                <div
+                                    class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-xl transition-colors duration-200 cursor-pointer">
+                                    <Icon name="mdi:menu" class="text-neutral-700 text-xl md:text-2xl" />
+                                </div>
+                                <span class="text-lg font-medium hidden xl:block">More</span>
                             </div>
-                            <span class="text-lg font-medium hidden xl:block">More</span>
-                        </div>
-                    </template>
-                    <template #items>
-                        <div class="px-2 py-2">
-                            <MenuItem v-slot="{ active }">
-                            <button :class="[
-                                active ? 'bg-[#e2e2e2]/60' : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2.5 py-2.5 text-base hover:bg-[#e2e2e2]/60',
-                            ]">
-                                <Icon name="mdi:cog" :active="active" class="mr-2 h-5 w-5 text-gray-700"
-                                    aria-hidden="true" />
-                                Settings
-                            </button>
-                            </MenuItem>
-                        </div>
-                        <div class="px-2 py-2">
-                            <MenuItem v-slot="{ active }">
-                            <button @click="logoutUser" :class="[
-                                active ? 'bg-[#e2e2e2]/60' : 'text-gray-900',
-                                'group flex w-full items-center rounded-lg px-2.5 py-2.5 text-base hover:bg-[#e2e2e2]/60',
-                            ]">
-                                Logout
-                            </button>
-                            </MenuItem>
-                        </div>
-                    </template>
-                </UiMenuDropDown>
-            </div>
+                        </template>
+                        <template #items>
+                            <div class="px-2 py-2">
+                                <MenuItem v-slot="{ active }">
+                                <button :class="[
+                                    active ? 'bg-[#e2e2e2]/60' : 'text-gray-900',
+                                    'group flex w-full items-center rounded-md px-2.5 py-2.5 text-base hover:bg-[#e2e2e2]/60',
+                                ]">
+                                    <Icon name="mdi:cog" :active="active" class="mr-2 h-5 w-5 text-gray-700"
+                                        aria-hidden="true" />
+                                    Settings
+                                </button>
+                                </MenuItem>
+                            </div>
+                            <div class="px-2 py-2">
+                                <MenuItem v-slot="{ active }">
+                                <button @click="logoutUser" :class="[
+                                    active ? 'bg-[#e2e2e2]/60' : 'text-gray-900',
+                                    'group flex w-full items-center rounded-lg px-2.5 py-2.5 text-base hover:bg-[#e2e2e2]/60',
+                                ]">
+                                    Logout
+                                </button>
+                                </MenuItem>
+                            </div>
+                        </template>
+                    </UiMenuDropDown>
+                </div>
+                <div v-else class="w-full flex flex-col pb-1.5">
+                    <NuxtLink to="/accounts/login"
+                        class="text-base text-center text-white bg-green-600 rounded-lg px-4 py-2 hover:bg-green-700 transition-colors duration-200">
+                        Sign
+                        in</NuxtLink>
+                </div>
+            </transition>
         </div>
 
         <!-- Modals -->

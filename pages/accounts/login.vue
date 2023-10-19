@@ -51,7 +51,7 @@ onDone((data) => {
         authStore.updateUserPayload(response?.tokenAuth.payload);
         user_payload.value = response.tokenAuth.payload as unknown as string;
         onLogin(response?.tokenAuth.token);
-        authStore.updateIsLoggedIn()
+        authStore.updateIsLoggedIn(true)
         if (response.tokenAuth.tipster !== null) { // if is tipster
             tipster_payload.value = response.tokenAuth.tipster as unknown as string;
             authStore.updateTipsterPayload(JSON.parse(response.tokenAuth.tipster as unknown as string))

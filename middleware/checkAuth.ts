@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
       if (today > new Date(user_payload.value.exp * 1000)) {
         user_payload.value = null;
       } else {
-        authStore.updateIsLoggedIn();
+        authStore.updateIsLoggedIn(true);
       }
     }
   }

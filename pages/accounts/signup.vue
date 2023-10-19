@@ -67,7 +67,7 @@ onDone((data) => {
             authStore.updateUserPayload(JSON.parse(response.payload));
             user_payload.value = JSON.parse(response.payload);
             onLogin(response.token);
-            authStore.updateIsLoggedIn()
+            authStore.updateIsLoggedIn(true)
             if (asTipster.value) {
                 router.push("/accounts/signup-tipster")
             } else {

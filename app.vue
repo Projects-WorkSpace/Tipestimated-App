@@ -19,7 +19,7 @@ const checkUserDetails = async () => {
   if (token && user_payload.value) {
     let payload = user_payload.value as unknown as IPayload;
     authStore.updateUserPayload(payload);
-    authStore.updateIsLoggedIn();
+    authStore.updateIsLoggedIn(true);
   }
   if (tipster_payload.value) {
     authStore.updateTipsterPayload(tipster_payload.value as unknown as ITipsterPayload)
