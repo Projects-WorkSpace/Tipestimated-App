@@ -44,7 +44,7 @@ const fetchPostsForAnonymousUser = async () => {
     })
     onError((error) => {
         loading.value = false;
-        console.log("Fetch home page anonymous data error: ", error.message)
+        console.log("Fetch home page anonymous data error: ", error)
     })
 
 }
@@ -54,7 +54,6 @@ onMounted(async () => {
     if (token) {
         fetchPostsForSignInUser();
     } else {
-        console.log("Fetching anonymous")
         fetchPostsForAnonymousUser()
     }
 })
