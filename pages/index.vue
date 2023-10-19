@@ -36,6 +36,17 @@ const fetchPostsForSignInUser = async () => {
 const fetchPostsForAnonymousUser = async () => {
     loading.value = true;
     console.log("Getting for anonymous user")
+    const { data, error } = await useAsyncQuery<IHomePageAnonymousDetails>(HomePageDataForAnonymousUser);
+    if (data.value) {
+        console.log("Fetched data")
+        loading.value = false;
+        postData.value = data.value.predictionPosts.edges?.map((edge) => edge.node) ?? []
+    } else {
+        loading.value = false;
+        console.log("Empty data: ", error.value)
+    }
+
+    /*
     const { onResult, onError } = useQuery<IHomePageAnonymousDetails>(HomePageDataForAnonymousUser);
     onResult((result) => {
         console.log('Possible errors for anonymous: ', result.errors, result.error)
@@ -46,6 +57,7 @@ const fetchPostsForAnonymousUser = async () => {
         loading.value = false;
         console.log("Fetch home page anonymous data error: ", error)
     })
+    */
 
 }
 
