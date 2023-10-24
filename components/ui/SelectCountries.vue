@@ -1,63 +1,52 @@
 <script setup lang="ts">
 const props = defineProps<{
-    nationality: string
-    error_status: boolean
-}>()
-defineEmits<{
-    (e: 'update:nationality', payload: string): void
-}>()
+  nationality: string;
+  error_status: boolean;
+}>();
+const emits = defineEmits<{
+  (e: "update:nationality", payload: string): void;
+}>();
 
 interface Country {
-    name: {
-        common: string;
-        official?: string;
-        nativeName?: Record<string, { official: string; common: string }>;
-    };
+  name: {
+    common: string;
+  };
 }
+const { data: countriesData, pending } = await useLazyFetch<Country[]>(
+  "https://restcountries.com/v3.1/all?fields=name",
+);
 
-const { data: countries, pending, error, refresh } = await useFetch<Country[]>('https://restcountries.com/v3.1/all?fields=name')
-
+const computedCountries = computed(
+  () => countriesData.value?.map((country) => country.name.common),
+);
+const selectCountry = (payload: string) => {
+  emits("update:nationality", payload);
+};
 </script>
 <template>
-    <div class="w-full">
-        <div v-if="pending">
-            loading...
-        </div>
-        <div class="flex w-full items-center text-red-400 gap-x-2" v-if="error">
-            <Icon name="mdi:reload" class="text-base" />
-            <p class="text-sm">Error</p>
-        </div>
-        <div class="w-full relative flex items-center">
-
-            <select :value="nationality" @input="
-                $emit(
-                    'update:nationality',
-                    ($event.target as HTMLSelectElement).value
-                )
-                "
-                class="custom-select text-sm bg-c-light h-10 w-full rounded-lg text-gray-700 px-2 ring-1 ring-c-seperator/60 focus:ring-neutral-400/60 focus:outline-none">
-                <option value="" disabled selected>Nationality</option>
-                <option v-for="country in countries" :value="country.name.common">
-                    {{ country.name.common }}
-                </option>
-            </select>
-            <Icon name="mdi:chevron-down" class="h-4 w-4 text-gray-400 absolute right-2" />
-        </div>
-        <p v-if="error_status" class="text-xs text-red-500 mt-1.5 ml-0.5">Enter valid nationality</p>
-    </div>
+  <div class="w-full flex flex-col">
+    <div v-if="pending">loading...</div>
+    <USelectMenu :model-value="nationality" @update:model-value="selectCountry" class="w-full" size="lg"
+      placeholder="Select your country" searchable-placeholder="Search a country..."
+      select-class="bg-c-light py-2.5 rounded-lg ring-0 text-gray-500 text-base border border-c-seperator/60 focus:border-neutral-400/60 focus:ring-0 focus:outline-none sm:text-sm"
+      :options="computedCountries" searchable />
+    <p v-if="error_status" class="text-sm text-red-500 mt-1.5 ml-0.5">
+      required
+    </p>
+  </div>
 </template>
 
 <style scoped>
 .custom-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: none;
-    padding-right: 6px;
-    background-position: right center;
-    background-origin: content-box;
-    background-repeat: no-repeat;
-    background-size: 18px 18px;
-    filter: grayscale(100%);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: none;
+  padding-right: 6px;
+  background-position: right center;
+  background-origin: content-box;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  filter: grayscale(100%);
 }
 </style>

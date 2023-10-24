@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { IPayload } from "~/types/types"
-import { IHomePageDetails, PostsNode, FollowingNode, IHomePageAnonymousDetails } from "~/types/homePage"
-import { HomePageDataForUser, HomePageDataForAnonymousUser } from "~/graphql/homePage"
+import { IPayload } from "~/types/types";
+import {
+    IHomePageDetails,
+    PostsNode,
+    FollowingNode,
+    IHomePageAnonymousDetails,
+} from "~/types/homePage";
+import {
+    HomePageDataForUser,
+    HomePageDataForAnonymousUser,
+} from "~/graphql/homePage";
 
 definePageMeta({
-    middleware: 'check-auth',
+    middleware: "check-auth",
 });
 
 const { getToken } = useApollo();
@@ -17,48 +25,54 @@ const stories = ref(false);
 
 const fetchPostsForSignInUser = async () => {
     loading.value = true;
-    const { onResult, onError } = useQuery<IHomePageDetails>(HomePageDataForUser, { userId: user_payload.value.userID })
+    const { onResult, onError } = useQuery<IHomePageDetails>(
+        HomePageDataForUser,
+        { userId: user_payload.value.userID },
+    );
     onResult((result) => {
         loading.value = false;
-        postData.value = result.data.predictionPosts.edges?.map((edge) => edge.node) ?? []
-        let following = result.data.tipsterFollowers.edges?.map((edge) => edge.node) ?? []
+        postData.value =
+            result.data.predictionPosts.edges?.map((edge) => edge.node) ?? [];
+        let following =
+            result.data.tipsterFollowers.edges?.map((edge) => edge.node) ?? [];
         if (following.length < 2) {
             followMoreTipster.value = true;
         }
         followingTipsters.value = following;
-    })
+    });
     onError((error) => {
         loading.value = false;
-        console.log("Fetch home page data error: ", error.message)
-    })
-}
+        console.log("Fetch home page data error: ", error.message);
+    });
+};
 
 const fetchPostsForAnonymousUser = async () => {
     loading.value = true;
-    const { onResult, onError } = useQuery<IHomePageAnonymousDetails>(HomePageDataForAnonymousUser);
+    const { onResult, onError } = useQuery<IHomePageAnonymousDetails>(
+        HomePageDataForAnonymousUser,
+    );
     onResult((result) => {
         loading.value = false;
-        postData.value = result.data.predictionPosts.edges?.map((edge) => edge.node) ?? []
-    })
+        postData.value =
+            result.data.predictionPosts.edges?.map((edge) => edge.node) ?? [];
+    });
     onError((error) => {
         loading.value = false;
-        console.log("Fetch home page anonymous data error: ", error)
-    })
-
-
-}
+        console.log("Fetch home page anonymous data error: ", error);
+    });
+};
 
 onMounted(async () => {
-    const token = await getToken()
+    const token = await getToken();
     if (token) {
         fetchPostsForSignInUser();
     } else {
-        fetchPostsForAnonymousUser()
+        fetchPostsForAnonymousUser();
     }
-})
+});
 
 const updateLike = (payload: boolean, postId: string) => {
-    let postIndex = postData.value.findIndex((post) => post.id === postId)
+    let postIndex = postData.value.findIndex((post) => post.id === postId);
     if (postIndex !== -1) {
         let newNode = { ...postData.value[postIndex] };
         newNode.isLikedByMe = payload;
@@ -69,25 +83,24 @@ const updateLike = (payload: boolean, postId: string) => {
         }
         postData.value[postIndex] = { ...newNode };
     }
-}
+};
 
 const updateFollowStatus = (payload: boolean, postId: string) => {
-    console.log("Toggle follow: ", payload)
-    let postIndex = postData.value.findIndex((post) => post.id === postId)
+    console.log("Toggle follow: ", payload);
+    let postIndex = postData.value.findIndex((post) => post.id === postId);
     if (postIndex !== -1) {
         let newNode = { ...postData.value[postIndex] };
-        let tipster = { ...newNode.tipsterId }
+        let tipster = { ...newNode.tipsterId };
         tipster.isFollowedByUser = payload;
         if (payload) {
-            tipster.followerCount += 1
+            tipster.followerCount += 1;
         } else {
-            tipster.followerCount -= 1
+            tipster.followerCount -= 1;
         }
-        newNode.tipsterId = tipster
+        newNode.tipsterId = tipster;
         postData.value[postIndex] = { ...newNode };
     }
-}
-
+};
 </script>
 <template>
     <div class="w-full">

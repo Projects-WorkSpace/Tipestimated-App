@@ -1,57 +1,74 @@
 <script setup lang="ts">
-import { IDropdownItem } from '~/types/types';
+import { IDropdownItem } from "~/types/types";
 
 const items = ref<IDropdownItem[][] | undefined>([
-  [{
-    label: 'Football',
-    icon: '⚽'
-  }], [{
-    label: 'Basketball',
-    icon: '🏀'
-  }], [{
-    label: 'Tennis',
-    icon: '🎾'
-  }], [{
-    label: 'Hockey',
-    icon: '🏑'
-  }], [{
-    label: 'Cricket',
-    icon: '🏏'
-  }], [{
-    label: 'MotorGP',
-    icon: '🏍️'
-  }],
-])
+    [
+        {
+            label: "Football",
+            icon: "⚽",
+        },
+    ],
+    [
+        {
+            label: "Basketball",
+            icon: "🏀",
+        },
+    ],
+    [
+        {
+            label: "Tennis",
+            icon: "🎾",
+        },
+    ],
+    [
+        {
+            label: "Hockey",
+            icon: "🏑",
+        },
+    ],
+    [
+        {
+            label: "Cricket",
+            icon: "🏏",
+        },
+    ],
+    [
+        {
+            label: "MotorGP",
+            icon: "🏍️",
+        },
+    ],
+]);
 
-const activeItemIndex = ref<number>(0)
+const activeItemIndex = ref<number>(0);
 
 const selectedActiveItem = computed(() => {
-    if(items.value) {
+    if (items.value) {
         return items.value[activeItemIndex.value];
     } else {
-        return [{
-            label: 'None',
-            icon: '❓'
-        }]
+        return [
+            {
+                label: "None",
+                icon: "❓",
+            },
+        ];
     }
-})
-
+});
 
 const selectSport = (data: IDropdownItem) => {
     // Find the index of the selected item based on its label
     const labelToSelect = data.label;
-    if(items.value) {
+    if (items.value) {
         const index = items.value.findIndex((itemGroup) =>
-            itemGroup.some((item) => item.label === labelToSelect)
+            itemGroup.some((item) => item.label === labelToSelect),
         );
-    
+
         // Update the activeItemIndex with the found index
         if (index !== -1) {
             activeItemIndex.value = index;
         }
     }
-}
-
+};
 </script>
 <template>
     <div class="w-full">
@@ -62,18 +79,21 @@ const selectSport = (data: IDropdownItem) => {
                         <Icon :name="selectedActiveItem[0].icon || ''" size="56" />
                     </div>
                     <div class="grow flex flex-col items-start">
-                        <h1 class="text-2xl font-medium md:font-bold">Discover the rankings</h1>
+                        <h1 class="text-2xl font-medium md:font-bold">
+                            Discover the rankings
+                        </h1>
                         <ContainersSimpleDropdown :items="items" @click-item="selectSport">
                             <template #btn>
                                 <button class="flex items-center text-neutral-500 hover:underline">
                                     <span class="text-sm">Change sport</span>
-                                    <Icon name="mdi:chevron-down" class="ml-0.5 text-lg"/>
+                                    <Icon name="mdi:chevron-down" class="ml-0.5 text-lg" />
                                 </button>
                             </template>
                         </ContainersSimpleDropdown>
                     </div>
                 </div>
-                <div class="w-full flex flex-nowrap md:flex-wrap gap-y-1 gap-x-3 items-center mt-3.5 md:mt-6 overflow-x-auto">
+                <div
+                    class="w-full flex flex-nowrap md:flex-wrap gap-y-1 gap-x-3 items-center mt-3.5 md:mt-6 overflow-x-auto">
                     <button class="px-4 py-1.5 bg-white rounded-lg flex items-center">
                         <span class="text-sm sm:text-base font-semibold truncate">Top 50</span>
                         <Icon name="🌐" size="16px" class="ml-1" />
@@ -102,16 +122,19 @@ const selectSport = (data: IDropdownItem) => {
                     </div>
                     <ul class="w-full flex flex-col gap-y-2.5 mt-2">
                         <li class="w-full">
-                            <UiRankDetails img-url="https://avatars.githubusercontent.com/u/739984?v=4" user-name="User1" icon="🥇" roi="85" :index="1"  />
+                            <UiRankDetails img-url="https://avatars.githubusercontent.com/u/739984?v=4" user-name="User1"
+                                icon="🥇" roi="85" :index="1" />
                         </li>
                         <li class="w-full">
-                            <UiRankDetails img-url="https://avatars.githubusercontent.com/u/904724?v=4" user-name="User150" icon="🥈" roi="82" :index="2"  />
+                            <UiRankDetails img-url="https://avatars.githubusercontent.com/u/904724?v=4" user-name="User150"
+                                icon="🥈" roi="82" :index="2" />
                         </li>
                         <li class="w-full">
-                            <UiRankDetails img-url="https://avatars.githubusercontent.com/u/7547335?v=4" user-name="User754" icon="🥉" roi="82" :index="3"  />
+                            <UiRankDetails img-url="https://avatars.githubusercontent.com/u/7547335?v=4" user-name="User754"
+                                icon="🥉" roi="82" :index="3" />
                         </li>
                         <li class="w-full">
-                            <UiRankDetails img-url="" user-name="User159" icon="🥉" roi="80" :index="4"  />
+                            <UiRankDetails img-url="" user-name="User159" icon="🥉" roi="80" :index="4" />
                         </li>
                     </ul>
                 </div>
@@ -122,16 +145,18 @@ const selectSport = (data: IDropdownItem) => {
 
 <style scoped>
 * {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE 10+ */
 }
 
 ::-webkit-scrollbar {
-  width: 0.1rem;
-  background-color: transparent;
+    width: 0.1rem;
+    background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: transparent;
+    background-color: transparent;
 }
 </style>
