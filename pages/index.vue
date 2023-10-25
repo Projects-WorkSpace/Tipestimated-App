@@ -31,8 +31,13 @@ const fetchPostsForSignInUser = async () => {
   );
   onResult((result) => {
     loading.value = false;
-    postData.value =
-      result.data.predictionPosts.edges?.map((edge) => edge.node) ?? [];
+    let posts = result.data.predictionPosts.edges?.map((edge) => edge.node);
+    // no found posts
+    if (posts?.length !== 0) {
+      postData.value = posts ?? [];
+    } else {
+      followMoreTipster.value = true;
+    }
     let following =
       result.data.tipsterFollowers.edges?.map((edge) => edge.node) ?? [];
     if (following.length < 2) {

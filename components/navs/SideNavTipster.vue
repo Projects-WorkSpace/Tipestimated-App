@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { MenuItem } from '@headlessui/vue'
+import { storeToRefs } from "pinia";
+import { MenuItem } from "@headlessui/vue";
+import { ITipsterPayload } from "~/types/types";
+import { GetTipsterDetails } from "@/graphql/accounts";
 import { useAuthStore } from "~/store/authStore";
-import { usePageFeatureStore } from '~/store/pageFeatures';
+import { usePageFeatureStore } from "~/store/pageFeatures";
 
 const authStore = useAuthStore();
 const featureStore = usePageFeatureStore();
@@ -10,25 +12,57 @@ const { is_logged_in } = storeToRefs(authStore);
 const { isTipster } = storeToRefs(featureStore);
 const { updateOpenCreateModal } = featureStore;
 
-const { onLogout } = useApollo()
-const router = useRouter()
-const user_payload = useCookie("user_payload", { sameSite: true })
-const tipster_payload = useCookie("tipster_payload", { sameSite: true });
+const router = useRouter();
+const { getToken, onLogout } = useApollo();
+const user_payload = useCookie("user_payload", { sameSite: true });
+const tipster_payload = useCookie<ITipsterPayload | null>("tipster_payload", {
+    sameSite: true,
+});
+const tipster_details = ref<IGetTipster>();
+
+interface ITipsterDetails {
+    getTipster: IGetTipster;
+}
+interface IGetTipster {
+    id: string;
+    imageUrl: string;
+}
+
 const logoutUser = (): void => {
     authStore.updateIsLoggedIn(false);
     user_payload.value = null;
     tipster_payload.value = null;
-    onLogout()
-    router.push("/accounts/login")
-}
+    onLogout();
+    router.push("/accounts/login");
+};
 
+const getTipster = () => {
+    const { onResult, onError } = useQuery<ITipsterDetails>(GetTipsterDetails, {
+        tipsterId: tipster_payload.value?.tipsterID,
+    });
+    onResult((result) => {
+        tipster_details.value = result.data.getTipster;
+    });
+    onError((err) => {
+        console.log("Tipster error: ", err.message);
+    });
+};
+
+onMounted(async () => {
+    let token = await getToken();
+    if (token && tipster_payload.value) {
+        getTipster();
+    }
+});
 </script>
 <template>
     <div class="w-full xl:min-w-[250px] h-full flex flex-col justify-between pt-8 pb-4">
         <div class="w-full flex flex-col px-6">
-            <h3 class="text-2xl font-sans font-medium italic hidden lg:block">Tipstimate</h3>
+            <h3 class="text-2xl font-sans font-medium italic hidden lg:block">
+                Tipstimate
+            </h3>
         </div>
-        <div class="w-full flex flex-col px-6 gap-y-2">
+        <div class="w-full flex flex-col px-6 gap-y-4">
             <div v-if="isTipster" class="w-full flex flex-col">
                 <button class="w-full flex flex-row gap-x-2 items-center group" @click="updateOpenCreateModal">
                     <span
@@ -39,16 +73,24 @@ const logoutUser = (): void => {
                 </button>
             </div>
             <div class="w-full flex flex-col">
-                <button class="w-full flex flex-row gap-x-2 items-center group">
-                    <span
-                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-t-xl transition-colors duration-200 cursor-pointer">
-                        <Icon name="mdi:account" class="text-neutral-700 text-xl md:text-2xl" />
-                    </span>
+                <button v-if="is_logged_in" class="w-full flex flex-row gap-x-2 items-center group">
+                    <transition mode="out-in">
+                        <span v-if="!tipster_details"
+                            class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-t-xl transition-colors duration-200 cursor-pointer">
+                            <Icon name="mdi:account" class="text-neutral-700 text-xl md:text-2xl" />
+                        </span>
+                        <span v-else
+                            class="p-3 group-hover:bg-[#e2e2e2]/60 bg-white rounded-t-xl transition-colors duration-200 cursor-pointer">
+                            <NuxtImg :src="tipster_details.imageUrl"
+                                class="w-8 lg:w-10 h-8 lg:h-10 ring-1 ring-offset-1 ring-base-pink rounded-full" />
+                        </span>
+                    </transition>
                     <span class="text-base font-medium hidden xl:block">Profile</span>
                 </button>
                 <NuxtLink to="/" class="w-full flex flex-row gap-x-2 items-center group">
                     <span
-                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer">
+                        class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white transition-colors duration-200 cursor-pointer"
+                        :class="is_logged_in ? '' : 'rounded-t-xl'">
                         <Icon name="mdi:home-variant" class="text-neutral-700 text-xl md:text-2xl" />
                     </span>
                     <span class="text-base font-medium hidden xl:block">Home</span>
@@ -117,13 +159,11 @@ const logoutUser = (): void => {
                 <div v-else class="w-full flex flex-col pb-1.5">
                     <NuxtLink to="/accounts/login"
                         class="text-base text-center text-white bg-green-600 rounded-lg px-4 py-2 hover:bg-green-700 transition-colors duration-200">
-                        Sign
-                        in</NuxtLink>
+                        Sign in</NuxtLink>
                 </div>
             </transition>
         </div>
 
         <!-- Modals -->
-
     </div>
 </template>

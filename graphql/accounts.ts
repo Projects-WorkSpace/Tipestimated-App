@@ -1,140 +1,145 @@
 export const ExpiredPredictedPosts = gql`
-query ExpiredPredictedPosts($tipsterId: ID) {
+  query ExpiredPredictedPosts($tipsterId: ID) {
     expiredPredictedPosts(tipsterId: $tipsterId) {
-        edges {
-            node {
+      edges {
+        node {
+          id
+          createdAt
+          likes
+          isLikedByMe
+          tipsterId {
+            penName
+            imageUrl
+          }
+          predictionpostitemSet {
+            edges {
+              node {
                 id
-                createdAt
-                likes
-                isLikedByMe
-                tipsterId {
-                    penName
-                    imageUrl
-                }
-                predictionpostitemSet {
-                    edges {
-                        node {
-                            id
-                            eventId
-                            sport
-                            country
-                            leagueName
-                            startTime
-                            homeName
-                            homeImage
-                            awayName
-                            awayImage
-                            predictionName
-                            predictionValue
-                            odds
-                            bookmaker
-                            bookmakerImg
-                            win
-                            resultValue
-                        }
-                    }
-                }
+                eventId
+                sport
+                country
+                leagueName
+                startTime
+                homeName
+                homeImage
+                awayName
+                awayImage
+                predictionName
+                predictionValue
+                odds
+                bookmaker
+                bookmakerImg
+                win
+                resultValue
+              }
             }
+          }
         }
+      }
     }
-}
-`
+  }
+`;
 export const ActivePredictedPosts = gql`
-query ActivePredictedPosts($tipsterId: ID) {
+  query ActivePredictedPosts($tipsterId: ID) {
     activePredictedPosts(tipsterId: $tipsterId) {
-        edges {
-            node {
+      edges {
+        node {
+          id
+          createdAt
+          likes
+          isLikedByMe
+          tipsterId {
+            penName
+            imageUrl
+          }
+          predictionpostitemSet {
+            edges {
+              node {
                 id
-                createdAt
-                likes
-                isLikedByMe
-                tipsterId {
-                    penName
-                    imageUrl
-                }
-                predictionpostitemSet {
-                    edges {
-                        node {
-                            id
-                            eventId
-                            sport
-                            country
-                            leagueName
-                            startTime
-                            homeName
-                            homeImage
-                            awayName
-                            awayImage
-                            predictionName
-                            predictionValue
-                            odds
-                            bookmaker
-                            bookmakerImg
-                            win
-                            resultValue
-                        }
-                    }
-                }
+                eventId
+                sport
+                country
+                leagueName
+                startTime
+                homeName
+                homeImage
+                awayName
+                awayImage
+                predictionName
+                predictionValue
+                odds
+                bookmaker
+                bookmakerImg
+                win
+                resultValue
+              }
             }
+          }
         }
+      }
     }
-}
-`
+  }
+`;
 
 export const GetTipster = gql`
-query GetTipster($tipsterId: ID!){
+  query GetTipster($tipsterId: ID!) {
     getTipster(id: $tipsterId) {
+      id
+      penName
+      country
+      favoriteSport
+      otherSport
+      telegramLink
+      socialLink
+      isApproved
+      imageUrl
+      followerCount
+      isFollowedByUser
+      user {
         id
-        penName
-        country
-        favoriteSport
-        otherSport
-        telegramLink
-        socialLink
-        isApproved
-        imageUrl
-        followerCount
-        isFollowedByUser
-        user {
-            id
-            userName
-        }
+        userName
+      }
     }
-}
-`
+  }
+`;
 
 export const FollowTipster = gql`
-mutation FollowTipster($tipsterId: ID!, $userId: ID!) {
-    followTipster(
-        data: { tipsterId: $tipsterId, userId: $userId }
-    ) {
-        errors
-        follower {
-            id
-        }
+  mutation FollowTipster($tipsterId: ID!, $userId: ID!) {
+    followTipster(data: { tipsterId: $tipsterId, userId: $userId }) {
+      errors
+      follower {
+        id
+      }
     }
-}
-`
+  }
+`;
 
 export const UnFollowTipster = gql`
-mutation UnFollowTipster($tipsterId: ID!, $userId: ID!)  {
-    unFollowTipster(
-        data: { tipsterId: $tipsterId, userId: $userId }
-    ) {
-        success
-        errors
+  mutation UnFollowTipster($tipsterId: ID!, $userId: ID!) {
+    unFollowTipster(data: { tipsterId: $tipsterId, userId: $userId }) {
+      success
+      errors
     }
-}
-`
+  }
+`;
 
 export const LikePost = gql`
-mutation LikePost($postId: ID!, $userId: ID!) {
+  mutation LikePost($postId: ID!, $userId: ID!) {
     likePost(postId: $postId, userId: $userId) {
-        success
-        predictionPostLike {
-            id
-        }
-        liked
+      success
+      predictionPostLike {
+        id
+      }
+      liked
     }
-}
-`
+  }
+`;
+
+export const GetTipsterDetails = gql`
+  query GetTipster($tipsterId: ID!) {
+    getTipster(id: $tipsterId) {
+      id
+      imageUrl
+    }
+  }
+`;
