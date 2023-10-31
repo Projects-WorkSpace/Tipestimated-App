@@ -25,25 +25,39 @@ const selectBookmaker = (data: IBookmaker) => {
 </script>
 <template>
   <div class="w-full">
-    <button @click="openModal" :class="predictionScore
-        ? 'bg-c-seperator/60 hover:bg-c-seperator/75 text-neutral-700'
-        : 'bg-c-seperator/40 text-neutral-500'
-      " class="w-full py-3 rounded-md relative flex items-center justify-center transition-colors duration-200">
+    <button
+      @click="openModal"
+      :class="
+        predictionScore
+          ? 'bg-c-seperator/60 hover:bg-c-seperator/75 text-neutral-700'
+          : 'bg-c-seperator/40 text-neutral-500'
+      "
+      class="w-full py-3 rounded-md relative flex items-center justify-center transition-colors duration-200"
+    >
       <div v-if="selectedBookMaker" class="flex items-center gap-x-3">
-        <NuxtImg :src="selectedBookMaker.img || ''" class="w-11 h-auto rounded-sm" />
+        <NuxtImg
+          :src="selectedBookMaker.img || ''"
+          class="w-11 h-auto rounded-sm"
+        />
         <span class="text-sm">{{ selectedBookMaker.name }}</span>
       </div>
-      <span v-else class="text-sm font-normal tracking-wide">Select Bookmaker</span>
+      <span v-else class="text-sm font-normal tracking-wide"
+        >Select Bookmaker</span
+      >
       <div class="absolute right-4">
         <Icon name="mdi:chevron-down" class="text-xl" />
       </div>
     </button>
-    <UModal v-model="isOpen" :overlay="false" :ui="{
-      width: 'w-[110%]',
-      height: 'min-h-[60vh]',
-      background: 'bg-white',
-    }">
-      <SectionsBookmakerList @select-bookmaker="selectBookmaker" />
+    <UModal
+      v-model="isOpen"
+      :overlay="false"
+      :ui="{
+        width: 'w-[110%]',
+        height: 'min-h-[60vh]',
+        background: 'bg-white',
+      }"
+    >
+      <SectionsCreateBookmakerList @select-bookmaker="selectBookmaker" />
     </UModal>
   </div>
 </template>
