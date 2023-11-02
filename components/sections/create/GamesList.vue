@@ -62,44 +62,25 @@ const selectEvent = (payload: IFixturesEventsEntity) => {
 };
 </script>
 <template>
-  <div
-    class="w-full py-4 flex flex-col gap-y-2 bg-white divide-y divide-neutral-300"
-  >
-    <div class="w-full px-4 flex flex-wrap gap-2.5 items-center py-1">
-      <button
-        v-for="item in leagueData?.STAGES"
-        :key="item.STAGE_ID"
-        @click="chooseStage(item)"
-        :class="
-          activeStage?.STAGE_ID === item.STAGE_ID
-            ? 'bg-green-500 text-white '
-            : 'text-neutral-700 bg-c-seperator/60 hover:bg-c-seperator/90'
-        "
-        class="px-3 py-1 text-sm rounded-md flex items-center transition-colors duration-200"
-      >
+  <div class="w-full py-4 flex flex-col gap-y-2 bg-white divide-y divide-neutral-300">
+    <div class="w-full px-4 flex flex-nowrap overflow-x-auto gap-2.5 items-center py-1">
+      <button v-for="item in leagueData?.STAGES" :key="item.STAGE_ID" @click="chooseStage(item)" :class="activeStage?.STAGE_ID === item.STAGE_ID
+          ? 'bg-green-500 text-white '
+          : 'text-neutral-700 bg-c-seperator/60 hover:bg-c-seperator/90'
+        " class="px-3 py-1 text-sm rounded-md flex items-center transition-colors duration-200 truncate">
         {{ item.STAGE_NAME }}
       </button>
     </div>
     <Transition mode="out-in">
-      <div
-        v-if="error"
-        class="w-full h-[68vh] flex flex-col py-6 px-4 items-start"
-      >
+      <div v-if="error" class="w-full h-[68vh] flex flex-col py-6 px-4 items-start">
         <p class="text-neutral-700 flex">
-          <UIcon
-            name="i-heroicons-information-circle"
-            class="w-5 h-5 ms-auto text-red-500 mr-2"
-          />
+          <UIcon name="i-heroicons-information-circle" class="w-5 h-5 ms-auto text-red-500 mr-2" />
           We couldn't load the matches for this stage at the moment.
         </p>
       </div>
 
       <div v-else class="w-full h-full px-4 flex flex-col relative">
-        <SectionsCreateGamesPalette
-          :events="data?.DATA[0] || null"
-          :loading="pending"
-          @select-event="selectEvent"
-        />
+        <SectionsCreateGamesPalette :events="data?.DATA[0] || null" :loading="pending" @select-event="selectEvent" />
       </div>
     </Transition>
   </div>

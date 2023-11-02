@@ -143,33 +143,19 @@ const updatePredictionScore = (key: string, value: any) => {
 </script>
 <template>
   <div class="w-full">
-    <UiScoreButton
-      :match-data="matchData"
-      :prediction-score="predictionScore"
-      @open-modal="openModal"
-    />
-    <UModal
-      v-model="isOpen"
-      :overlay="false"
-      :ui="{
-        width: 'w-[110%]',
-        height: 'min-h-[60vh]',
-        background: 'bg-white',
-      }"
-    >
-      <SectionsCreateScoresList
-        :match-data="matchData"
-        :match-winner-score-value="matchWinnerScoreValue"
-        :both-to-score-value="bothToScoreValue"
-        :exact-score-value="exactScoreValue"
-        :asian-handicap-score-value="asianHandicapScoreValue"
-        :scoring-quarter="scoringQuarter"
-        :home-away-score-value="homeAwayScoreValue"
-        :over-under-score-value="overUnderScoreValue"
-        @update-prediction-score="updatePredictionScore"
-        @close-modal="closeModal"
-        :selected-sport="selectedSport"
-      />
+    <UiScoreButton :match-data="matchData" :prediction-score="predictionScore" @open-modal="openModal" />
+    <UModal v-model="isOpen" :overlay="false" :ui="{
+      width: 'w-[110%]',
+      height: 'min-h-[60vh]',
+      background: 'bg-white',
+      rounded: 'rounded-xl',
+      container: 'flex min-h-full items-center justify-center text-center',
+    }">
+      <SectionsCreateScoresList :match-data="matchData" :match-winner-score-value="matchWinnerScoreValue"
+        :both-to-score-value="bothToScoreValue" :exact-score-value="exactScoreValue"
+        :asian-handicap-score-value="asianHandicapScoreValue" :scoring-quarter="scoringQuarter"
+        :home-away-score-value="homeAwayScoreValue" :over-under-score-value="overUnderScoreValue"
+        @update-prediction-score="updatePredictionScore" @close-modal="closeModal" :selected-sport="selectedSport" />
     </UModal>
   </div>
 </template>

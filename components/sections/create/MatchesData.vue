@@ -124,50 +124,34 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div
-    class="w-full py-4 flex flex-col gap-y-2 bg-white h-[74vh] overflow-y-auto"
-  >
+  <div class="w-full py-4 flex flex-col gap-y-2 bg-white h-full min-h-[45vh] max-h-[55vh]">
     <!-- <h3>Matches Data</h3> -->
     <Transition mode="out-in">
-      <div
-        v-if="currentTab === 1"
-        class="w-full flex flex-col gap-y-3 bg-white divide-y divide-c-seperator"
-      >
-        <h4 class="text-lg text-neutral-700 font-normal z-10 px-4">
+      <div v-if="currentTab === 1" class="w-full flex flex-col gap-y-3 bg-white">
+        <h4 class="text-lg text-neutral-700 font-medium z-10 px-4 text-center">
           Select Sport
         </h4>
-        <button
-          @click="emits('closeModal')"
-          class="absolute right-6 text-neutral-600 hover:text-neutral-800 z-[99]"
-        >
+        <button @click="emits('closeModal')" class="absolute right-6 text-neutral-600 hover:text-neutral-800 z-[99]">
           <Icon name="mdi:close" class="text-xl" />
         </button>
 
         <Transition mode="out-in">
-          <div
-            v-if="pending"
-            class="w-full flex flex-col items-center justify-center absolute bg-white top-0 bottom-0 left-0 right-0 z-0"
-          >
+          <div v-if="pending"
+            class="w-full flex flex-col items-center justify-center absolute bg-white top-0 bottom-0 left-0 right-0 z-0">
             <UtilsStarLoading />
           </div>
-          <div v-else class="w-full flex flex-col gap-y-3 px-4">
+          <div v-else class="w-full flex flex-col gap-y-3 px-4 sm:px-6">
             <div class="w-full mt-4">
               <ul class="w-full grid grid-cols-2 gap-x-3 gap-y-4">
-                <li
-                  v-for="sport in mainSports"
-                  :key="sport.ID"
-                  class="w-full flex flex-col"
-                >
-                  <button
-                    @click="selectSport(sport)"
-                    :class="
-                      sport.ID === selectedSportId
-                        ? 'bg-green-500 text-white hover:bg-green-600'
-                        : 'bg-c-seperator/60 hover:bg-c-seperator/75'
+                <li v-for="sport in mainSports" :key="sport.ID" class="w-full flex flex-col">
+                  <button @click="selectSport(sport)" :class="sport.ID === selectedSportId
+                      ? 'bg-green-500 text-white hover:bg-green-600'
+                      : 'bg-c-seperator/60 hover:bg-c-seperator/75'
                     "
-                    class="flex items-center justify-center gap-x-2 flex-nowrap text-sm py-2 px-2 rounded-md transition-colors"
-                  >
-                    <span class="text-base">{{ addIcon(sport.NAME) }}</span>
+                    class="flex items-center justify-center gap-x-2 flex-nowrap text-xs sm:text-sm py-2 px-2 rounded-md transition-colors">
+                    <span class="text-sm sm:text-base">{{
+                      addIcon(sport.NAME)
+                    }}</span>
                     <span>{{ sport.NAME }}</span>
                   </button>
                 </li>
@@ -176,56 +160,38 @@ onMounted(() => {
           </div>
         </Transition>
       </div>
-      <div
-        v-else-if="currentTab === 2"
-        class="w-full h-full flex flex-col gap-y-2 bg-white divide-y divide-neutral-300"
-      >
+      <div v-else-if="currentTab === 2" class="w-full flex flex-col gap-y-2 bg-white divide-y divide-neutral-300">
         <div class="w-full flex gap-x-3 items-center z-10 px-4 pb-1.5">
           <button @click="previousTab" class="flex items-center group">
-            <UIcon
-              name="i-heroicons-arrow-left-20-solid"
-              class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700 transition-colors"
-            />
+            <UIcon name="i-heroicons-arrow-left-20-solid"
+              class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700 transition-colors" />
           </button>
           <h4 class="text-lg text-neutral-700 font-normal leading-none">
             Countries
           </h4>
         </div>
         <Transition>
-          <div
-            v-if="tournamentsPending"
-            class="w-full flex flex-col items-center justify-center absolute bg-white top-0 bottom-0 left-0 right-0 z-0"
-          >
+          <div v-if="tournamentsPending"
+            class="w-full flex flex-col items-center justify-center absolute bg-white top-0 bottom-0 left-0 right-0 z-0">
             <UtilsStarLoading />
           </div>
-          <div v-else class="w-full h-full flex flex-col px-4">
-            <SectionsCountriesCommandPalette
-              :countries="uniqueCountries"
-              @select-country="selectCountry"
-            />
+          <div v-else class="w-full flex flex-col px-4">
+            <SectionsCreateCountriesCommandPalette :countries="uniqueCountries" @select-country="selectCountry" />
           </div>
         </Transition>
       </div>
-      <div
-        v-else-if="currentTab === 3"
-        class="w-full flex flex-col h-full gap-y-2 divide-y divide-neutral-300"
-      >
+      <div v-else-if="currentTab === 3" class="w-full flex flex-col h-full gap-y-2 divide-y divide-neutral-300">
         <div class="w-full flex gap-x-3 items-center z-10 px-4 pb-1.5 bg-white">
           <button @click="previousTab" class="flex items-center group">
-            <UIcon
-              name="i-heroicons-arrow-left-20-solid"
-              class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700 transition-colors"
-            />
+            <UIcon name="i-heroicons-arrow-left-20-solid"
+              class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700 transition-colors" />
           </button>
           <h4 class="text-base text-neutral-700 font-normal leading-none">
             {{ currentCountryData.COUNTRY_NAME }} Leagues
           </h4>
         </div>
         <div class="w-full flex flex-col px-4">
-          <SectionsCreateLeaguesPalette
-            :leagues="selectedCountries"
-            @select-league="selectedLeague"
-          />
+          <SectionsCreateLeaguesPalette :leagues="selectedCountries" @select-league="selectedLeague" />
         </div>
       </div>
     </Transition>
