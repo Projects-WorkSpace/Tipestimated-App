@@ -123,7 +123,7 @@ const updateFollowStatus = (payload: boolean, postId: string) => {
             <UiPostCardSkeleton />
             <UiPostCardSkeleton />
           </div>
-          <div v-else class="w-full mt-2">
+          <div v-else class="w-full">
             <Transition mode="out-in">
               <div
                 v-if="!followMoreTipster"

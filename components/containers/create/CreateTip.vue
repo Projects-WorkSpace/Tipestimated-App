@@ -26,6 +26,7 @@ const newTipData = ref<ITipData>({
   predictionOdds: null,
 });
 const openGroups = ref(false);
+const openChannels = ref(false);
 
 const updateSelectedSport = (sport: ISports) => {
   newTipData.value.selectedSport = sport;
@@ -73,7 +74,7 @@ const updatePredictionOdds = (value: number) => {
             Create Tip
           </h3>
           <button @click="updateOpenCreateModal" class="absolute right-1 text-neutral-600 hover:text-neutral-800">
-            <Icon name="mdi:close" class="text-xl" />
+            <Icon name="mdi:close" class="w-5 h-5" />
           </button>
         </DialogTitle>
         <div class="w-full mt-5 flex flex-col gap-y-2.5">
@@ -111,11 +112,15 @@ const updatePredictionOdds = (value: number) => {
             <ContainersCreateSelectGroups :is-open="openGroups" @toggle-open-groups="openGroups = !openGroups" />
           </div>
 
-          <button type="button"
-            class="w-full flex items-center justify-center rounded-md border border-transparent bg-light-hover/80 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
-            <Icon name="mdi:bullhorn" size="20px" class="mr-1.5" />
-            <span>Channel</span>
-          </button>
+          <div class="flex relative">
+            <button @click="openChannels = !openChannels" type="button"
+              class="w-full flex items-center justify-center rounded-md border border-transparent bg-light-hover/80 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
+              <Icon name="mdi:bullhorn" size="20px" class="mr-1.5" />
+              <span>Channel</span>
+            </button>
+            <ContainersCreateSelectChannels :is-open="openChannels"
+              @toggle-open-channels="openChannels = !openChannels" />
+          </div>
         </div>
         <div class="grid grid-cols-2 items-center gap-x-3">
           <button type="button"
