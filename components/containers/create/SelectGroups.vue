@@ -1,18 +1,16 @@
 <script setup lang="ts">
+import { NodeData } from "@/types/create";
 const props = defineProps<{
   isOpen: boolean;
+  selected_all: boolean;
+  groups: NodeData[];
 }>();
 
 const emits = defineEmits<{
   (e: "toggleOpenGroups"): void;
+  (e: "selectAllGroups", payload: boolean): void;
+  (e: "selectSingleGroup", payload: boolean, id: string): void;
 }>();
-
-const selected_all = ref(false);
-const groups = ref([
-  { id: 1, name: "group 1", followers: 10, checked: false, private: false },
-  { id: 2, name: "group 2", followers: 14, checked: false, private: true },
-  { id: 3, name: "group 3", followers: 5, checked: false, private: true },
-]);
 
 const checkBoxUi = {
   base: "h-5 w-5",
@@ -23,26 +21,11 @@ const toggleModal = () => {
 };
 
 const selectAllGroups = (payload: boolean) => {
-  groups.value.forEach((group) => {
-    group.checked = payload;
-  });
-  selected_all.value = payload;
+  emits("selectAllGroups", payload);
 };
 
-const selectSingleGroup = (payload: boolean, id: number) => {
-  const group = groups.value.find((group) => group.id === id);
-  if (group) {
-    group.checked = payload;
-  }
-  if (isAllGroupsChecked()) {
-    selected_all.value = true;
-  } else {
-    selected_all.value = false;
-  }
-};
-
-const isAllGroupsChecked = () => {
-  return groups.value.every((group) => group.checked);
+const selectSingleGroup = (payload: boolean, id: string) => {
+  emits("selectSingleGroup", payload, id);
 };
 </script>
 <template>
@@ -93,9 +76,9 @@ const isAllGroupsChecked = () => {
                 }}</span>
               </div>
               <div class="flex items-center gap-x-2.5">
-                <span class="text-sm font-normal text-neutral-600">{{ group.followers }} followers</span>
+                <span class="text-sm font-normal text-neutral-600">{{ group.followerCount }} followers</span>
                 <div class="flex items-center">
-                  <Icon v-if="group.private" name="ph:lock-simple-fill" class="w-4 h-4 text-neutral-600" />
+                  <Icon v-if="group.isPrivate" name="ph:lock-simple-fill" class="w-4 h-4 text-neutral-600" />
                 </div>
               </div>
             </div>

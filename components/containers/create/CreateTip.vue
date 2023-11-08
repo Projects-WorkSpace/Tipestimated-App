@@ -3,6 +3,8 @@ import { storeToRefs } from "pinia";
 import { usePageFeatureStore } from "~/store/pageFeatures";
 import { DialogTitle } from "@headlessui/vue";
 import { ILeagueEntity } from "~/types/types";
+import { GetChannelsAndGroups } from "@/graphql/create";
+import { IChannelsAndGroups, NodeData } from "@/types/create";
 import {
   IFixturesEventsEntity,
   IPredictionScore,
@@ -15,7 +17,6 @@ import {
 const featureStore = usePageFeatureStore();
 const { openCreate } = storeToRefs(featureStore);
 const { updateOpenCreateModal } = featureStore;
-
 const newTipData = ref<ITipData>({
   leagueData: null,
   matchData: null,
@@ -27,6 +28,10 @@ const newTipData = ref<ITipData>({
 });
 const openGroups = ref(false);
 const openChannels = ref(false);
+const channels = ref<NodeData[]>([]);
+const groups = ref<NodeData[]>([]);
+const selected_all_channels = ref(false);
+const selected_all_groups = ref(false);
 
 const updateSelectedSport = (sport: ISports) => {
   newTipData.value.selectedSport = sport;
@@ -35,35 +40,105 @@ const updateSelectedSport = (sport: ISports) => {
 const updateLeagueData = (payload: ILeagueEntity, country: ICountry) => {
   newTipData.value.leagueData = payload;
   newTipData.value.selectedCountry = country;
-
-  newTipData.value.selectedBookmaker = null;
-  newTipData.value.matchData = null;
-  newTipData.value.predictionScore = null;
-  newTipData.value.predictionOdds = null;
+  clearSubsequentFields([
+    "selectedBookmaker",
+    "matchData",
+    "predictionScore",
+    "predictionOdds",
+  ]);
 };
 const selectEvent = (payload: IFixturesEventsEntity): void => {
   newTipData.value.matchData = payload;
-
-  newTipData.value.selectedBookmaker = null;
-  newTipData.value.predictionScore = null;
-  newTipData.value.predictionOdds = null;
+  clearSubsequentFields([
+    "selectedBookmaker",
+    "predictionScore",
+    "predictionOdds",
+  ]);
 };
 
 const updatePredictionScore = (payload: IPredictionScore) => {
   newTipData.value.predictionScore = payload;
-
-  newTipData.value.selectedBookmaker = null;
-  newTipData.value.predictionOdds = null;
+  clearSubsequentFields(["selectedBookmaker", "predictionOdds"]);
 };
 
 const updateSelectedBookmaker = (bookmaker: IBookmaker) => {
   newTipData.value.selectedBookmaker = bookmaker;
-  newTipData.value.predictionOdds = null;
+  clearSubsequentFields(["predictionOdds"]);
 };
 
 const updatePredictionOdds = (value: number) => {
   newTipData.value.predictionOdds = value;
 };
+
+const clearSubsequentFields = (fieldsToClear: string[]) => {
+  for (const field of fieldsToClear) {
+    if (field in newTipData.value) {
+      newTipData.value[field as keyof ITipData] = null;
+    }
+  }
+};
+
+// Channels selection
+const selectAllChannels = (payload: boolean) => {
+  for (const channel of channels.value) {
+    channel.checked = payload;
+  }
+  selected_all_channels.value = payload;
+};
+
+const selectSingleChannel = (payload: boolean, id: string) => {
+  const channelIndex = channels.value.findIndex((channel) => channel.id === id);
+  if (channelIndex !== -1) {
+    channels.value[channelIndex].checked = payload;
+  }
+  selected_all_channels.value = channels.value.every(
+    (channel) => channel.checked,
+  );
+};
+
+// Groups selection
+const selectAllGroups = (payload: boolean) => {
+  for (const group of groups.value) {
+    group.checked = payload;
+  }
+  selected_all_groups.value = payload;
+};
+
+const selectSingleGroup = (payload: boolean, id: string) => {
+  const groupIndex = groups.value.findIndex((group) => group.id === id);
+  if (groupIndex !== -1) {
+    groups.value[groupIndex].checked = payload;
+  }
+  selected_all_groups.value = groups.value.every((group) => group.checked);
+};
+
+// Fetch channels and groups func
+const fetchChannelsAndGroups = async () => {
+  channels.value, (groups.value = []), [];
+  const { onResult, onError } =
+    useQuery<IChannelsAndGroups>(GetChannelsAndGroups);
+  onResult((res) => {
+    if (res.data.allChannels.edges) {
+      for (const data of res.data.allChannels.edges) {
+        channels.value.push({ ...data.node, checked: false });
+      }
+    }
+    if (res.data.allGroups.edges) {
+      for (const data of res.data.allGroups.edges) {
+        groups.value.push({ ...data.node, checked: false });
+      }
+    }
+  });
+  onError((err) => {
+    console.log("Get Channels & Groups Error: ", err.message);
+  });
+};
+
+//
+
+onMounted(() => {
+  fetchChannelsAndGroups();
+});
 </script>
 <template>
   <ModalsModalContainer :is-open="openCreate" @close-modal="updateOpenCreateModal">
@@ -77,7 +152,7 @@ const updatePredictionOdds = (value: number) => {
             <Icon name="mdi:close" class="w-5 h-5" />
           </button>
         </DialogTitle>
-        <div class="w-full mt-5 flex flex-col gap-y-2.5">
+        <div class="w-full mt-5 flex flex-col gap-y-2.5 z-10">
           <ContainersCreateSelectLeagueInput :label="newTipData.leagueData?.LEAGUE_NAME || 'Select Championship'"
             @select-league="updateLeagueData" @update-selected-sport="updateSelectedSport" />
           <ContainersCreateSelectMatch :matchData="newTipData.matchData" :leagueData="newTipData?.leagueData"
@@ -101,7 +176,7 @@ const updatePredictionOdds = (value: number) => {
           </span>
         </button>
       </div>
-      <div class="grid grid-cols-2 items-center mt-1 gap-x-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 items-center mt-1 gap-x-6 gap-y-4">
         <div class="grid grid-cols-2 items-center gap-x-3">
           <div class="flex relative">
             <button @click="openGroups = !openGroups" type="button"
@@ -109,7 +184,9 @@ const updatePredictionOdds = (value: number) => {
               <Icon name="mdi:account-multiple" size="20px" class="mr-1.5" />
               <span>Groups</span>
             </button>
-            <ContainersCreateSelectGroups :is-open="openGroups" @toggle-open-groups="openGroups = !openGroups" />
+            <ContainersCreateSelectGroups :is-open="openGroups" :groups="groups" :selected_all="selected_all_groups"
+              @toggle-open-groups="openGroups = !openGroups" @select-all-groups="selectAllGroups"
+              @select-single-group="selectSingleGroup" class="z-[99999]" />
           </div>
 
           <div class="flex relative">
@@ -118,11 +195,12 @@ const updatePredictionOdds = (value: number) => {
               <Icon name="mdi:bullhorn" size="20px" class="mr-1.5" />
               <span>Channel</span>
             </button>
-            <ContainersCreateSelectChannels :is-open="openChannels"
-              @toggle-open-channels="openChannels = !openChannels" />
+            <ContainersCreateSelectChannels :is-open="openChannels" :channels="channels"
+              :selected_all="selected_all_channels" @toggle-open-channels="openChannels = !openChannels"
+              @select-single-channel="selectSingleChannel" @select-all-channels="selectAllChannels" class="z-[99999]" />
           </div>
         </div>
-        <div class="grid grid-cols-2 items-center gap-x-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 items-center gap-x-3 gap-y-3">
           <button type="button"
             class="inline-flex justify-center rounded-md border border-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2 text-sm font-medium text-white focus:outline-none">
             Promote

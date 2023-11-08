@@ -148,11 +148,9 @@ onMounted(() => {
                       ? 'bg-green-500 text-white hover:bg-green-600'
                       : 'bg-c-seperator/60 hover:bg-c-seperator/75'
                     "
-                    class="flex items-center justify-center gap-x-2 flex-nowrap text-xs sm:text-sm py-2 px-2 rounded-md transition-colors">
-                    <span class="text-sm sm:text-base">{{
-                      addIcon(sport.NAME)
-                    }}</span>
-                    <span>{{ sport.NAME }}</span>
+                    class="flex items-center justify-center gap-x-2 flex-nowrap py-2 px-2 rounded-md transition-colors">
+                    <span class="text-base">{{ addIcon(sport.NAME) }}</span>
+                    <span class="truncate text-sm">{{ sport.NAME }}</span>
                   </button>
                 </li>
               </ul>

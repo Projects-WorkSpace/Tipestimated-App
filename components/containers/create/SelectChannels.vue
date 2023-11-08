@@ -1,18 +1,16 @@
 <script setup lang="ts">
+import { NodeData } from "@/types/create";
 const props = defineProps<{
   isOpen: boolean;
+  selected_all: boolean;
+  channels: NodeData[];
 }>();
 
 const emits = defineEmits<{
   (e: "toggleOpenChannels"): void;
+  (e: "selectAllChannels", payload: boolean): void;
+  (e: "selectSingleChannel", payload: boolean, id: string): void;
 }>();
-
-const selected_all = ref(false);
-const channels = ref([
-  { id: 1, name: "Channel 1", followers: 10, checked: false, private: false },
-  { id: 2, name: "Channel 2", followers: 14, checked: false, private: true },
-  { id: 3, name: "Channel 3", followers: 5, checked: false, private: true },
-]);
 
 const checkBoxUi = {
   base: "h-5 w-5",
@@ -23,28 +21,14 @@ const toggleModal = () => {
 };
 
 const selectAllChannels = (payload: boolean) => {
-  channels.value.forEach((channel) => {
-    channel.checked = payload;
-  });
-  selected_all.value = payload;
+  emits("selectAllChannels", payload);
 };
 
-const selectSingleChannel = (payload: boolean, id: number) => {
-  const channel = channels.value.find((channel) => channel.id === id);
-  if (channel) {
-    channel.checked = payload;
-  }
-  if (isAllChannelsChecked()) {
-    selected_all.value = true;
-  } else {
-    selected_all.value = false;
-  }
-};
-
-const isAllChannelsChecked = () => {
-  return channels.value.every((channel) => channel.checked);
+const selectSingleChannel = (payload: boolean, id: string) => {
+  emits("selectSingleChannel", payload, id);
 };
 </script>
+
 <template>
   <UModal :model-value="isOpen" @update:model-value="toggleModal" :overlay="true" :ui="{
     width: 'w-[90vw] sm:w-[30vw]',
@@ -85,7 +69,7 @@ const isAllChannelsChecked = () => {
               @click="selectSingleChannel(!channel.checked, channel.id)">
               <UCheckbox :checked="channel.checked" :ui="checkBoxUi" />
             </div>
-            <div @click="selectSingleChannel(!channel.checked, channel.id)" role="button"
+            <button @click="selectSingleChannel(!channel.checked, channel.id)"
               class="flex grow items-center justify-between py-2.5 rounded-md px-4 bg-c-seperator/30">
               <div class="flex items-center">
                 <span class="text-sm font-medium capitalize">{{
@@ -93,12 +77,12 @@ const isAllChannelsChecked = () => {
                 }}</span>
               </div>
               <div class="flex items-center gap-x-2.5">
-                <span class="text-sm font-normal text-neutral-600">{{ channel.followers }} followers</span>
+                <span class="text-sm font-normal text-neutral-600">{{ channel.followerCount }} followers</span>
                 <div class="flex items-center">
-                  <Icon v-if="channel.private" name="ph:lock-simple-fill" class="w-4 h-4 text-neutral-600" />
+                  <Icon v-if="channel.isPrivate" name="ph:lock-simple-fill" class="w-4 h-4 text-neutral-600" />
                 </div>
               </div>
-            </div>
+            </button>
           </li>
         </ul>
       </div>
