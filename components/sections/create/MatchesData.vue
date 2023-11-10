@@ -16,10 +16,10 @@ const currentCountryData = ref<ICountry>({
   COUNTRY_ID: 0,
 });
 const currentTab = ref(1);
-const headerData = {
+const headerData = Object.freeze({
   "X-RapidAPI-Key": config.public.rapidApiKey,
   "X-RapidAPI-Host": config.public.rapidApiHost,
-};
+});
 interface IResponseData {
   DATA: ISports[];
 }
@@ -89,15 +89,16 @@ const previousTab = () => {
 
 const uniqueCountries = computed(() => {
   const uniqueCountryInfoSet = new Set<string>(); // Ensure Set stores strings
-
-  tournamentsData.value?.DATA?.forEach((item) => {
-    const countryInfo = {
-      COUNTRY_ID: item.COUNTRY_ID,
-      COUNTRY_NAME: item.COUNTRY_NAME,
-    };
-    uniqueCountryInfoSet.add(JSON.stringify(countryInfo));
-  });
-
+  if (tournamentsData.value?.DATA) {
+    for (const item of tournamentsData.value?.DATA) {
+      uniqueCountryInfoSet.add(
+        JSON.stringify({
+          COUNTRY_ID: item.COUNTRY_ID,
+          COUNTRY_NAME: item.COUNTRY_NAME,
+        }),
+      );
+    }
+  }
   return Array.from(uniqueCountryInfoSet).map(
     (str) => JSON.parse(str) as { COUNTRY_ID: number; COUNTRY_NAME: string },
   );
@@ -105,7 +106,7 @@ const uniqueCountries = computed(() => {
 
 const selectCountry = (payload: ICountry) => {
   currentCountryData.value = payload;
-  let foundData = tournamentsData.value?.DATA?.filter(
+  const foundData = tournamentsData.value?.DATA?.filter(
     (country) => country.COUNTRY_ID === payload.COUNTRY_ID,
   );
   if (foundData) {
@@ -145,10 +146,10 @@ onMounted(() => {
               <ul class="w-full grid grid-cols-2 gap-x-3 gap-y-4">
                 <li v-for="sport in mainSports" :key="sport.ID" class="w-full flex flex-col">
                   <button @click="selectSport(sport)" :class="sport.ID === selectedSportId
-                      ? 'bg-green-500 text-white hover:bg-green-600'
-                      : 'bg-c-seperator/60 hover:bg-c-seperator/75'
+                      ? 'bg-green-500 text-white hover:bg-green-600 border-green-600'
+                      : 'bg-c-seperator/60 hover:bg-c-seperator/75 border-c-seperator/90'
                     "
-                    class="flex items-center justify-center gap-x-2 flex-nowrap py-2 px-2 rounded-md transition-colors">
+                    class="flex items-center justify-center gap-x-2 flex-nowrap py-2 px-2 border rounded-md transition-colors">
                     <span class="text-base">{{ addIcon(sport.NAME) }}</span>
                     <span class="truncate text-sm">{{ sport.NAME }}</span>
                   </button>
@@ -158,8 +159,8 @@ onMounted(() => {
           </div>
         </Transition>
       </div>
-      <div v-else-if="currentTab === 2" class="w-full flex flex-col gap-y-2 bg-white divide-y divide-neutral-300">
-        <div class="w-full flex gap-x-3 items-center z-10 px-4 pb-1.5">
+      <div v-else-if="currentTab === 2" class="w-full flex flex-col gap-y-1 bg-white">
+        <div class="w-full flex gap-x-3 items-center z-10 px-4 pb-3.5 border-b border-neutral-300">
           <button @click="previousTab" class="flex items-center group">
             <UIcon name="i-heroicons-arrow-left-20-solid"
               class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700 transition-colors" />
@@ -178,8 +179,8 @@ onMounted(() => {
           </div>
         </Transition>
       </div>
-      <div v-else-if="currentTab === 3" class="w-full flex flex-col h-full gap-y-2 divide-y divide-neutral-300">
-        <div class="w-full flex gap-x-3 items-center z-10 px-4 pb-1.5 bg-white">
+      <div v-else-if="currentTab === 3" class="w-full flex flex-col h-full gap-y-1">
+        <div class="w-full flex gap-x-3 items-center z-10 px-4 pb-3.5 bg-white border-b border-neutral-300">
           <button @click="previousTab" class="flex items-center group">
             <UIcon name="i-heroicons-arrow-left-20-solid"
               class="w-5 h-5 text-neutral-500 group-hover:text-neutral-700 transition-colors" />

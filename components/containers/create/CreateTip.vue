@@ -17,6 +17,8 @@ import {
 const featureStore = usePageFeatureStore();
 const { openCreate } = storeToRefs(featureStore);
 const { updateOpenCreateModal } = featureStore;
+
+// Tip creation data
 const newTipData = ref<ITipData>({
   leagueData: null,
   matchData: null,
@@ -26,6 +28,10 @@ const newTipData = ref<ITipData>({
   selectedCountry: null,
   predictionOdds: null,
 });
+const createNewTipData = ref<ITipData[]>([newTipData.value]);
+const indexOfNewTipData = ref(1);
+
+// Groups & Channels data
 const openGroups = ref(false);
 const openChannels = ref(false);
 const channels = ref<NodeData[]>([]);
@@ -112,11 +118,85 @@ const selectSingleGroup = (payload: boolean, id: string) => {
   selected_all_groups.value = groups.value.every((group) => group.checked);
 };
 
+const emptyTipData = {
+  leagueData: null,
+  matchData: null,
+  selectedSport: null,
+  predictionScore: null,
+  selectedBookmaker: null,
+  selectedCountry: null,
+  predictionOdds: null,
+};
+
+const checkPreviousTipBtn = computed(() => {
+  return indexOfNewTipData.value > 1;
+});
+const checkNextTipBtn = computed(() => {
+  return indexOfNewTipData.value < createNewTipData.value.length;
+});
+
+const goToPreviousCreatedTip = () => {
+  createNewTipData.value[indexOfNewTipData.value - 1] = newTipData.value;
+  indexOfNewTipData.value -= 1;
+  newTipData.value = createNewTipData.value[indexOfNewTipData.value - 1];
+};
+
+const goToNextCreatedTip = () => {
+  createNewTipData.value[indexOfNewTipData.value - 1] = newTipData.value;
+  indexOfNewTipData.value += 1;
+  newTipData.value = createNewTipData.value[indexOfNewTipData.value - 1];
+};
+
+// Add another function
+const addMoreMatchTip = () => {
+  if (newTipData.value["predictionOdds"] !== null) {
+    // handle the current active input data
+    createNewTipData.value[indexOfNewTipData.value - 1] = newTipData.value;
+    let data = {
+      leagueData: null,
+      matchData: null,
+      selectedSport: null,
+      predictionScore: null,
+      selectedBookmaker: null,
+      selectedCountry: null,
+      predictionOdds: null,
+    };
+    createNewTipData.value.push(data);
+    newTipData.value = data;
+    indexOfNewTipData.value = createNewTipData.value.length;
+  }
+};
+
+const clearAllData = () => {
+  indexOfNewTipData.value = 1;
+  createNewTipData.value = [emptyTipData];
+  newTipData.value = emptyTipData;
+};
+
+const clearCurrentData = () => {
+  if (indexOfNewTipData.value < createNewTipData.value.length) {
+    newTipData.value = createNewTipData.value[indexOfNewTipData.value]; // update the new tipdata input
+    createNewTipData.value.splice(indexOfNewTipData.value - 1, 1);
+  } else if (indexOfNewTipData.value === createNewTipData.value.length) {
+    indexOfNewTipData.value -= 1;
+    createNewTipData.value.pop();
+    newTipData.value = createNewTipData.value[indexOfNewTipData.value - 1];
+  }
+};
+
+const checkIfClearCurrent = computed(() => {
+  return (
+    indexOfNewTipData.value < createNewTipData.value.length ||
+    indexOfNewTipData.value !== 1
+  );
+});
+
 // Fetch channels and groups func
 const fetchChannelsAndGroups = async () => {
   channels.value, (groups.value = []), [];
   const { onResult, onError } =
     useQuery<IChannelsAndGroups>(GetChannelsAndGroups);
+
   onResult((res) => {
     if (res.data.allChannels.edges) {
       for (const data of res.data.allChannels.edges) {
@@ -129,6 +209,7 @@ const fetchChannelsAndGroups = async () => {
       }
     }
   });
+
   onError((err) => {
     console.log("Get Channels & Groups Error: ", err.message);
   });
@@ -151,6 +232,16 @@ onMounted(() => {
           <button @click="updateOpenCreateModal" class="absolute right-1 text-neutral-600 hover:text-neutral-800">
             <Icon name="mdi:close" class="w-5 h-5" />
           </button>
+          <div v-if="createNewTipData.length > 0" class="absolute left-1 flex items-center gap-x-1">
+            <UTooltip text="Previous" v-if="checkPreviousTipBtn">
+              <UButton @click="goToPreviousCreatedTip" icon="i-heroicons-arrow-uturn-left" color="gray"
+                :ui="{ rounded: 'rounded-full' }" class="rtl:[&_span:first-child]:rotate-180 me-2" />
+            </UTooltip>
+            <UTooltip text="Next" v-if="checkNextTipBtn">
+              <UButton @click="goToNextCreatedTip" icon="i-heroicons-arrow-uturn-right-20-solid" color="gray"
+                :ui="{ rounded: 'rounded-full' }" class="rtl:[&_span:last-child]:rotate-180 ms-2" />
+            </UTooltip>
+          </div>
         </DialogTitle>
         <div class="w-full mt-5 flex flex-col gap-y-2.5 z-10">
           <ContainersCreateSelectLeagueInput :label="newTipData.leagueData?.LEAGUE_NAME || 'Select Championship'"
@@ -166,21 +257,34 @@ onMounted(() => {
             :prediction-odds="newTipData.predictionOdds" @update-prediction-odds="updatePredictionOdds" />
         </div>
       </div>
-      <div class="w-full flex justify-end items-center mt-2 gap-x-2 py-1">
-        <button class="flex items-center space-x-1.5 group">
-          <span class="text-sm text-neutral-600 group-hover:text-neutral-800">
-            Insert another game
-          </span>
-          <span class="text-neutral-700 text-base bg-light-hover/80 px-1 py-0.5 rounded-lg group-hover:text-neutral-800">
-            <Icon name="mdi:plus" class="text-lg" />
-          </span>
-        </button>
+      <div class="w-full flex justify-between items-center mt-2 gap-x-2 py-1">
+        <div class="flex items-center">
+          <button @click="addMoreMatchTip" class="flex items-center space-x-1.5 group">
+            <span
+              class="text-neutral-700 text-base bg-light-hover/80 px-1 py-0.5 border border-c-seperator rounded-md group-hover:text-neutral-800 group-hover:bg-c-seperator">
+              <Icon name="mdi:plus" class="text-lg" />
+            </span>
+            <span class="text-sm text-neutral-600 group-hover:text-neutral-900">
+              More
+            </span>
+          </button>
+        </div>
+        <div class="flex items-center gap-x-2.5">
+          <button v-if="checkIfClearCurrent" @click="clearCurrentData"
+            class="border border-c-seperator/80 bg-c-seperator/60 rounded-md px-2.5 py-1 text-sm hover:bg-c-seperator/80">
+            Clear current
+          </button>
+          <button @click="clearAllData"
+            class="border border-c-seperator/80 bg-c-seperator/60 rounded-md px-2.5 py-1 text-sm hover:bg-c-seperator/80">
+            Clear all
+          </button>
+        </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 items-center mt-1 gap-x-6 gap-y-4">
         <div class="grid grid-cols-2 items-center gap-x-3">
           <div class="flex relative">
             <button @click="openGroups = !openGroups" type="button"
-              class="w-full flex items-center justify-center rounded-md border border-transparent bg-light-hover/80 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
+              class="w-full flex items-center justify-center rounded-md border border-light-hover bg-light-hover/80 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
               <Icon name="mdi:account-multiple" size="20px" class="mr-1.5" />
               <span>Groups</span>
             </button>
@@ -191,7 +295,7 @@ onMounted(() => {
 
           <div class="flex relative">
             <button @click="openChannels = !openChannels" type="button"
-              class="w-full flex items-center justify-center rounded-md border border-transparent bg-light-hover/80 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
+              class="w-full flex items-center justify-center rounded-md border border-light-hover bg-light-hover/80 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none">
               <Icon name="mdi:bullhorn" size="20px" class="mr-1.5" />
               <span>Channel</span>
             </button>
@@ -206,7 +310,7 @@ onMounted(() => {
             Promote
           </button>
           <button type="button"
-            class="inline-flex justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-500 focus:outline-none">
+            class="inline-flex justify-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 focus:outline-none">
             Publish
           </button>
         </div>

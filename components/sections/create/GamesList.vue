@@ -65,9 +65,9 @@ const selectEvent = (payload: IFixturesEventsEntity) => {
   <div class="w-full py-4 flex flex-col gap-y-2 bg-white divide-y divide-neutral-300">
     <div class="w-full px-4 flex flex-nowrap overflow-x-auto gap-2.5 items-center py-1">
       <button v-for="item in leagueData?.STAGES" :key="item.STAGE_ID" @click="chooseStage(item)" :class="activeStage?.STAGE_ID === item.STAGE_ID
-          ? 'bg-green-500 text-white '
-          : 'text-neutral-700 bg-c-seperator/60 hover:bg-c-seperator/90'
-        " class="px-3 py-1 text-sm rounded-md flex items-center transition-colors duration-200 truncate">
+          ? 'bg-green-500 text-white border-green-500'
+          : 'text-neutral-700 bg-c-seperator/60 hover:bg-c-seperator/90 border-c-seperator/90'
+        " class="px-3 py-1 text-sm rounded-md flex items-center transition-colors duration-200 truncate border">
         {{ item.STAGE_NAME }}
       </button>
     </div>
