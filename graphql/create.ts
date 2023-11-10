@@ -1,6 +1,6 @@
 export const GetChannelsAndGroups = gql`
-  query AllChannelsAndGroups {
-    allChannels(tipsterId: "VGlwc3RlclR5cGU6MQ==") {
+  query AllChannelsAndGroups($tipsterId: ID!) {
+    allChannels(tipsterId: $tipsterId) {
       edges {
         node {
           id
@@ -11,7 +11,7 @@ export const GetChannelsAndGroups = gql`
         }
       }
     }
-    allGroups(tipsterId: "VGlwc3RlclR5cGU6MQ==") {
+    allGroups(tipsterId: $tipsterId) {
       edges {
         node {
           id
@@ -20,6 +20,41 @@ export const GetChannelsAndGroups = gql`
           followerCount
           iconUrl
         }
+      }
+    }
+  }
+`;
+
+export const CreatePost = gql`
+  mutation CreatePost {
+    createPost(
+      postData: {
+        tipsterId: "VGlwc3RlclR5cGU6MQ=="
+        channelId: []
+        groupId: []
+        postItems: {
+          eventId: "nea6yvAJ"
+          sport: "SOCCER"
+          country: "England"
+          leagueName: "Premier League"
+          startTime: 1699839114
+          homeName: "Liverpool"
+          homeImage: "https://www.flashscore.com/res/image/data/vwC9RGhl-Imx2oQd8.png"
+          awayName: "Everton"
+          awayImage: "https://www.flashscore.com/res/image/data/EwJqZUZA-bRmKmISE.png"
+          predictionName: "Full Time Result"
+          predictionValue: "1"
+          odds: 2.45
+          bookmaker: "Bet365"
+          bookmakerImg: "https://cdn.soccersapi.com/images/soccer/bookmakers/2.png"
+        }
+      }
+    ) {
+      success
+      errors
+      predictedPost {
+        id
+        createdAt
       }
     }
   }

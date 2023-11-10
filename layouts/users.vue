@@ -1,4 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { usePageFeatureStore } from "~/store/pageFeatures";
+
+const { isTipster } = storeToRefs(usePageFeatureStore());
+</script>
 <template>
   <main ref="el" class="flex flex-col h-screen overflow-y-auto">
     <NavsTopNav />
@@ -18,6 +23,6 @@
     <NavsBottomNav />
 
     <!-- Global Modals -->
-    <ContainersCreateTip />
+    <LazyContainersCreateTip v-if="isTipster" />
   </main>
 </template>
