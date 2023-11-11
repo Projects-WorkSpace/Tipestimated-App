@@ -37,6 +37,6 @@ onMounted(async () => {
   <main class="w-full flex flex-col relative">
     <NuxtLoadingIndicator />
     <NuxtPage />
-    <UNotifications :ui="{ position: 'right-1/2 bottom-0 translate-x-1/2' }" />
+    <UNotifications :ui="{ position: 'right-1/2 bottom-0 translate-x-1/2' }" class="z-[99999999]" />
   </main>
 </template>

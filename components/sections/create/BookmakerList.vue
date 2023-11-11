@@ -46,7 +46,7 @@ const selectBookmakers = (data: IBookmaker) => {
           <button @click="selectBookmakers(bookmaker)"
             class="w-full px-2.5 py-3 relative flex items-center gap-x-3 rounded hover:bg-c-seperator/80 transition-colors duration-200">
             <NuxtImg :src="bookmaker.img" alt="" class="w-10 sm:w-11 h-auto rounded-sm" />
-            <span class="text-sm">{{ bookmaker.name }}</span>
+            <span class="text-sm capitalize">{{ bookmaker.name }}</span>
             <UIcon name="i-heroicons-chevron-right-20-solid"
               class="w-4 sm:w-5 h-4 sm:h-5 ms-auto text-neutral-500 absolute right-0 sm:right-4 -translate-x-1/2" />
           </button>

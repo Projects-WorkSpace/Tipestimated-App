@@ -4,8 +4,12 @@ import { useAuthStore } from "@/store/authStore";
 import { usePageFeatureStore } from "~/store/pageFeatures";
 import { DialogTitle } from "@headlessui/vue";
 import { ILeagueEntity } from "~/types/types";
-import { GetChannelsAndGroups } from "@/graphql/create";
-import { IChannelsAndGroups, NodeData } from "@/types/create";
+import { GetChannelsAndGroups, CreatePost } from "@/graphql/create";
+import {
+  IChannelsAndGroups,
+  NodeData,
+  ICreatePostResponse,
+} from "@/types/create";
 import {
   IFixturesEventsEntity,
   IPredictionScore,
@@ -20,6 +24,7 @@ const featureStore = usePageFeatureStore();
 const { openCreate } = storeToRefs(featureStore);
 const { updateOpenCreateModal } = featureStore;
 const router = useRouter();
+const toast = useToast();
 
 // Tip creation data
 const newTipData = ref<ITipData>({
@@ -121,6 +126,15 @@ const selectSingleGroup = (payload: boolean, id: string) => {
   selected_all_groups.value = groups.value.every((group) => group.checked);
 };
 
+// show counts of selected groups & channels
+const countSelectedGroups = computed(() => {
+  return groups.value.filter((group) => group.checked).length;
+});
+const countSelectedChannels = computed(() => {
+  return channels.value.filter((channel) => channel.checked).length;
+});
+
+//
 const emptyTipData = {
   leagueData: null,
   matchData: null,
@@ -222,6 +236,45 @@ const fetchChannelsAndGroups = async () => {
 
   onError((err) => {
     console.log("Get Channels & Groups Error: ", err.message);
+  });
+};
+
+// Post created matches
+const { onDone, onError, loading } =
+  useMutation<ICreatePostResponse>(CreatePost);
+const submitCreatedMatches = () => {
+  // update to created data the current edited data
+  createNewTipData.value[indexOfNewTipData.value - 1] = newTipData.value;
+
+  // check valid data
+  const inValidIndex = createNewTipData.value.findIndex(
+    (data) => data.predictionOdds === null,
+  );
+  if (inValidIndex !== -1) {
+    toastError("One or more fields is missing");
+    newTipData.value = createNewTipData.value[inValidIndex];
+    indexOfNewTipData.value = inValidIndex + 1;
+  } else {
+    console.log("Submitted posts valid data array");
+  }
+};
+
+const toastError = (title: string) => {
+  toast.add({
+    title: "Invalid data",
+    description: title,
+    ui: {
+      title: "text-t-gray font-medium",
+      description: "text-t-gray text-sm",
+      progress: {
+        base: "absolute bottom-0 end-0 start-0 h-0",
+      },
+      icon: {
+        color: "text-[tomato]",
+      },
+    },
+    icon: "i-heroicons-information-circle",
+    timeout: 3000,
   });
 };
 
@@ -334,17 +387,27 @@ onMounted(() => {
         </div>
       </div>
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 items-center mt-1 gap-x-6 gap-y-4"
+        class="grid grid-cols-1 sm:grid-cols-2 items-center pt-3.5 gap-x-6 gap-y-4 border-t border-c-seperator"
       >
         <div class="grid grid-cols-2 items-center gap-x-3">
           <div class="flex relative">
             <button
               @click="openGroups = !openGroups"
               type="button"
-              class="w-full flex items-center justify-center rounded-md border border-light-hover bg-light-hover/80 px-4 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none"
+              :class="
+                countSelectedGroups > 0
+                  ? 'bg-green-500 text-white border-green-500 hover:bg-green-400'
+                  : 'border-light-hover bg-light-hover/80 text-neutral-800 hover:bg-light-hover'
+              "
+              class="w-full flex items-center justify-center rounded-md border px-2.5 py-2 text-sm font-medium focus:outline-none"
             >
               <Icon name="mdi:account-multiple" size="20px" class="mr-1.5" />
-              <span>Groups</span>
+              <span class="flex items-center gap-x-1 truncate">
+                <span v-if="countSelectedGroups > 0">
+                  {{ countSelectedGroups }}
+                </span>
+                <span class="truncate">Groups</span>
+              </span>
             </button>
             <ContainersCreateSelectGroups
               :is-open="openGroups"
@@ -361,10 +424,20 @@ onMounted(() => {
             <button
               @click="openChannels = !openChannels"
               type="button"
-              class="w-full flex items-center justify-center rounded-md border border-light-hover bg-light-hover/80 py-2 text-sm font-medium text-neutral-800 hover:bg-light-hover focus:outline-none"
+              :class="
+                countSelectedChannels > 0
+                  ? 'bg-green-500 text-white border-green-500 hover:bg-green-400'
+                  : 'border-light-hover bg-light-hover/80 text-neutral-800 hover:bg-light-hover'
+              "
+              class="w-full flex items-center justify-center rounded-md border px-2 py-2 text-sm font-medium focus:outline-none"
             >
               <Icon name="mdi:bullhorn" size="20px" class="mr-1.5" />
-              <span>Channel</span>
+              <span class="flex items-center gap-x-1 truncate">
+                <span v-if="countSelectedChannels"
+                  >{{ countSelectedChannels }}
+                </span>
+                <span class="truncate">Channels</span>
+              </span>
             </button>
             <ContainersCreateSelectChannels
               :is-open="openChannels"
@@ -387,6 +460,7 @@ onMounted(() => {
             Promote
           </button>
           <button
+            @click="submitCreatedMatches"
             type="button"
             class="inline-flex justify-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 focus:outline-none"
           >

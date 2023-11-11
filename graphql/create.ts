@@ -26,7 +26,7 @@ export const GetChannelsAndGroups = gql`
 `;
 
 export const CreatePost = gql`
-  mutation CreatePost {
+  mutation CreatePost($createPost: CreatePredictionPostInput!) {
     createPost(
       postData: {
         tipsterId: "VGlwc3RlclR5cGU6MQ=="

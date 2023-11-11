@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { usePageFeatureStore } from '~/store/pageFeatures';
+import { storeToRefs } from "pinia";
+import { usePageFeatureStore } from "~/store/pageFeatures";
 
 const featureStore = usePageFeatureStore();
 const { isTipster } = storeToRefs(featureStore);
 const { updateOpenCreateModal } = featureStore;
-
-
 </script>
 <template>
     <nav
@@ -22,7 +20,7 @@ const { updateOpenCreateModal } = featureStore;
             </NuxtLink>
         </div>
         <div v-if="isTipster" class="flex items-center justify-center">
-            <button class="p-2.5">
+            <button @click="updateOpenCreateModal" class="p-2.5">
                 <Icon name="ph:plus-square" class="text-3xl" />
             </button>
         </div>

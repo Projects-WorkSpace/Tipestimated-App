@@ -16,3 +16,16 @@ export interface NodeData {
   iconUrl: string;
   checked?: boolean;
 }
+
+export interface ICreatePostResponse {
+  createPost: CreatePost;
+}
+export interface CreatePost {
+  success: boolean;
+  errors?: null;
+  predictedPost: PredictedPost;
+}
+export interface PredictedPost {
+  id: string;
+  createdAt: string;
+}
