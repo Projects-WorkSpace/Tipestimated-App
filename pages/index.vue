@@ -45,7 +45,6 @@ const fetchPostsForSignInUser = async () => {
     let following =
       result.data.tipsterFollowers.edges?.map((edge) => edge.node) ?? [];
     if (following.length <= 1) {
-      console.log("Follow more tipsters: ", result.data);
       updateIfLessFollowers(true);
       followMoreTipster.value = true;
     }
@@ -137,26 +136,13 @@ const postDataClean = computed(() => postData.value);
           </div>
           <div v-else class="w-full">
             <Transition mode="out-in">
-              <div
-                v-if="!followMoreTipster"
-                class="w-full flex flex-col gap-y-4"
-              >
-                <div
-                  v-for="post in postDataClean"
-                  :key="post.id"
-                  class="w-full"
-                >
-                  <SectionsPostCard
-                    :node="post"
-                    @update-like="updateLike"
-                    @update-follow-status="updateFollowStatus"
-                  />
+              <div v-if="!followMoreTipster" class="w-full flex flex-col gap-y-4">
+                <div v-for="post in postDataClean" :key="post.id" class="w-full">
+                  <SectionsPostCard :node="post" @update-like="updateLike" @update-follow-status="updateFollowStatus" />
                 </div>
               </div>
               <div v-else class="w-full flex flex-col">
-                <LazyContainersFollowMoreTipsters
-                  @refetch-data="refetchHomeData"
-                />
+                <LazyContainersFollowMoreTipsters @refetch-data="refetchHomeData" />
               </div>
             </Transition>
           </div>
