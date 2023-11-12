@@ -3,9 +3,10 @@ import { IPayload } from "~/types/types";
 
 export default defineNuxtRouteMiddleware((to, from) => {
   const user_payload = useCookie<IPayload | null>("user_payload");
-  const authStore = useAuthStore()
+  const is_tipster_approved = useCookie("is_tipster_approved");
+  const authStore = useAuthStore();
   const today = new Date();
-  const tokenBearer = useCookie('auth-token')
+  const tokenBearer = useCookie("auth-token");
 
   if (tokenBearer.value) {
     // Check Bearer token if it's expired
@@ -16,6 +17,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
         authStore.updateIsLoggedIn(true);
       }
     }
+    if (typeof is_tipster_approved.value === "boolean") {
+      if (!is_tipster_approved.value) {
+        return navigateTo("/accounts/waiting-verification");
+      }
+    }
   }
-
-})
+});

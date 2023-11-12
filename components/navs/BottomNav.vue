@@ -19,6 +19,17 @@ const { updateOpenCreateModal } = featureStore;
                 </span>
             </NuxtLink>
         </div>
+        <div class="flex items-center justify-center">
+            <NuxtLink to="/explore" class="p-2.5">
+                <span class="inactive-icon">
+                    <Icon name="ph:magnifying-glass" class="text-3xl" />
+                </span>
+                <span class="active-icon hidden">
+                    <Icon name="ph:magnifying-glass-bold" class="text-3xl hidden text-black" />
+                </span>
+            </NuxtLink>
+        </div>
+
         <div v-if="isTipster" class="flex items-center justify-center">
             <button @click="updateOpenCreateModal" class="p-2.5">
                 <Icon name="ph:plus-square" class="text-3xl" />

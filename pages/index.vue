@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { IPayload } from "~/types/types";
+import { useAuthStore } from "~/store/authStore";
 import {
   IHomePageDetails,
   PostsNode,
@@ -15,6 +16,8 @@ definePageMeta({
   middleware: "check-auth",
 });
 
+const authStore = useAuthStore();
+const { updateIfLessFollowers } = authStore;
 const { getToken } = useApollo();
 const user_payload = useCookie<IPayload>("user_payload");
 const postData = ref<PostsNode[]>([]);
@@ -40,7 +43,8 @@ const fetchPostsForSignInUser = async () => {
     }
     let following =
       result.data.tipsterFollowers.edges?.map((edge) => edge.node) ?? [];
-    if (following.length < 2) {
+    if (following.length <= 1) {
+      updateIfLessFollowers();
       followMoreTipster.value = true;
     }
     followingTipsters.value = following;
@@ -125,16 +129,9 @@ const updateFollowStatus = (payload: boolean, postId: string) => {
           </div>
           <div v-else class="w-full">
             <Transition mode="out-in">
-              <div
-                v-if="!followMoreTipster"
-                class="w-full flex flex-col gap-y-4"
-              >
+              <div v-if="!followMoreTipster" class="w-full flex flex-col gap-y-4">
                 <div v-for="post in postData" :key="post.id" class="w-full">
-                  <SectionsPostCard
-                    :node="post"
-                    @update-like="updateLike"
-                    @update-follow-status="updateFollowStatus"
-                  />
+                  <SectionsPostCard :node="post" @update-like="updateLike" @update-follow-status="updateFollowStatus" />
                 </div>
               </div>
               <div v-else class="w-full flex flex-col">

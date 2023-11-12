@@ -240,8 +240,12 @@ const fetchChannelsAndGroups = async () => {
 };
 
 // Post created matches
-const { onDone, onError, loading } =
-  useMutation<ICreatePostResponse>(CreatePost);
+const {
+  mutate: submitPostData,
+  onDone,
+  onError,
+  loading,
+} = useMutation<ICreatePostResponse>(CreatePost);
 const submitCreatedMatches = () => {
   // update to created data the current edited data
   createNewTipData.value[indexOfNewTipData.value - 1] = newTipData.value;
@@ -255,9 +259,58 @@ const submitCreatedMatches = () => {
     newTipData.value = createNewTipData.value[inValidIndex];
     indexOfNewTipData.value = inValidIndex + 1;
   } else {
-    console.log("Submitted posts valid data array");
+    const groupIDs = groups.value
+      .filter((group) => group.checked)
+      .map((object) => object.id);
+    const channelIDs = channels.value
+      .filter((channel) => channel.checked)
+      .map((object) => object.id);
+    const postItems = createNewTipData.value.map((item) => {
+      return {
+        eventId: item.matchData?.EVENT_ID,
+        sport: item.selectedSport?.NAME,
+        country: item.leagueData?.COUNTRY_NAME,
+        leagueName: item.leagueData?.LEAGUE_NAME,
+        startTime: item.matchData?.START_TIME,
+        homeName: item.matchData?.HOME_NAME,
+        homeImage: item.matchData?.HOME_IMAGES[0] ?? "",
+        awayName: item.matchData?.AWAY_NAME,
+        awayImage: item.matchData?.AWAY_IMAGES[0],
+        predictionName: item.predictionScore?.name,
+        predictionValue: item.predictionScore?.value,
+        odds: item.predictionOdds,
+        bookmaker: item.selectedBookmaker?.name,
+        bookmakerImg: item.selectedBookmaker?.img,
+      };
+    });
+    const postData = {
+      tipsterId: tipsterPayload.value?.tipsterID,
+      channelId: channelIDs,
+      groupId: groupIDs,
+      postItems: postItems,
+    };
+    submitPostData({
+      postData: postData,
+    });
   }
 };
+
+onDone((result) => {
+  if (result.data?.createPost.success) {
+    toastSuccess();
+    newTipData.value = emptyTipData;
+    createNewTipData.value = [emptyTipData];
+    setTimeout(() => {
+      updateOpenCreateModal();
+    }, 350);
+  } else {
+    console.log("Create post error: ", result.data?.createPost.errors);
+  }
+});
+
+onError((err) => {
+  console.log("Submit Post error: ", err.message);
+});
 
 const toastError = (title: string) => {
   toast.add({
@@ -274,7 +327,26 @@ const toastError = (title: string) => {
       },
     },
     icon: "i-heroicons-information-circle",
-    timeout: 3000,
+    timeout: 2600,
+  });
+};
+
+const toastSuccess = () => {
+  toast.add({
+    title: "Successful",
+    description: "you've created a match prediction",
+    ui: {
+      title: "text-t-gray font-medium",
+      description: "text-t-gray text-sm",
+      progress: {
+        base: "absolute bottom-0 end-0 start-0 h-0",
+      },
+      icon: {
+        color: "text-green-500",
+      },
+    },
+    icon: "i-heroicons-check-circle",
+    timeout: 2600,
   });
 };
 
@@ -464,7 +536,8 @@ onMounted(() => {
             type="button"
             class="inline-flex justify-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 focus:outline-none"
           >
-            Publish
+            <span v-if="!loading">Publish</span>
+            <UtilsSmallLightStartLoading v-else />
           </button>
         </div>
       </div>
