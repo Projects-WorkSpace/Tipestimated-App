@@ -9,8 +9,13 @@ const { if_less_followers } = storeToRefs(authStore);
 const searchText = ref("");
 const searchedData = ref<ITipstersNode[]>([]);
 const tipsterList = ref<ITipstersNode[]>([]);
+const countOfFollows = ref(0);
 
 const loading_search = ref(true);
+
+const emits = defineEmits<{
+  (e: "refetchData"): void;
+}>();
 
 const fetchTipsters = async () => {
   loading_search.value = true;
@@ -61,6 +66,9 @@ const updateFollowStatusSuggestions = (payload: boolean, tipsterId: string) => {
     node.isFollowedByUser = payload;
     node.followerCount += payload ? 1 : -1;
     tipsterList.value[tipsterIndex] = { ...node };
+    if (payload) {
+      countOfFollows.value += 1;
+    }
   }
 };
 
@@ -73,8 +81,17 @@ const updateFollowStatusSearched = (payload: boolean, tipsterId: string) => {
     node.isFollowedByUser = payload;
     node.followerCount += payload ? 1 : -1;
     searchedData.value[tipsterIndex] = { ...node };
+    if (payload) {
+      countOfFollows.value += 1;
+    }
   }
 };
+
+watch(countOfFollows, (newCountOfFollows) => {
+  if (newCountOfFollows >= 2) {
+    emits("refetchData");
+  }
+});
 
 onMounted(() => {
   fetchTipsters();
@@ -84,16 +101,25 @@ onMounted(() => {
   <div class="w-full flex flex-col py-4 md:py-3 gap-y-6 md:mt-0">
     <header class="w-full flex items-center gap-x-1.5 md:gap-x-3">
       <div class="grow flex items-center relative">
-        <input v-model="searchText" type="search"
+        <input
+          v-model="searchText"
+          type="search"
           class="w-full py-2.5 pr-4 pl-10 rounded-xl text-base tracking-wide placeholder:text-neutral-500/60 bg-white focus:outline-none border border-transparent focus:border-c-seperator hover:border-c-seperator transition duration-200"
-          placeholder="Type to search..." />
-        <Icon name="ph:magnifying-glass" class="text-base absolute left-3.5 text-neutral-500" />
+          placeholder="Type to search..."
+        />
+        <Icon
+          name="ph:magnifying-glass"
+          class="text-base absolute left-3.5 text-neutral-500"
+        />
       </div>
     </header>
     <div v-if="searchText" class="w-full flex flex-col gap-y-2 mt-5">
       <div v-if="searchedData" class="w-full">
-        <ContainersRenderExploreList :pending="loading_search" :data="searchedData"
-          @update-follow-status="updateFollowStatusSearched" />
+        <ContainersRenderExploreList
+          :pending="loading_search"
+          :data="searchedData"
+          @update-follow-status="updateFollowStatusSearched"
+        />
       </div>
       <div v-else class="w-full flex flex-col items-center min-h-[6rem]">
         <p>No results found.</p>
@@ -107,8 +133,11 @@ onMounted(() => {
         <h4 class="tracking-wide text-lg md:text-xl text-neutral-600">
           Suggested
         </h4>
-        <ContainersRenderExploreList :pending="loading_search" :data="tipsterList"
-          @update-follow-status="updateFollowStatusSuggestions" />
+        <ContainersRenderExploreList
+          :pending="loading_search"
+          :data="tipsterList"
+          @update-follow-status="updateFollowStatusSuggestions"
+        />
       </div>
     </div>
   </div>

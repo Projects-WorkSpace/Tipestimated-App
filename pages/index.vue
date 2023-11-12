@@ -31,6 +31,7 @@ const fetchPostsForSignInUser = async () => {
   const { onResult, onError } = useQuery<IHomePageDetails>(
     HomePageDataForUser,
     { userId: user_payload.value.userID },
+    { fetchPolicy: "no-cache" },
   );
   onResult((result) => {
     loading.value = false;
@@ -44,7 +45,8 @@ const fetchPostsForSignInUser = async () => {
     let following =
       result.data.tipsterFollowers.edges?.map((edge) => edge.node) ?? [];
     if (following.length <= 1) {
-      updateIfLessFollowers();
+      console.log("Follow more tipsters: ", result.data);
+      updateIfLessFollowers(true);
       followMoreTipster.value = true;
     }
     followingTipsters.value = following;
@@ -75,6 +77,14 @@ const fetchPostsForAnonymousUser = async () => {
   });
 };
 
+// Refetch data after following min of 2 tipsters
+const refetchHomeData = () => {
+  fetchPostsForSignInUser();
+  // Also update this data
+  followMoreTipster.value = false;
+  updateIfLessFollowers(false);
+};
+
 onMounted(async () => {
   const token = await getToken();
   if (token) {
@@ -98,22 +108,20 @@ const updateLike = (payload: boolean, postId: string) => {
   }
 };
 
-const updateFollowStatus = (payload: boolean, postId: string) => {
-  console.log("Toggle follow: ", payload);
-  let postIndex = postData.value.findIndex((post) => post.id === postId);
-  if (postIndex !== -1) {
-    let newNode = { ...postData.value[postIndex] };
-    let tipster = { ...newNode.tipsterId };
-    tipster.isFollowedByUser = payload;
-    if (payload) {
-      tipster.followerCount += 1;
-    } else {
-      tipster.followerCount -= 1;
+const updateFollowStatus = (payload: boolean, tipsterID: string) => {
+  const newPosts = postData.value.map((post) => {
+    if (post.tipsterId.id === tipsterID) {
+      post.tipsterId.isFollowedByUser = payload;
+      payload
+        ? (post.tipsterId.followerCount += 1)
+        : (post.tipsterId.followerCount -= 1);
     }
-    newNode.tipsterId = tipster;
-    postData.value[postIndex] = { ...newNode };
-  }
+    return post;
+  });
+  postData.value = newPosts;
 };
+
+const postDataClean = computed(() => postData.value);
 </script>
 <template>
   <div class="w-full">
@@ -129,13 +137,26 @@ const updateFollowStatus = (payload: boolean, postId: string) => {
           </div>
           <div v-else class="w-full">
             <Transition mode="out-in">
-              <div v-if="!followMoreTipster" class="w-full flex flex-col gap-y-4">
-                <div v-for="post in postData" :key="post.id" class="w-full">
-                  <SectionsPostCard :node="post" @update-like="updateLike" @update-follow-status="updateFollowStatus" />
+              <div
+                v-if="!followMoreTipster"
+                class="w-full flex flex-col gap-y-4"
+              >
+                <div
+                  v-for="post in postDataClean"
+                  :key="post.id"
+                  class="w-full"
+                >
+                  <SectionsPostCard
+                    :node="post"
+                    @update-like="updateLike"
+                    @update-follow-status="updateFollowStatus"
+                  />
                 </div>
               </div>
               <div v-else class="w-full flex flex-col">
-                <LazyContainersFollowMoreTipsters />
+                <LazyContainersFollowMoreTipsters
+                  @refetch-data="refetchHomeData"
+                />
               </div>
             </Transition>
           </div>
