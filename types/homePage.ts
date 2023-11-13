@@ -2,11 +2,16 @@ export interface IHomePageDetails {
   tipsterFollowers: TipsterFollowers;
   predictionPosts: PredictionPosts;
 }
+
+export interface ISuggestedData {
+  suggestedTipsters: ISuggestedTipsters;
+  suggestedPosts: PredictionPosts;
+}
 export interface IHomePageAnonymousDetails {
   predictionPosts: PredictionPosts;
 }
 export interface TipsterFollowers {
-  edges?: (FollowingEdgesEntity)[] | null;
+  edges?: FollowingEdgesEntity[] | null;
 }
 export interface FollowingEdgesEntity {
   node: FollowingNode;
@@ -20,7 +25,7 @@ export interface FollowingTipster {
   penName: string;
 }
 export interface PredictionPosts {
-  edges?: (EdgesEntity1)[] | null;
+  edges?: EdgesEntity1[] | null;
 }
 export interface EdgesEntity1 {
   node: PostsNode;
@@ -48,7 +53,7 @@ export interface TipsterUserDetails {
   userName: string;
 }
 export interface PredictionpostitemSet {
-  edges?: (PostEdgesEntity)[] | null;
+  edges?: PostEdgesEntity[] | null;
 }
 export interface PostEdgesEntity {
   node: ItemNode;
@@ -71,4 +76,25 @@ export interface ItemNode {
   odds: number;
   win?: null;
   resultValue?: null;
+}
+
+//
+
+export interface ISuggestedTipsters {
+  edges?: TipsterEdgesEntity[] | null;
+}
+
+export interface TipsterEdgesEntity {
+  node: TipsterNode;
+}
+
+export interface TipsterNode {
+  id: string;
+  penName: string;
+  imageUrl: string;
+  followerCount: number;
+  isFollowedByUser: boolean;
+  country: string;
+  favoriteSport: string;
+  createdAt: string;
 }
