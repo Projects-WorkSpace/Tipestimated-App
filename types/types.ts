@@ -31,6 +31,7 @@ export interface IPayload {
 }
 export interface ITipsterPayload {
   tipsterID: string;
+  penName?: string;
 }
 export interface IRefreshToken {
   refreshExpiresIn: number;

@@ -48,6 +48,12 @@ const getTipster = () => {
     });
 };
 
+const redirectToMyAccount = () => {
+    if (tipster_payload.value) {
+        router.push(`a/${tipster_payload.value.penName}`);
+    }
+};
+
 onMounted(async () => {
     let token = await getToken();
     if (token && tipster_payload.value) {
@@ -73,7 +79,8 @@ onMounted(async () => {
                 </button>
             </div>
             <div class="w-full flex flex-col">
-                <button v-if="is_logged_in" class="w-full flex flex-row gap-x-2 items-center group">
+                <button v-if="is_logged_in" @click="redirectToMyAccount"
+                    class="w-full flex flex-row gap-x-2 items-center group">
                     <transition mode="out-in">
                         <span v-if="!tipster_details"
                             class="p-4 lg:p-5 group-hover:bg-[#e2e2e2]/60 bg-white rounded-t-xl transition-colors duration-200 cursor-pointer">

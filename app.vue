@@ -12,7 +12,7 @@ const { getToken } = useApollo();
 const authStore = useAuthStore();
 const featureStore = usePageFeatureStore();
 const user_payload = useCookie<IPayload>("user_payload");
-const tipster_payload = useCookie("tipster_payload");
+const tipster_payload = useCookie<ITipsterPayload>("tipster_payload");
 
 const checkUserDetails = async () => {
   const token = await getToken();
@@ -29,9 +29,11 @@ const checkUserDetails = async () => {
     authStore.updateIsLoggedIn(true);
   }
   if (tipster_payload.value) {
-    authStore.updateTipsterPayload(
-      tipster_payload.value as unknown as ITipsterPayload,
-    );
+    if (!tipster_payload.value.penName) {
+      navigateTo("/accounts/login");
+      return;
+    }
+    authStore.updateTipsterPayload(tipster_payload.value);
     featureStore.updateIsTipster(true);
   }
 };

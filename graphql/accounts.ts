@@ -103,6 +103,32 @@ export const GetTipster = gql`
   }
 `;
 
+export const GetTipsterByPenName = gql`
+  query AllTipsters($penName: String) {
+    allTipsters(penName: $penName) {
+      edges {
+        node {
+          id
+          penName
+          country
+          favoriteSport
+          otherSport
+          telegramLink
+          socialLink
+          isApproved
+          imageUrl
+          followerCount
+          isFollowedByUser
+          user {
+            id
+            userName
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const FollowTipster = gql`
   mutation FollowTipster($tipsterId: ID!, $userId: ID!) {
     followTipster(data: { tipsterId: $tipsterId, userId: $userId }) {

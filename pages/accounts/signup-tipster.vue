@@ -4,8 +4,10 @@ import {
   IErrorTipsterStatus,
   IProfileImage,
   ISportOptions,
+  ITipsterPayload,
 } from "~/types/types";
 import { SignupTipster } from "~/graphql/schema";
+import { useAuthStore } from "~/store/authStore";
 import { usePageFeatureStore } from "~/store/pageFeatures";
 
 // Protected page
@@ -17,8 +19,11 @@ const toast = useToast();
 const router = useRouter();
 const config = useRuntimeConfig();
 const second_form = ref(false);
+const authStore = useAuthStore();
 const featureStore = usePageFeatureStore();
-const tipster_payload = useCookie("tipster_payload", { sameSite: true });
+const tipster_payload = useCookie<ITipsterPayload>("tipster_payload", {
+  sameSite: true,
+});
 const is_tipster_approved = useCookie("is_tipster_approved", {
   sameSite: true,
 });
@@ -182,9 +187,11 @@ const toastError = (title: string) => {
 
 onDone((data) => {
   if (data.data.signupTipster.errors === null) {
-    tipster_payload.value = JSON.stringify({
+    tipster_payload.value = {
       tipsterID: data.data.signupTipster.tipster.id,
-    });
+      penName: data.data.signupTipster.tipster.penName,
+    };
+    authStore.updateTipsterPayload(tipster_payload.value);
     postProfileImage(data.data.signupTipster.encodedId);
     featureStore.updateIsTipster(true);
   } else {

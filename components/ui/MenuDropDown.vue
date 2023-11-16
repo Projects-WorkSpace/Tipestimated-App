@@ -1,7 +1,7 @@
 <script setup>
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { Menu, MenuButton, MenuItems } from "@headlessui/vue";
 </script>
-  
+
 <template>
     <div class="w-full relative">
         <Menu as="div" class="relative inline-block text-left w-full">
@@ -10,7 +10,6 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
                     <slot name="button" />
                 </MenuButton>
             </div>
-
             <transition enter-active-class="transition duration-100 ease-out"
                 enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100"
                 leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100"

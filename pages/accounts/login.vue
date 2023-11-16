@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ObtainToken } from "~/graphql/schema";
 import { useAuthStore } from "~/store/authStore";
-import { usePageFeatureStore } from '~/store/pageFeatures';
-import { ILoginResponse } from '~/types/types';
+import { usePageFeatureStore } from "~/store/pageFeatures";
+import { ILoginResponse, ITipsterPayload } from "~/types/types";
 
 interface ILoginDetail {
     email: string;
@@ -14,14 +14,19 @@ const form_details = ref<ILoginDetail>({
     password: "",
 });
 const form_errors = ref({
-    email: false, password: false, response_error: false, message: ''
-})
+    email: false,
+    password: false,
+    response_error: false,
+    message: "",
+});
 
 const authStore = useAuthStore();
 const featureStore = usePageFeatureStore();
 const router = useRouter();
 const { onLogin } = useApollo();
-const tipster_payload = useCookie("tipster_payload", { sameSite: true });
+const tipster_payload = useCookie<ITipsterPayload>("tipster_payload", {
+    sameSite: true,
+});
 
 const today = new Date();
 const user_payload = useCookie("user_payload", {
@@ -29,7 +34,12 @@ const user_payload = useCookie("user_payload", {
     sameSite: true,
 });
 
-const { mutate: postAuthDetails, loading, onDone, onError } = useMutation<ILoginResponse>(ObtainToken);
+const {
+    mutate: postAuthDetails,
+    loading,
+    onDone,
+    onError,
+} = useMutation<ILoginResponse>(ObtainToken);
 
 const submitDetails = (): void => {
     form_errors.value.response_error = false;
@@ -40,7 +50,6 @@ const submitDetails = (): void => {
     if (!form_details.value.password) {
         form_errors.value.password = true;
         return;
-
     }
     postAuthDetails(form_details.value);
 };
@@ -51,10 +60,15 @@ onDone((data) => {
         authStore.updateUserPayload(response?.tokenAuth.payload);
         user_payload.value = response.tokenAuth.payload as unknown as string;
         onLogin(response?.tokenAuth.token);
-        authStore.updateIsLoggedIn(true)
-        if (response.tokenAuth.tipster !== null) { // if is tipster
-            tipster_payload.value = response.tokenAuth.tipster as unknown as string;
-            authStore.updateTipsterPayload(JSON.parse(response.tokenAuth.tipster as unknown as string))
+        authStore.updateIsLoggedIn(true);
+        if (response.tokenAuth.tipster !== null) {
+            // if is tipster
+            tipster_payload.value = JSON.parse(
+                response.tokenAuth.tipster as unknown as string,
+            );
+            authStore.updateTipsterPayload(
+                JSON.parse(response.tokenAuth.tipster as unknown as string),
+            );
             featureStore.updateIsTipster(true);
         } else {
             featureStore.updateIsTipster(false);
@@ -67,15 +81,13 @@ onDone((data) => {
         } else {
             router.back();
         }
-
     }
-
 });
 
 onError((error) => {
     form_errors.value.response_error = true;
     form_errors.value.message = error.message;
-})
+});
 </script>
 <template>
     <section class="w-full flex flex-col items-center mb-8">
@@ -93,12 +105,17 @@ onError((error) => {
                             <div class="relative bg-inherit w-full">
                                 <input v-model="form_details.email" @input="form_errors.email = false" type="email"
                                     id="email" name="username"
-                                    class="peer text-sm bg-c-light h-10 w-full rounded-lg placeholder-transparent ring-1 px-2  focus:outline-none"
-                                    :class="form_errors.email ? 'text-red-500 ring-red-400' : 'text-gray-700 ring-c-seperator/60 focus:ring-neutral-400/60'"
-                                    placeholder="Email" />
+                                    class="peer text-sm bg-c-light h-10 w-full rounded-lg placeholder-transparent ring-1 px-2 focus:outline-none"
+                                    :class="form_errors.email
+                                            ? 'text-red-500 ring-red-400'
+                                            : 'text-gray-700 ring-c-seperator/60 focus:ring-neutral-400/60'
+                                        " placeholder="Email" />
                                 <label for="email"
-                                    class="absolute cursor-text left-1.5 -top-2 text-xs  bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm  peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-xs transition-all"
-                                    :class="form_errors.email ? 'text-red-500 peer-focus:text-red-500' : 'text-gray-500 peer-focus:text-t-gray peer-placeholder-shown:text-gray-500 '">
+                                    class="absolute cursor-text left-1.5 -top-2 text-xs bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-xs transition-all"
+                                    :class="form_errors.email
+                                            ? 'text-red-500 peer-focus:text-red-500'
+                                            : 'text-gray-500 peer-focus:text-t-gray peer-placeholder-shown:text-gray-500 '
+                                        ">
                                     Email
                                 </label>
                             </div>
@@ -106,11 +123,16 @@ onError((error) => {
                                 <input v-model="form_details.password" @input="form_errors.password = false" type="password"
                                     id="password" name="password"
                                     class="peer text-sm bg-c-light h-10 w-full rounded-lg placeholder-transparent ring-1 px-2 focus:outline-none"
-                                    :class="form_errors.password ? 'text-red-500 ring-red-400' : 'text-gray-700 ring-c-seperator/60 focus:ring-neutral-400/60'"
-                                    placeholder="Password" />
+                                    :class="form_errors.password
+                                            ? 'text-red-500 ring-red-400'
+                                            : 'text-gray-700 ring-c-seperator/60 focus:ring-neutral-400/60'
+                                        " placeholder="Password" />
                                 <label for="password"
-                                    class="absolute cursor-text left-1.5 -top-2 text-xs bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm  peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-xs transition-all"
-                                    :class="form_errors.password ? 'text-red-500 peer-focus:text-red-500' : 'text-gray-500 peer-focus:text-t-gray peer-placeholder-shown:text-gray-500'">
+                                    class="absolute cursor-text left-1.5 -top-2 text-xs bg-c-light mx-1 px-1 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-xs transition-all"
+                                    :class="form_errors.password
+                                            ? 'text-red-500 peer-focus:text-red-500'
+                                            : 'text-gray-500 peer-focus:text-t-gray peer-placeholder-shown:text-gray-500'
+                                        ">
                                     Password
                                 </label>
                             </div>
@@ -141,8 +163,8 @@ onError((error) => {
                 <div class="w-full py-5">
                     <div class="flex justify-center items-center gap-x-1">
                         <p class="text-base">Don't have an account?</p>
-                        <NuxtLink to="/accounts/signup" class="text-base-green font-medium text-base cursor-pointer">Sign
-                            up</NuxtLink>
+                        <NuxtLink to="/accounts/signup" class="text-base-green font-medium text-base cursor-pointer">Sign up
+                        </NuxtLink>
                     </div>
                 </div>
             </ContainersDialog>

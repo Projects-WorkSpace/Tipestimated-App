@@ -5,7 +5,7 @@ export interface IExpiredPostData {
   expiredPredictedPosts: IPredictedPosts;
 }
 export interface IPredictedPosts {
-  edges?: (IPostEntity)[] | null;
+  edges?: IPostEntity[] | null;
 }
 export interface IPostEntity {
   node: IPostNode;
@@ -23,7 +23,7 @@ export interface ITipsterIdData {
   imageUrl: string;
 }
 export interface IPredictionpostitemSet {
-  edges?: (IPostItemEntity)[] | null;
+  edges?: IPostItemEntity[] | null;
 }
 export interface IPostItemEntity {
   node: IPostItem;
@@ -51,6 +51,15 @@ export interface IPostItem {
 export interface ITipsterData {
   getTipster: ISingleTipster;
 }
+export interface IGetTipsterByPenName {
+  allTipsters: AllTipsters;
+}
+export interface AllTipsters {
+  edges?: EdgesEntity[] | null;
+}
+export interface EdgesEntity {
+  node: ISingleTipster;
+}
 export interface ISingleTipster {
   id: string;
   penName: string;
@@ -75,20 +84,19 @@ export interface IUnFollowTipster {
 }
 export interface UnFollowTipsterData {
   success: boolean;
-  errors?: (string)[] | null;
+  errors?: string[] | null;
 }
 
 export interface IFollowTipster {
   followTipster: FollowTipsterData;
 }
 export interface FollowTipsterData {
-  errors?: (string)[] | null;
+  errors?: string[] | null;
   follower: FollowerData | null;
 }
 export interface FollowerData {
   id: string;
 }
-
 
 export interface ILikeResponse {
   likePost: LikePostData;

@@ -6,7 +6,7 @@ import {
   IUnFollowTipster,
 } from "~/types/accounts";
 import { LikePost } from "~/graphql/accounts";
-import { IPayload } from "~/types/types";
+import { IPayload, ITipsterPayload } from "~/types/types";
 import { FollowTipster, UnFollowTipster } from "~/graphql/accounts";
 
 const props = defineProps<{
@@ -20,6 +20,7 @@ const emits = defineEmits<{
 
 const { getToken } = useApollo();
 const user_payload = useCookie<IPayload>("user_payload");
+const tipster_payload = useCookie<ITipsterPayload>("tipster_payload");
 const toast = useToast();
 const animations = ref({
   startAnimation: false,
@@ -148,66 +149,49 @@ const totalOdds = computed(() => {
 
   return odds.toFixed(2);
 });
+
+const checkIfUserIsSameTipster = computed(() => {
+  if (tipster_payload.value) {
+    if (tipster_payload.value.tipsterID === props.node.tipsterId.id) {
+      return true;
+    }
+  }
+  return false;
+});
 </script>
 
 <template>
   <ContainersDialog>
     <div class="w-full flex flex-col gap-y-3 px-4 py-4">
-      <SectionsPostHeader
-        :tipster="node.tipsterId"
-        @click-follow-toggle="clickFollowToggle"
-      />
+      <SectionsPostHeader :tipster="node.tipsterId" :user-is-same-is-also-same-tipster="checkIfUserIsSameTipster"
+        @click-follow-toggle="clickFollowToggle" />
       <UiCardDetails>
-        <div
-          class="flex flex-col gap-y-2 px-4 py-2 divide-y divide-c-seperator"
-        >
-          <div
-            v-for="item in node.predictionpostitemSet.edges"
-            :key="item.node.id"
-            class="w-full flex flex-col"
-          >
+        <div class="flex flex-col gap-y-2 px-4 py-2 divide-y divide-c-seperator">
+          <div v-for="item in node.predictionpostitemSet.edges" :key="item.node.id" class="w-full flex flex-col">
             <SectionsPostItem :item="item.node" />
           </div>
         </div>
       </UiCardDetails>
       <div class="w-full flex items-center justify-between sm:px-4 pt-1">
         <div class="flex items-center gap-x-4 md:gap-x-5">
-          <button
-            @click="clickLikeBtn"
-            class="flex flex-col gap-y-1 justify-center items-center"
-          >
-            <UiHeartIcon
-              :animations="animations"
-              :liked="node?.isLikedByMe as boolean"
-              class="w-6 h-6"
-            />
+          <button @click="clickLikeBtn" class="flex flex-col gap-y-1 justify-center items-center">
+            <UiHeartIcon :animations="animations" :liked="node?.isLikedByMe as boolean" class="w-6 h-6" />
             <span class="text-xs text-neutral-700">{{ node?.likes }}</span>
           </button>
           <button class="flex flex-col gap-y-1 justify-cente items-center">
-            <Icon
-              name="mdi:share-variant-outline"
-              class="w-5 h-5 text-neutral-700"
-            />
+            <Icon name="mdi:share-variant-outline" class="w-5 h-5 text-neutral-700" />
             <span class="text-xs text-neutral-700">Share</span>
           </button>
         </div>
         <div class="flex items-center">
-          <div
-            class="flex items-center gap-x-2.5 sm:gap-x-4 rounded-xl px-3 py-3 divide-x divide-c-seperator"
-          >
+          <div class="flex items-center gap-x-2.5 sm:gap-x-4 rounded-xl px-3 py-3 divide-x divide-c-seperator">
             <div class="flex items-center">
               <div v-if="node.predictionpostitemSet.edges" class="">
-                <NuxtImg
-                  :src="
-                    node.predictionpostitemSet.edges[0].node.bookmakerImg ?? ''
-                  "
-                  class="h-6 sm:h-7 rounded"
-                />
+                <NuxtImg :src="node.predictionpostitemSet.edges[0].node.bookmakerImg ?? ''
+                  " class="h-6 sm:h-7 rounded" />
               </div>
             </div>
-            <div
-              class="flex flex-col sm:flex-row items-center gap-x-1 pr-2 pl-2.5 sm:pl-4 font-medium text-neutral-700"
-            >
+            <div class="flex flex-col sm:flex-row items-center gap-x-1 pr-2 pl-2.5 sm:pl-4 font-medium text-neutral-700">
               <p class="text-xs sm:text-sm">Odds</p>
               <small class="text-xs sm:text-sm">{{ totalOdds }}</small>
             </div>
