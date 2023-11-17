@@ -1,10 +1,14 @@
 <script setup lang="ts">
-
-import { HoverCardContent, HoverCardPortal, HoverCardRoot, HoverCardTrigger } from 'radix-vue'
+import {
+    HoverCardContent,
+    HoverCardPortal,
+    HoverCardRoot,
+    HoverCardTrigger,
+} from "radix-vue";
 const props = defineProps<{
-    wAndH?: string
-    imgUrl?: string
-    idUrl: string
+    wAndH?: string;
+    imgUrl?: string;
+    idUrl: string;
     tipsterFollowers?: number;
     name: string;
     userName: string;
@@ -12,8 +16,8 @@ const props = defineProps<{
 
 const hoverState = ref(false);
 const fullUrl = computed(() => {
-    return "/t-" + props.idUrl
-})
+    return props.userName;
+});
 </script>
 <template>
     <div class="flex items-center justify-center">
@@ -21,8 +25,10 @@ const fullUrl = computed(() => {
             <HoverCardRoot v-model:open="hoverState">
                 <HoverCardTrigger as-child>
                     <NuxtLink :to="fullUrl">
-                        <NuxtImg :src="imgUrl"
-                            :class="['rounded-full ring-2 ring-offset-1 ring-fuchsia-400', wAndH || 'w-14 h-14']" />
+                        <NuxtImg :src="imgUrl" :class="[
+                            'rounded-full ring-2 ring-offset-1 ring-fuchsia-400',
+                            wAndH || 'w-14 h-14',
+                        ]" />
                     </NuxtLink>
                 </HoverCardTrigger>
                 <HoverCardPortal>
@@ -40,9 +46,7 @@ const fullUrl = computed(() => {
                                         @{{ userName }}
                                     </div>
                                 </div>
-                                <div class="text-mauve12 m-0 text-[15px] leading-[1.5]">
-
-                                </div>
+                                <div class="text-mauve12 m-0 text-[15px] leading-[1.5]"></div>
                                 <div class="flex gap-[15px]">
                                     <div class="flex gap-[5px]">
                                         <div class="text-mauve12 m-0 text-[15px] font-medium leading-[1.5]">
@@ -70,9 +74,10 @@ const fullUrl = computed(() => {
             </HoverCardRoot>
         </div>
         <div class="flex md:hidden">
-            <NuxtImg :src="imgUrl || '/images/profile-picture-5.jpg'"
-                :class="['rounded-full ring-2 py-[1px] ring-fuchsia-400', wAndH || 'w-14 h-14']" />
+            <NuxtImg :src="imgUrl || '/images/profile-picture-5.jpg'" :class="[
+                'rounded-full ring-2 py-[1px] ring-fuchsia-400',
+                wAndH || 'w-14 h-14',
+            ]" />
         </div>
-
     </div>
 </template>

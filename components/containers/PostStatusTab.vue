@@ -105,46 +105,30 @@ onMounted(() => {
 <template>
   <div class="w-full flex flex-col">
     <Transition mode="out-in">
-      <div
-        v-if="loadingStatus.all"
-        class="w-full flex flex-col items-center pt-16"
-      >
+      <div v-if="loadingStatus.all" class="w-full flex flex-col items-center pt-16">
         <UtilsStarLoading />
       </div>
       <div v-else class="w-full flex flex-col">
-        <UTabs
-          :items="items"
-          class="w-full"
-          :ui="uiTabStyles"
-          @change="onChange"
-        >
+        <UTabs :items="items" class="w-full" :ui="uiTabStyles" @change="onChange">
+          <template #default="{ item }">
+            <div class="w-full flex items-center justify-center">
+              <span class="text-sm md:text-base">{{ item.label }}</span>
+            </div>
+          </template>
           <template #item="{ item }">
             <div v-if="item.key === 'active'" class="space-y-3 mt-4">
               <div class="w-full">
                 <Transition mode="out-in">
                   <div v-if="!loadingStatus.active" class="w-full">
                     <Transition mode="out-in">
-                      <div
-                        v-if="activePostData"
-                        class="w-full flex flex-col gap-y-3"
-                      >
+                      <div v-if="activePostData" class="w-full flex flex-col gap-y-3">
                         <div v-for="node in activePostData" class="w-full">
-                          <SectionsAccountPostCard
-                            :node="node"
-                            @update-like="updateLike"
-                            status-type="active"
-                            :pen-name="node.tipsterId.penName"
-                            :img-url="node.tipsterId.imageUrl"
-                          />
+                          <SectionsAccountPostCard :node="node" @update-like="updateLike" status-type="active"
+                            :pen-name="node.tipsterId.penName" :img-url="node.tipsterId.imageUrl" />
                         </div>
                       </div>
-                      <div
-                        v-else
-                        class="w-full pt-16 flex flex-col items-center"
-                      >
-                        <h3
-                          class="text-xl font-semibold text-neutral-600 tracking-wide"
-                        >
+                      <div v-else class="w-full pt-16 flex flex-col items-center">
+                        <h3 class="text-xl font-semibold text-neutral-600 tracking-wide">
                           Empty here!
                         </h3>
                         <p class="text-base">
@@ -164,27 +148,14 @@ onMounted(() => {
                 <Transition mode="out-in">
                   <div v-if="!loadingStatus.expired" class="w-full">
                     <Transition mode="out-in">
-                      <div
-                        v-if="expiredPostData.length !== 0"
-                        class="w-full flex flex-col gap-y-3"
-                      >
+                      <div v-if="expiredPostData.length !== 0" class="w-full flex flex-col gap-y-3">
                         <div v-for="node in expiredPostData" class="w-full">
-                          <SectionsAccountPostCard
-                            :node="node"
-                            @update-like="updateLike"
-                            status-type="expired"
-                            :pen-name="node.tipsterId.penName"
-                            :img-url="node.tipsterId.imageUrl"
-                          />
+                          <SectionsAccountPostCard :node="node" @update-like="updateLike" status-type="expired"
+                            :pen-name="node.tipsterId.penName" :img-url="node.tipsterId.imageUrl" />
                         </div>
                       </div>
-                      <div
-                        v-else
-                        class="w-full pt-16 flex flex-col items-center"
-                      >
-                        <h3
-                          class="text-xl font-semibold text-neutral-600 tracking-wide"
-                        >
+                      <div v-else class="w-full pt-16 flex flex-col items-center">
+                        <h3 class="text-xl font-semibold text-neutral-600 tracking-wide">
                           Empty here!
                         </h3>
                         <p class="text-base">
