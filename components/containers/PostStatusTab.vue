@@ -6,6 +6,10 @@ import {
 import { IActivePostData, IExpiredPostData, IPostNode } from "~/types/accounts";
 import { uiTabStyles } from "~/helpers";
 
+const props = defineProps<{
+  penName: string;
+}>();
+
 const route = useRoute();
 const activePostData = ref<IPostNode[]>([]);
 const expiredPostData = ref<IPostNode[]>([]);
@@ -26,11 +30,11 @@ const items = [
   },
 ];
 
-const fetchActivePostData = async (tipsterId: string) => {
+const fetchActivePostData = async () => {
   loadingStatus.value.active = true;
   const { result, onResult, onError } = useQuery<IActivePostData>(
     ActivePredictedPosts,
-    { tipsterId: tipsterId },
+    { tipsterId_PenName: props.penName },
   );
   if (result.value) {
     console.log("Got results here");
@@ -49,11 +53,11 @@ const fetchActivePostData = async (tipsterId: string) => {
   });
 };
 
-const fetchExpiredPostData = async (tipsterId: string) => {
+const fetchExpiredPostData = async () => {
   loadingStatus.value.expired = true;
   const { onResult, onError } = useQuery<IExpiredPostData>(
     ExpiredPredictedPosts,
-    { tipsterId: tipsterId },
+    { tipsterId_PenName: props.penName },
   );
 
   onError((error) => {
@@ -73,9 +77,9 @@ const fetchExpiredPostData = async (tipsterId: string) => {
 function onChange(index: any) {
   const item = items[index];
   if (item.key === "active") {
-    fetchActivePostData(route.params.tipsterID as string);
+    fetchActivePostData();
   } else if (item.key === "expired") {
-    fetchExpiredPostData(route.params.tipsterID as string);
+    fetchExpiredPostData();
   }
 }
 
@@ -98,7 +102,7 @@ const updateLike = (payload: boolean, statusType: string, postId: string) => {
 };
 
 onMounted(() => {
-  fetchActivePostData(route.params.tipsterID as string);
+  fetchActivePostData();
 });
 </script>
 

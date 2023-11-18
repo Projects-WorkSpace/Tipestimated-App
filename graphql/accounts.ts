@@ -1,6 +1,6 @@
 export const ExpiredPredictedPosts = gql`
-  query ExpiredPredictedPosts($tipsterId: ID) {
-    expiredPredictedPosts(tipsterId: $tipsterId) {
+  query ExpiredPredictedPosts($tipsterId_PenName: String) {
+    expiredPredictedPosts(tipsterId_PenName: $tipsterId_PenName) {
       edges {
         node {
           id
@@ -40,8 +40,8 @@ export const ExpiredPredictedPosts = gql`
   }
 `;
 export const ActivePredictedPosts = gql`
-  query ActivePredictedPosts($tipsterId: ID) {
-    activePredictedPosts(tipsterId: $tipsterId) {
+  query ActivePredictedPosts($tipsterId_PenName: String) {
+    activePredictedPosts(tipsterId_PenName: $tipsterId_PenName) {
       edges {
         node {
           id

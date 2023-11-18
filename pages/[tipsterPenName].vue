@@ -83,7 +83,7 @@ onMounted(() => {
         </div>
         <div class="w-full"></div>
         <div class="w-full mt-3">
-          <ContainersPostStatusTab />
+          <ContainersPostStatusTab :pen-name="route.params.tipsterPenName as string" />
         </div>
       </div>
     </NuxtLayout>
