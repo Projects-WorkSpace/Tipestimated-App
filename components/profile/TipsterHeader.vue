@@ -8,7 +8,10 @@ const emits = defineEmits<{
   (e: "updateImgUrl", url: string): void;
 }>();
 
+const toast = useToast();
+const url = useRequestURL();
 const config = useRuntimeConfig();
+const { copy } = useClipboard();
 
 const handleFileChange = (event: Event) => {
   const file = (event.target as HTMLInputElement)?.files?.[0];
@@ -37,6 +40,58 @@ const postProfileImage = async (file: File) => {
   } else if (error.value) {
     console.error("Error fetching data:", error.value);
   }
+};
+
+const items = [
+  [
+    {
+      label: url.href.replace(/^https?:\/\//, "").replace("/a/", "/"),
+      slot: "account",
+      icon: "i-heroicons-document-duplicate",
+    },
+  ],
+  [
+    {
+      label: "Telegram",
+      icon: "i-heroicons-link",
+    },
+    {
+      label: props.tipster.socialLink,
+      icon: "i-heroicons-link",
+    },
+  ],
+];
+
+const clickCopyTipstimateLink = () => {
+  copy(items[0][0].label); // link
+  toastCopied();
+};
+
+const getSocialMediaPlatform = (url: string) => {
+  const socialMediaRegex =
+    /^(https?:\/\/)?(www\.)?(twitter\.com|facebook\.com|instagram\.com)\/.+$/i;
+  const match = url.match(socialMediaRegex);
+  if (match) {
+    return match[3].replace(".com", "");
+  }
+  return null;
+};
+
+const toastCopied = () => {
+  toast.add({
+    title: "Copied",
+    ui: {
+      title: "text-t-gray font-medium",
+      progress: {
+        base: "absolute bottom-0 end-0 start-0 h-0",
+      },
+      icon: {
+        color: "text-green-500",
+      },
+    },
+    icon: "i-heroicons-check-circle",
+    timeout: 1500,
+  });
 };
 </script>
 <template>
@@ -98,12 +153,101 @@ const postProfileImage = async (file: File) => {
                 <Icon name="ph:gear" class="w-7 h-7" />
               </button>
             </div>
-            <div class="flex items-center ml-0.5">
-              <button
-                class="border border-c-seperator/50 p-1.5 rounded-lg hover:border-c-seperator/70 hover:bg-c-seperator/30"
+            <div class="flex items-center ml-0.5 relative">
+              <UDropdown
+                :items="items"
+                :ui="{ item: { disabled: 'cursor-text select-text' } }"
+                :popper="{ placement: 'bottom-end' }"
               >
-                <Icon name="ph:share-network" class="w-5 h-5" />
-              </button>
+                <button
+                  class="border border-c-seperator/50 p-1.5 rounded-lg hover:border-c-seperator/70 hover:bg-c-seperator/30"
+                >
+                  <Icon name="ph:share-network" class="w-5 h-5" />
+                </button>
+                <template #account="{ item }">
+                  <div
+                    @click="clickCopyTipstimateLink"
+                    class="w-full flex items-center justify-between gap-x-1"
+                  >
+                    <span class="truncate">{{ item.label }}</span>
+                    <UIcon
+                      :name="item.icon"
+                      class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto"
+                    />
+                  </div>
+                </template>
+
+                <template #item="{ item }">
+                  <div class="w-full">
+                    <NuxtLink
+                      v-if="item.label === 'Telegram'"
+                      :to="tipster.telegramLink"
+                      target="_blank"
+                      class="w-full flex items-center justify-between gap-x-1.5"
+                    >
+                      <div class="flex items-center gap-x-2">
+                        <NuxtImg src="/icons/telegram.png" class="w-5 h-5" />
+                        <span class="truncate">Share on Telegram</span>
+                      </div>
+                      <UIcon
+                        :name="item.icon"
+                        class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto"
+                      />
+                    </NuxtLink>
+                    <NuxtLink
+                      v-else-if="
+                        getSocialMediaPlatform(item.label) === 'twitter'
+                      "
+                      :to="item.label"
+                      target="_blank"
+                      class="w-full flex items-center justify-between gap-x-1.5"
+                    >
+                      <div class="flex items-center gap-x-2">
+                        <NuxtImg src="/icons/twitter.png" class="w-4 h-4" />
+                        <span class="truncate">Share on Twitter</span>
+                      </div>
+                      <UIcon
+                        :name="item.icon"
+                        class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto"
+                      />
+                    </NuxtLink>
+                    <NuxtLink
+                      v-else-if="
+                        getSocialMediaPlatform(item.label) === 'instagram'
+                      "
+                      :to="item.label"
+                      target="_blank"
+                      class="w-full flex items-center justify-between gap-x-1.5"
+                    >
+                      <div class="flex items-center gap-x-2">
+                        <NuxtImg src="/icons/instagram.png" class="w-5 h-5" />
+                        <span class="truncate">Share on Instagram</span>
+                      </div>
+                      <UIcon
+                        :name="item.icon"
+                        class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto"
+                      />
+                    </NuxtLink>
+                    <NuxtLink
+                      v-else-if="
+                        getSocialMediaPlatform(item.label) === 'facebook'
+                      "
+                      :to="item.label"
+                      target="_blank"
+                      class="w-full flex items-center justify-between gap-x-1.5"
+                    >
+                      <div class="flex items-center gap-x-2">
+                        <NuxtImg src="/icons/facebook.png" class="w-5 h-5" />
+                        <span class="truncate">Share on Facebook</span>
+                      </div>
+                      <UIcon
+                        :name="item.icon"
+                        class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto"
+                      />
+                    </NuxtLink>
+                  </div>
+                </template>
+              </UDropdown>
             </div>
           </div>
         </div>
